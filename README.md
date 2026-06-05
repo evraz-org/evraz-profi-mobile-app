@@ -1,12 +1,11 @@
-# bitshares-mobile-app
+# evraz-mobile-app
 
 The mobile app for [bitshares](https://how.bitshares.works/en/master/technology/what_bitshares.html) blockchain. 
 
-[中文](README_zh.md)
 
 ## About
 
-Bitshares Mobile App is the mobile wallet for the [Bitshares Blockchain](https://github.com/bitshares/bitshares-core). Currently features:
+EVRAZ Mobile App is the mobile wallet for the [Bitshares Blockchain](https://github.com/bitshares/bitshares-core). Currently features:
 
 * Support account mode and wallet mode registration
 * Support wallet mode, account mode and private key mode login
