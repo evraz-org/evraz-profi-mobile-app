@@ -1,4 +1,4 @@
-# evraz-mobile-app
+# evraz-profi-mobile-app
 
 The mobile app for [bitshares](https://how.bitshares.works/en/master/technology/what_bitshares.html) blockchain. 
 
@@ -48,8 +48,6 @@ Configuration Fabric
 
 ## License
 
-BitShares Mobile App is under the MIT license. See [LICENSE](https://github.com/btspp/bitshares-mobile-app/blob/master/LICENSE)
+EVRAZ Profi Mobile App is under the MIT license. See [LICENSE](https://github.com/btspp/bitshares-mobile-app/blob/master/LICENSE)
 for more information.
 
-## Contact us
-If you have any questions, please contact us via the [Telegram](https://t.me/btsplusplus) group.
