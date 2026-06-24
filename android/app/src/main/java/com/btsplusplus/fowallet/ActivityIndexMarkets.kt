@@ -1,16 +1,19 @@
 package com.btsplusplus.fowallet
 
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
+import android.view.View
+import androidx.fragment.app.Fragment
 import bitshares.*
 import com.fowallet.walletcore.bts.ChainObjectManager
-import kotlinx.android.synthetic.main.activity_index_markets.*
+import com.btsplusplus.fowallet.databinding.ActivityIndexMarketsBinding
+import com.google.android.material.tabs.TabLayout
 import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
 
 class ActivityIndexMarkets : BtsppActivity() {
+
+    private lateinit var binding: ActivityIndexMarketsBinding
 
     private val fragmens: ArrayList<Fragment> = ArrayList()
 
@@ -21,6 +24,7 @@ class ActivityIndexMarkets : BtsppActivity() {
      */
     override fun onBackPressed() {
         goHome()
+        super.onBackPressed()
     }
 
     //  事件：将要进入后台
@@ -45,7 +49,12 @@ class ActivityIndexMarkets : BtsppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setAutoLayoutContentView(R.layout.activity_index_markets, navigationBarColor = R.color.theme01_tabBarColor)
+        setAutoLayoutContentView(
+            R.layout.activity_index_markets,
+            navigationBarColor = R.color.theme01_tabBarColor
+        )
+        binding =
+            ActivityIndexMarketsBinding.bind(findViewById<View>(android.R.id.content).rootView)
 
         //  动态初始化TabItem
         findViewById<TabLayout>(R.id.tablayout).let { tab ->
@@ -73,10 +82,7 @@ class ActivityIndexMarkets : BtsppActivity() {
         setBottomNavigationStyle(0)
     }
 
-    /**
-     * 启动定时器：刷新Ticker数据用
-     */
-    private fun startTickerRefreshTimer() {
+    private   fun startTickerRefreshTimer() {
         if (_tickerRefreshTimer == null) {
             _tickerRefreshTimer = Timer()
             _tickerRefreshTimer!!.schedule(object : TimerTask() {
@@ -144,8 +150,8 @@ class ActivityIndexMarkets : BtsppActivity() {
 //        return 2
 //    }
 
-    private fun setAddBtnListener() {
-        button_add.setOnClickListener { goTo(ActivityTradingPairMgr::class.java, true) }
+   private fun setAddBtnListener() {
+        binding.buttonAdd.setOnClickListener { goTo(ActivityTradingPairMgr::class.java, true) }
     }
 
     private fun setFragments() {
@@ -158,4 +164,3 @@ class ActivityIndexMarkets : BtsppActivity() {
     }
 
 }
-

@@ -16,7 +16,7 @@ import com.google.zxing.Result
 import com.google.zxing.client.android.AutoScannerView
 import com.google.zxing.client.android.BaseCaptureActivity
 import com.google.zxing.utils.PicDecode
-import kotlinx.android.synthetic.main.activity_qr_scan.*
+import com.btsplusplus.fowallet.databinding.ActivityQrScanBinding
 import org.json.JSONArray
 import org.json.JSONObject
 import java.math.BigDecimal
@@ -26,6 +26,9 @@ import java.net.URLDecoder
  * 二维码扫描界面
  */
 class ActivityQrScan : BaseCaptureActivity() {
+
+    private lateinit var binding: ActivityQrScanBinding
+
     private var surfaceView: SurfaceView? = null
     private var autoScannerView: AutoScannerView? = null
     private val kRequestCodeFromAlbum = 1001
@@ -68,14 +71,15 @@ class ActivityQrScan : BaseCaptureActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setAutoLayoutContentView(R.layout.activity_qr_scan)
+        binding = ActivityQrScanBinding.bind(findViewById<View>(android.R.id.content).rootView)
         setFullScreen()
 
         //  获取参数
         val args = btspp_args_as_JSONObject()
         _result_promise = args.opt("result_promise") as? Promise
 
-        surfaceView = findViewById<View>(R.id.preview_view) as SurfaceView
-        autoScannerView = findViewById<View>(R.id.autoscanner_view) as AutoScannerView
+        surfaceView = binding.previewView as SurfaceView
+        autoScannerView = binding.autoscannerView as AutoScannerView
 
         surfaceView!!.setOnTouchListener { _, event ->
             //  触摸对焦
@@ -86,8 +90,8 @@ class ActivityQrScan : BaseCaptureActivity() {
         }
 
         //  事件
-        btn_back.setOnClickListener { finish() }
-        btn_album.setOnClickListener { onAlbumClicked() }
+        binding.btnBack.setOnClickListener { finish() }
+        binding.btnAlbum.setOnClickListener { onAlbumClicked() }
     }
 
     private fun onAlbumClicked() {
@@ -168,7 +172,7 @@ class ActivityQrScan : BaseCaptureActivity() {
      *  二维码结果：商家收款发票情况处理。
      */
     private fun _processScanResultAsMerchantInvoice(invoice: JSONObject, raw: String, mask: ViewMask) {
-        _queryInvoiceDependencyData(invoice.optString("currency", null)?.toUpperCase(), invoice.optString("to", null)?.toLowerCase()).then {
+        _queryInvoiceDependencyData(invoice.optString("currency", null)?.uppercase(), invoice.optString("to", null)?.lowercase()).then {
             val data_array = it as? JSONArray
             var accountData: JSONObject? = null
             var assetData: JSONObject? = null

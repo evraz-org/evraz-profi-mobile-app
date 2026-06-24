@@ -6,44 +6,47 @@ import bitshares.jsonArrayfrom
 import com.btsplusplus.fowallet.utils.VcUtils
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_stealth_transfer.*
+import com.btsplusplus.fowallet.databinding.ActivityStealthTransferBinding
 import org.json.JSONArray
 import org.json.JSONObject
 
 class ActivityStealthTransfer : BtsppActivity() {
+
+    private lateinit var binding: ActivityStealthTransferBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // 设置自动布局
         setAutoLayoutContentView(R.layout.activity_stealth_transfer)
+        binding = ActivityStealthTransferBinding.bind(findViewById<View>(android.R.id.content).rootView)
 
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
         //  返回事件
-        layout_back_from_stealth_transfer.setOnClickListener { finish() }
+        binding.layoutBackFromStealthTransfer.setOnClickListener { finish() }
 
         //  点击跳转事件
-        layout_account_manage_from_stealth_transfer.setOnClickListener { OnAccountManageClicked() }
-        layout_my_receipt_from_stealth_transfer.setOnClickListener { onMyReceiptClicked() }
-        layout_transfer_to_blind_from_stealth_transfer.setOnClickListener { onTransferToBlindClicked() }
-        layout_transfer_from_blind_from_stealth_transfer.setOnClickListener { onTransferFromBlindClicked() }
-        layout_blind_transfer_from_stealth_transfer.setOnClickListener { onBlindTransferClicked() }
+        binding.layoutAccountManageFromStealthTransfer.setOnClickListener { OnAccountManageClicked() }
+        binding.layoutMyReceiptFromStealthTransfer.setOnClickListener { onMyReceiptClicked() }
+        binding.layoutTransferToBlindFromStealthTransfer.setOnClickListener { onTransferToBlindClicked() }
+        binding.layoutTransferFromBlindFromStealthTransfer.setOnClickListener { onTransferFromBlindClicked() }
+        binding.layoutBlindTransferFromStealthTransfer.setOnClickListener { onBlindTransferClicked() }
 
         //  设置图标颜色
-        img_icon_blind_accounts.setColorFilter(resources.getColor(R.color.theme01_textColorNormal))
-        img_icon_blind_balances.setColorFilter(resources.getColor(R.color.theme01_textColorNormal))
-        img_icon_transfer_to_blind.setColorFilter(resources.getColor(R.color.theme01_textColorNormal))
-        img_icon_transfer_from_blind.setColorFilter(resources.getColor(R.color.theme01_textColorNormal))
-        img_icon_blind_transfer.setColorFilter(resources.getColor(R.color.theme01_textColorNormal))
+        binding.imgIconBlindAccounts.setColorFilter(resources.getColor(R.color.theme01_textColorNormal))
+        binding.imgIconBlindBalances.setColorFilter(resources.getColor(R.color.theme01_textColorNormal))
+        binding.imgIconTransferToBlind.setColorFilter(resources.getColor(R.color.theme01_textColorNormal))
+        binding.imgIconTransferFromBlind.setColorFilter(resources.getColor(R.color.theme01_textColorNormal))
+        binding.imgIconBlindTransfer.setColorFilter(resources.getColor(R.color.theme01_textColorNormal))
 
         //  设置箭头颜色
-        iv_account_manage_right_arrow_from_stealth_transfer.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
-        iv_my_receipt_right_arrow_from_stealth_transfer.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
-        iv_transfer_to_blind_right_arrow_from_stealth_transfer.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
-        iv_transfer_from_blind_right_arrow_from_stealth_transfer.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
-        iv_blind_transfer_right_arrow_from_stealth_transfer.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
+        binding.ivAccountManageRightArrowFromStealthTransfer.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
+        binding.ivMyReceiptRightArrowFromStealthTransfer.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
+        binding.ivTransferToBlindRightArrowFromStealthTransfer.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
+        binding.ivTransferFromBlindRightArrowFromStealthTransfer.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
+        binding.ivBlindTransferRightArrowFromStealthTransfer.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
     }
 
     private fun OnAccountManageClicked() {

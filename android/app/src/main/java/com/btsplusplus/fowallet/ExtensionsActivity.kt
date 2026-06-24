@@ -5,26 +5,27 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Point
 import android.net.Uri
-import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
-import android.support.v4.view.ViewPager
-import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.animation.OvershootInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.Scroller
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.ViewPager
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.BottomNavBinding
 import com.btsplusplus.fowallet.kline.TradingPair
 import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.bottom_nav.*
+import com.google.android.material.tabs.TabLayout
 import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.reflect.Field
+import java.util.Locale.getDefault
 
 
 fun AppCompatActivity.setFullScreen() {
@@ -39,29 +40,30 @@ fun AppCompatActivity.setFullScreen() {
 }
 
 fun AppCompatActivity.setBottomNavigationStyle(position: Int) {
+    val binding: BottomNavBinding = BottomNavBinding.bind(findViewById<View>(android.R.id.content).rootView)
     val color: Int = resources.getColor(R.color.theme01_textColorHighlight)
     when (position) {
         0 -> {
-            bottom_nav_text_view_markets.setTextColor(color)
-            bottom_nav_image_view_markets.setColorFilter(color)
+            binding.bottomNavTextViewMarkets.setTextColor(color)
+            binding.bottomNavImageViewMarkets.setColorFilter(color)
         }
         1 -> {
-            bottom_nav_text_view_diya.setTextColor(color)
-            bottom_nav_image_view_diya.setColorFilter(color)
+            binding.bottomNavTextViewDiya.setTextColor(color)
+            binding.bottomNavImageViewDiya.setColorFilter(color)
         }
         2 -> {
-            bottom_nav_text_view_services.setTextColor(color)
-            bottom_nav_image_view_services.setColorFilter(color)
+            binding.bottomNavTextViewServices.setTextColor(color)
+            binding.bottomNavImageViewServices.setColorFilter(color)
         }
         3 -> {
-            bottom_nav_text_view_my.setTextColor(color)
-            bottom_nav_image_view_my.setColorFilter(color)
+            binding.bottomNavTextViewMy.setTextColor(color)
+            binding.bottomNavImageViewMy.setColorFilter(color)
         }
     }
     //  TODO:7.0 每次点击都重新生成一个，后面考虑用 singleTop，结合 onNewIntent重用。
     if (BuildConfig.kAppModuleEnableTabMarket) {
-        bottom_nav_markets_frame.visibility = View.VISIBLE
-        bottom_nav_markets_frame.setOnClickListener {
+        binding.bottomNavMarketsFrame.visibility = View.VISIBLE
+        binding.bottomNavMarketsFrame.setOnClickListener {
             val top = BtsppApp.getInstance().getTopActivity()
             if (top == null || top !is ActivityIndexMarkets) {
                 goTo(ActivityIndexMarkets::class.java)
@@ -69,11 +71,11 @@ fun AppCompatActivity.setBottomNavigationStyle(position: Int) {
             }
         }
     } else {
-        bottom_nav_markets_frame.visibility = View.GONE
+        binding.bottomNavMarketsFrame.visibility = View.GONE
     }
     if (BuildConfig.kAppModuleEnableTabDebt) {
-        bottom_nav_markets_frame.visibility = View.VISIBLE
-        bottom_nav_diya_frame.setOnClickListener {
+        binding.bottomNavMarketsFrame.visibility = View.VISIBLE
+        binding.bottomNavDiyaFrame.setOnClickListener {
             val top = BtsppApp.getInstance().getTopActivity()
             if (top == null || top !is ActivityIndexCollateral) {
                 goTo(ActivityIndexCollateral::class.java)
@@ -81,16 +83,16 @@ fun AppCompatActivity.setBottomNavigationStyle(position: Int) {
             }
         }
     } else {
-        bottom_nav_diya_frame.visibility = View.GONE
+        binding.bottomNavDiyaFrame.visibility = View.GONE
     }
-    bottom_nav_services_frame.setOnClickListener {
+    binding.bottomNavServicesFrame.setOnClickListener {
         val top = BtsppApp.getInstance().getTopActivity()
         if (top == null || top !is ActivityIndexServices) {
             goTo(ActivityIndexServices::class.java)
             BtsppApp.getInstance().finishAllActivity()
         }
     }
-    bottom_nav_my_frame.setOnClickListener {
+    binding.bottomNavMyFrame.setOnClickListener {
         val top = BtsppApp.getInstance().getTopActivity()
         if (top == null || top !is ActivityIndexMy) {
             goTo(ActivityIndexMy::class.java)
@@ -101,16 +103,18 @@ fun AppCompatActivity.setBottomNavigationStyle(position: Int) {
 
 fun AppCompatActivity.clearBottomAllColor() {
     val default_color: Int = resources.getColor(R.color.theme01_textColorGray)
+    val binding: BottomNavBinding = BottomNavBinding.bind(findViewById<View>(android.R.id.content).rootView)
+
     //  文字
-    bottom_nav_text_view_markets.setTextColor(default_color)
-    bottom_nav_text_view_diya.setTextColor(default_color)
-    bottom_nav_text_view_services.setTextColor(default_color)
-    bottom_nav_text_view_my.setTextColor(default_color)
+    binding.bottomNavTextViewMarkets.setTextColor(default_color)
+    binding.bottomNavTextViewDiya.setTextColor(default_color)
+    binding.bottomNavTextViewServices.setTextColor(default_color)
+    binding.bottomNavTextViewMy.setTextColor(default_color)
     //  图片
-    bottom_nav_image_view_markets.setColorFilter(default_color)
-    bottom_nav_image_view_diya.setColorFilter(default_color)
-    bottom_nav_image_view_services.setColorFilter(default_color)
-    bottom_nav_image_view_my.setColorFilter(default_color)
+    binding.bottomNavImageViewMarkets.setColorFilter(default_color)
+    binding.bottomNavImageViewDiya.setColorFilter(default_color)
+    binding.bottomNavImageViewServices.setColorFilter(default_color)
+    binding.bottomNavImageViewMy.setColorFilter(default_color)
 }
 
 fun android.app.Activity.alerShowMessageConfirm(title: String?, message: String): Promise {
@@ -277,7 +281,7 @@ fun android.app.Activity.showGrapheneError(error: Any?) {
                     return
                 }
                 //  "Preimage size mismatch." or ""Provided preimage does not generate correct hash."
-                val lowermsg = msg.toLowerCase()
+                val lowermsg = msg.lowercase(getDefault())
                 if (lowermsg.indexOf("preimage size") >= 0 || lowermsg.indexOf("provided preimage") >= 0) {
                     showToast(resources.getString(R.string.kGPErrorRedeemInvalidPreimage))
                     return

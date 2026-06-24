@@ -7,8 +7,8 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityBlindAccountsBinding
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_blind_accounts.*
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -22,6 +22,8 @@ class ActivityBlindAccounts : BtsppActivity() {
 
     private var _result_promise: Promise? = null
 
+    private lateinit var binding: ActivityBlindAccountsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -30,6 +32,8 @@ class ActivityBlindAccounts : BtsppActivity() {
 
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
+
+        binding = ActivityBlindAccountsBinding.bind(findViewById<View>(android.R.id.content).rootView)
 
         //  获取参数
         val args = btspp_args_as_JSONObject()
@@ -41,13 +45,13 @@ class ActivityBlindAccounts : BtsppActivity() {
 
         //  右上角按钮（地址管理模式才存在、选择模式不存在。）
         if (isSelectMode()) {
-            button_add_from_blind_accounts.visibility = View.INVISIBLE
+            binding.buttonAddFromBlindAccounts.visibility = View.INVISIBLE
         } else {
-            button_add_from_blind_accounts.setOnClickListener { onAddAccountClicked() }
+            binding.buttonAddFromBlindAccounts.setOnClickListener { onAddAccountClicked() }
         }
 
         //  返回事件
-        layout_back_from_blind_accounts.setOnClickListener { finish() }
+        binding.layoutBackFromBlindAccounts.setOnClickListener { finish() }
     }
 
     private fun isSelectMode(): Boolean {
@@ -311,7 +315,7 @@ class ActivityBlindAccounts : BtsppActivity() {
     }
 
     private fun refreshUI() {
-        val container = layout_account_list_of_blind_accounts
+        val container = binding.layoutAccountListOfBlindAccounts
         container.removeAllViews()
 
         val data_array = loadBlindAccounts()

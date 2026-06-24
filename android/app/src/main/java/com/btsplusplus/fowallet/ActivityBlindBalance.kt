@@ -1,14 +1,17 @@
 package com.btsplusplus.fowallet
 
 import android.os.Bundle
+import android.view.View
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityBlindBalanceBinding
 import com.btsplusplus.fowallet.utils.VcUtils
 import com.fowallet.walletcore.bts.ChainObjectManager
-import kotlinx.android.synthetic.main.activity_blind_balance.*
 import org.json.JSONArray
 import org.json.JSONObject
 
 class ActivityBlindBalance : BtsppActivity() {
+
+    private lateinit var binding: ActivityBlindBalanceBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,11 +21,13 @@ class ActivityBlindBalance : BtsppActivity() {
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
+        binding = ActivityBlindBalanceBinding.bind(findViewById<View>(android.R.id.content).rootView)
+
         //  导入收据按钮事件
-        button_add_from_blind_balance.setOnClickListener { onAddbuttonClicked() }
+        binding.buttonAddFromBlindBalance.setOnClickListener { onAddbuttonClicked() }
 
         //  返回事件
-        layout_back_from_blind_balance.setOnClickListener { finish() }
+        binding.layoutBackFromBlindBalance.setOnClickListener { finish() }
 
         //  查询数据依赖
         queryBlindBalanceAndDependence()
@@ -52,7 +57,7 @@ class ActivityBlindBalance : BtsppActivity() {
                 ?: AppCacheManager.sharedAppCacheManager().getAllBlindBalance().values()
 
         //  清空
-        val container = layout_receipt_list_from_blind_balance
+        val container = binding.layoutReceiptListFromBlindBalance
         container.removeAllViews()
 
         if (list.length() > 0) {

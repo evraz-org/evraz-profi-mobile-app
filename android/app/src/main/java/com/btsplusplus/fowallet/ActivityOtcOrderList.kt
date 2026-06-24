@@ -2,15 +2,17 @@ package com.btsplusplus.fowallet
 
 import android.os.Bundle
 import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.support.v4.view.ViewPager
 import android.view.animation.OvershootInterpolator
 import bitshares.OtcManager
-import kotlinx.android.synthetic.main.activity_otc_order_list.*
+import com.btsplusplus.fowallet.databinding.ActivityOtcOrderListBinding
 import org.json.JSONObject
 import java.lang.reflect.Field
 
 class ActivityOtcOrderList : BtsppActivity() {
+
+    private lateinit var binding: ActivityOtcOrderListBinding
 
     private val fragmens: ArrayList<Fragment> = ArrayList()
     private var tablayout: TabLayout? = null
@@ -25,6 +27,7 @@ class ActivityOtcOrderList : BtsppActivity() {
 
         //  设置自动布局
         setAutoLayoutContentView(R.layout.activity_otc_order_list)
+        binding = ActivityOtcOrderListBinding.bind(findViewById<View>(android.R.id.content).rootView)
         //  设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
@@ -53,11 +56,11 @@ class ActivityOtcOrderList : BtsppActivity() {
         }
 
         //  返回
-        layout_back_from_otc_merchant_order_list.setOnClickListener { finish() }
+        binding.layoutBackFromOtcMerchantOrderList.setOnClickListener { finish() }
 
         // 设置 tablelayout 和 view_pager
-        tablayout = tablayout_of_otc_order_list
-        view_pager = view_pager_of_otc_order_list
+        tablayout = binding.tablayoutOfOtcOrderList
+        view_pager = binding.viewPagerOfOtcOrderList
 
         //  添加 fargments
         setFragments()

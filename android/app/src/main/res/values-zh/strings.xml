@@ -142,13 +142,13 @@
     <string name="kVcDWTipsCopyAddrOK">地址已复制</string>
     <string name="kVcDWTipsCopyMemoOK">备注已复制</string>
     <string name="kVcDWTipsImportantTitle">【重要】</string>
-    <string name="kVcDWTipsMinDepositAmount">最小充币数量：%s%s。小于最小数量将无法入账且无法退回。\n</string>
-    <string name="kVcDWTipsDepositMatchAsset">请将您的%s资产充入上述地址，禁止向上述地址充入非%s资产，否则资产将不可找回。</string>
+    <string name="kVcDWTipsMinDepositAmount" formatted="false">最小充币数量：%s%s。小于最小数量将无法入账且无法退回。\n</string>
+    <string name="kVcDWTipsDepositMatchAsset" formatted="false">请将您的%s资产充入上述地址，禁止向上述地址充入非%s资产，否则资产将不可找回。</string>
     <string name="kVcDWTipsNetworkConfirm">您充币到上述地址后，请耐性等待网络确认。\n</string>
     <string name="kVcDWTipsNetworkConfirmWithN">您充币到上述地址后，需要等待网络确认，%s次网络确认后到账。\n</string>
     <string name="kVcDWTipsFindCustomService">如有任何问题，请联系网关客服。</string>
     <string name="kVcDWErrTipsRequestDepositAddrFailed">获取充币地址异常，请联系网关客服。</string>
-    <string name="kVcDWErrTipsRequestDepositAddrFailed2">获取充币地址异常，字段\"%s\"校验失败，请联系网关客服。</string>
+    <string name="kVcDWErrTipsRequestDepositAddrFailed2">获取充币地址异常，字段&amp;quot;%s&amp;quot;校验失败，请联系网关客服。</string>
     <string name="kVcDWErrTipsRequestWithdrawAddrFailed">获取提币地址异常，请联系网关客服。</string>
     <string name="kVcDWHelpTitleSupport">帮助支持</string>
     <string name="kVcDWHelpTitleQQ">客服QQ</string>
@@ -452,14 +452,14 @@
     <string name="kVcActivityTypeUpgradeAccount">升级账户</string>
     <string name="kVcActivityTypeCreateProposal">创建提案</string>
     <string name="kVcActivityTypeUpdateProposal">更新提案</string>
-    <string name="kVcActivityDescTransfer">%s 转账 %s 到 %s。</string>
+    <string name="kVcActivityDescTransfer" formatted="false">%s 转账 %s 到 %s。</string>
     <string name="kVcActivityDescCreateSellOrder">%1$s 提交卖单，以 %2$s 的价格卖出 %3$s。</string>
     <string name="kVcActivityDescCreateBuyOrder">%1$s 提交买单，以 %2$s 的价格买入 %3$s。</string>
-    <string name="kVcActivityDescCancelOrder">%s 取消了限价单 #%s。</string>
+    <string name="kVcActivityDescCancelOrder" formatted="false">%s 取消了限价单 #%s。</string>
     <string name="kVcActivityDescFillSellOrder">%1$s 以 %2$s 的价格卖出 %3$s。</string>
     <string name="kVcActivityDescFillBuyOrder">%1$s 以 %2$s 的价格买入 %3$s。</string>
-    <string name="kVcActivityDescUpdatePosition">%s 更新保证金 %s，借出 %s。</string>
-    <string name="kVcActivityDescCreateAccount">%s 创建了账号 %s。</string>
+    <string name="kVcActivityDescUpdatePosition" formatted="false">%s 更新保证金 %s，借出 %s。</string>
+    <string name="kVcActivityDescCreateAccount" formatted="false">%s 创建了账号 %s。</string>
     <string name="kVcActivityDescUpdateAccount">%s 更新了账户信息。</string>
     <string name="kVcActivityDescUpgradeAccount">%s 升级了终身会员。</string>
     <string name="kVcActivityDescCreateProposal">创建提案。</string>
@@ -553,11 +553,11 @@
     <string name="kVcAssetOpCreateSubmitTipsSmartInputSettleOffsetPercent">请输入强清补偿比例。</string>
     <string name="kVcAssetOpCreateSubmitTipsSmartInputMaxSettleVolumePerHour">请输入每周期内可强清的总数量比例。</string>
     <string name="kVcAssetOpCreateSubmitAskTipsDisableSomePermission">您永久禁用了部分权限，此操作不可逆，请谨慎操作。是否继续更新资产？</string>
-    <string name="kVcAssetOpCreateSubmitAskTipsForCostConfirm">创建 %s 资产预计花费 %s，是否继续？</string>
+    <string name="kVcAssetOpCreateSubmitAskTipsForCostConfirm" formatted="false">创建 %s 资产预计花费 %s，是否继续？</string>
     <string name="kVcAssetOpCreateSubmitTipsInvalidAssetPrefixNameNone">创建 %1$s 资产之前需要先创建前缀资产 %2$s。</string>
     <string name="kVcAssetOpCreateSubmitTipsInvalidAssetPrefixNameNoPermission">您没有权限创建前缀为 %s 的资产。</string>
-    <string name="kVcAssetOpCreateSubmitTipsInvalidBackBackAssetType">借贷抵押资产 %s 的抵押资产 %s 不能是智能币。</string>
-    <string name="kVcAssetOpCreateSubmitTipsInvalidBackAssetForCommittee">理事会创建的智能币的抵押资产必须是 %s 或以 %s 作为背书的资产。</string>
+    <string name="kVcAssetOpCreateSubmitTipsInvalidBackBackAssetType" formatted="false">借贷抵押资产 %s 的抵押资产 %s 不能是智能币。</string>
+    <string name="kVcAssetOpCreateSubmitTipsInvalidBackAssetForCommittee" formatted="false">理事会创建的智能币的抵押资产必须是 %s 或以 %s 作为背书的资产。</string>
     <string name="kVcAssetOpCreateAssetSubmitTipsOK">创建资产成功。</string>
     <string name="kVcAssetOpUpdateAssetSubmitTipsOK">更新资产成功。</string>
     <string name="kVcAssetOpUpdateBitassetSubmitTipsOK">更新智能币成功。</string>
@@ -565,7 +565,7 @@
     <string name="kVcAssetOpSettleTipsMustGlobalSettleFirst">预测市场全局清算完成之后才可以进行清算操作。</string>
     <string name="kVcAssetOpSettleTipsNoFeedData">该资产没有有效的喂价，不可清算。</string>
     <string name="kVcAssetOpSettleDelayHoursN">%s小时</string>
-    <string name="kVcAssetOpSettleUiTips">【温馨提示】\n1、清算操作强制把清算资产换回背书资产。此操作不可撤销，请谨慎操作。\n2、发起清算后将在%s后排队执行，并以当时的清算价格成交。\n3、清算价 = 成交时的喂价 × %s</string>
+    <string name="kVcAssetOpSettleUiTips" formatted="false">【温馨提示】\n1、清算操作强制把清算资产换回背书资产。此操作不可撤销，请谨慎操作。\n2、发起清算后将在%s后排队执行，并以当时的清算价格成交。\n3、清算价 = 成交时的喂价 × %s</string>
     <string name="kVcAssetOpSettleUiTipsAlreadyGs">【温馨提示】\n1、清算操作强制把清算资产换回背书资产。此操作不可撤销，请谨慎操作。\n2、该资产已经触发全局清算，清算操作将立即执行。\n3、清算价 = %s</string>
     <string name="kVcAssetOpSettleCellPlaceholderAmount">请输入清算数量</string>
     <string name="kVcAssetOpSettleBtnName">发起清算</string>
@@ -592,7 +592,7 @@
     <string name="kVcAssetOpStakeVoteCellValueLiquid">请选择锁仓类型</string>
     <string name="kVcAssetOpStakeVoteSubmitTipsPleaseInputAmount">请输入锁仓数量。</string>
     <string name="kVcAssetOpStakeVoteSubmitTipsPleaseSelectTicketType">请选择锁仓类型。</string>
-    <string name="kVcAssetOpStakeVoteSubmitAskForCreateTicket">您确认锁仓 %s %s 吗？\n\n锁仓时间：%s\n\n※ 此操作会导致资产临时或永久锁定，请谨慎操作。</string>
+    <string name="kVcAssetOpStakeVoteSubmitAskForCreateTicket" formatted="false">您确认锁仓 %s %s 吗？\n\n锁仓时间：%s\n\n※ 此操作会导致资产临时或永久锁定，请谨慎操作。</string>
     <string name="kVcAssetOpStakeVoteSubmitTipOK">创建锁仓成功。</string>
     <string name="kVcAssetOpCellTitleIssueAmount">发行数量</string>
     <string name="kVcAssetOpCellPlaceholderIssueAmount">请输入发行数量</string>
@@ -606,10 +606,10 @@
     <string name="kVcAssetOpSubmitTipsIssuePleaseInputIssueAmount">请输入发行数量。</string>
     <string name="kVcAssetOpSubmitTipsIssueNotEnough">超过剩余可发行数量。</string>
     <string name="kVcAssetOpSubmitTipsIssueOK">发行成功。</string>
-    <string name="kVcAssetOpSubmitAskIssue">您确认发行 %s %s 给 %s 吗？</string>
-    <string name="kVcAssetOpSubmitAskSettle">您确认清算 %s %s 吗？\n\n※ 发起清算之后将延后执行，并且不可撤销，请谨慎操作。</string>
-    <string name="kVcAssetOpSubmitAskSettle2">您确认清算 %s %s 吗？\n\n※ 该资产已经触发全局清算，发起清算之后将立即执行，并且不可撤销，请谨慎操作。</string>
-    <string name="kVcAssetOpSubmitAskReserve">您确认销毁 %s %s 吗？\n\n※ 此操作不可逆，请谨慎操作。</string>
+    <string name="kVcAssetOpSubmitAskIssue" formatted="false">您确认发行 %s %s 给 %s 吗？</string>
+    <string name="kVcAssetOpSubmitAskSettle" formatted="false">您确认清算 %s %s 吗？\n\n※ 发起清算之后将延后执行，并且不可撤销，请谨慎操作。</string>
+    <string name="kVcAssetOpSubmitAskSettle2" formatted="false">您确认清算 %s %s 吗？\n\n※ 该资产已经触发全局清算，发起清算之后将立即执行，并且不可撤销，请谨慎操作。</string>
+    <string name="kVcAssetOpSubmitAskReserve" formatted="false">您确认销毁 %s %s 吗？\n\n※ 此操作不可逆，请谨慎操作。</string>
     <string name="kVcAssetOpClaimFeePoolUiTips">【温馨提示】\n资产手续费池可用于抵扣网络广播手续费，如果手续费池余额不足，则不能抵扣。</string>
     <string name="kVcAssetOpClaimFeePoolCellPlaceholderAmount">请输入提取数量</string>
     <string name="kVcAssetOpClaimFeePoolBtnName">提取</string>
@@ -627,7 +627,7 @@
     <string name="kVcAssetOpGsCellTailerBtnPmAsFalse">预测为假</string>
     <string name="kVcAssetOpGsSubmitBtnName">全局清算</string>
     <string name="kVcAssetOpGsSubmitTipsPleaseInputPrice">请输入全局清算价格。</string>
-    <string name="kVcAssetOpGsSubmitAskForGs">您确认以 %s %s/%s 的价格发起全局清算吗？\n\n※ 此操作不可逆，请谨慎操作。</string>
+    <string name="kVcAssetOpGsSubmitAskForGs" formatted="false">您确认以 %s %s/%s 的价格发起全局清算吗？\n\n※ 此操作不可逆，请谨慎操作。</string>
     <string name="kVcAssetOpGsSubmitTipsOK">全局清算成功。</string>
     <!-- 订单界面 -->
     <string name="kVcOrderPageOpenOrders">当前订单</string>
@@ -810,7 +810,7 @@
     <string name="kVcStTipErrReachedMaxBlindOutputNum">最多只能添加 %s 个收款信息。</string>
     <string name="kVcStTipSubmitPleaseAddBlindOutput">请添加收款信息。</string>
     <string name="kVcStTipSubmitBalanceNotEnough">余额不足。</string>
-    <string name="kVcStTipAskConfrimTransferToBlind1">您确定往隐私账户转入 %s %s 吗？\n\n广播手续费：%s %s</string>
+    <string name="kVcStTipAskConfrimTransferToBlind1" formatted="false">您确定往隐私账户转入 %s %s 吗？\n\n广播手续费：%s %s</string>
     <string name="kVcStTipAskConfrimTransferToBlindN">您确定往 %1$s 个隐私账户合计转入 %2$s %3$s 吗？\n\n广播手续费：%4$s %5$s</string>
     <string name="kVcStTipErrPleaseSelectReceiptFirst">请先选择隐私收据。</string>
     <string name="kVcStTipSubmitPleaseSelectReceipt">请添加要转出的隐私收据信息。</string>
@@ -826,7 +826,7 @@
     <string name="kVcStTipAskConfrimForCloseBackupReceiptUI">提取隐私资产需要收据信息，请确认您已备份好以上收据，可截图保存。</string>
     <string name="kVcStTipErrPleaseSelectToPublicAccount">请选择要转出的目标账号。</string>
     <string name="kVcStTipErrTotalInputReceiptLowThanNetworkFee">收据金额太低，不足以支付手续费。</string>
-    <string name="kVcStTipAskConfrimTransferFromBlind">您确定从隐私账户转出 %s 到 %s 账号吗？\n\n广播手续费：%s %s</string>
+    <string name="kVcStTipAskConfrimTransferFromBlind" formatted="false">您确定从隐私账户转出 %s 到 %s 账号吗？\n\n广播手续费：%s %s</string>
     <string name="kVcStCellTitleBlindReceiptWithN">隐私收据(%s)</string>
     <string name="kVcStCellTitleBlindAccountWithN">隐私账户(%s)</string>
     <string name="kVcStCellTitleOperation">操作</string>
@@ -855,10 +855,10 @@
     <string name="kVcStTipErrMissMainAccountPrivateKey">主账号私钥不存在，请重新导入。</string>
     <string name="kVcStTipCreateChildBlindAccountSuccess">创建子账户成功。</string>
     <string name="kVcStCellSubAccount1st">%s的第 1 个子账号</string>
-    <string name="kVcStCellSubAccount2nd">%s的第 %s 个子账号</string>
-    <string name="kVcStCellSubAccount3rd">%s的第 %s 个子账号</string>
-    <string name="kVcStCellSubAccountnth">%s的第 %s 个子账号</string>
-    <string name="kVcStCellTitleReceiptName">%s. 收据 #%s</string>
+    <string name="kVcStCellSubAccount2nd" formatted="false">%s的第 %s 个子账号</string>
+    <string name="kVcStCellSubAccount3rd" formatted="false">%s的第 %s 个子账号</string>
+    <string name="kVcStCellSubAccountnth" formatted="false">%s的第 %s 个子账号</string>
+    <string name="kVcStCellTitleReceiptName" formatted="false">%s. 收据 #%s</string>
     <string name="kVcStCellTitleReceiptAddr">地址</string>
     <string name="kVcStCellTitleReceiptAddrWithAliasName">地址(%s)</string>
     <string name="kVcStCellTitleReceiptAmountValue">金额</string>
@@ -877,7 +877,7 @@
     <string name="kVcStImportTipReceiptIsEmpty">收据数据为空。</string>
     <string name="kVcStImportTipPleaseImportYourBlindAccountFirst">您的隐私账户列表为空，请先前往账户管理界面导入隐私账号。</string>
     <string name="kVcStImportTipSuccessN">成功导入 %s 条隐私收据。</string>
-    <string name="kVcStImportTipSuccessNandVerifyFailedN">成功导入 %s 条收据，%s 条校验失败。</string>
+    <string name="kVcStImportTipSuccessNandVerifyFailedN" formatted="false">成功导入 %s 条收据，%s 条校验失败。</string>
     <!-- HTLC合约 -->
     <string name="kVcHtlcEntryFromPreimage">HTLC合约（原像创建）</string>
     <string name="kVcHtlcEntryFromHashcode">HTLC合约（哈希创建）</string>
@@ -1211,37 +1211,37 @@
     <string name="kOpType_ticket_update">更新锁仓</string>
     <string name="kOpType_unknown_op">未知操作</string>
     <!-- 交易OP详细描述 -->
-    <string name="kOpDesc_transfer">%s 转账 %s 到 %s。</string>
-    <string name="kOpDesc_limit_order_create_sell">%s 提交卖单，以 %s 的价格卖出 %s。</string>
-    <string name="kOpDesc_limit_order_create_buy">%s 提交买单，以 %s 的价格买入 %s。</string>
-    <string name="kOpDesc_limit_order_cancel">%s 取消限价单 #%s。</string>
-    <string name="kOpDesc_call_order_update">%s 更新保证金 %s，借出 %s。</string>
-    <string name="kOpDesc_fill_order_sell">%s 以 %s 的价格卖出 %s。</string>
-    <string name="kOpDesc_fill_order_buy">%s 以 %s 的价格买入 %s。</string>
-    <string name="kOpDesc_account_create">%s 创建账号 %s。</string>
+    <string name="kOpDesc_transfer" formatted="false">%s 转账 %s 到 %s。</string>
+    <string name="kOpDesc_limit_order_create_sell" formatted="false">%s 提交卖单，以 %s 的价格卖出 %s。</string>
+    <string name="kOpDesc_limit_order_create_buy" formatted="false">%s 提交买单，以 %s 的价格买入 %s。</string>
+    <string name="kOpDesc_limit_order_cancel" formatted="false">%s 取消限价单 #%s。</string>
+    <string name="kOpDesc_call_order_update" formatted="false">%s 更新保证金 %s，借出 %s。</string>
+    <string name="kOpDesc_fill_order_sell" formatted="false">%s 以 %s 的价格卖出 %s。</string>
+    <string name="kOpDesc_fill_order_buy" formatted="false">%s 以 %s 的价格买入 %s。</string>
+    <string name="kOpDesc_account_create" formatted="false">%s 创建账号 %s。</string>
     <string name="kOpDesc_account_update">%s 更新账户信息。</string>
-    <string name="kOpDesc_account_whitelist_white">%s 添加 %s 到白名单列表。</string>
-    <string name="kOpDesc_account_whitelist_black">%s 添加 %s 到黑名单列表。</string>
-    <string name="kOpDesc_account_whitelist_both">%s 添加 %s 到白名单和黑名单列表。</string>
-    <string name="kOpDesc_account_whitelist_none">%s 从黑白名单列表移除 %s。</string>
+    <string name="kOpDesc_account_whitelist_white" formatted="false">%s 添加 %s 到白名单列表。</string>
+    <string name="kOpDesc_account_whitelist_black" formatted="false">%s 添加 %s 到黑名单列表。</string>
+    <string name="kOpDesc_account_whitelist_both" formatted="false">%s 添加 %s 到白名单和黑名单列表。</string>
+    <string name="kOpDesc_account_whitelist_none" formatted="false">%s 从黑白名单列表移除 %s。</string>
     <string name="kOpDesc_account_upgrade">%s 升级账户。</string>
     <string name="kOpDesc_account_upgrade_member">%s 升级终身会员。</string>
     <string name="kOpDesc_account_transfer">转移账号。</string>
-    <string name="kOpDesc_asset_create">%s 创建资产 %s。</string>
+    <string name="kOpDesc_asset_create" formatted="false">%s 创建资产 %s。</string>
     <string name="kOpDesc_asset_update">更新资产 %s。</string>
     <string name="kOpDesc_asset_update_bitasset">更新智能币 %s。</string>
     <string name="kOpDesc_asset_update_feed_producers">%s 资产更新发布喂价的账号信息。</string>
-    <string name="kOpDesc_asset_issue">%s 发行 %s 到 %s。</string>
-    <string name="kOpDesc_asset_reserve">%s 销毁 %s。</string>
+    <string name="kOpDesc_asset_issue" formatted="false">%s 发行 %s 到 %s。</string>
+    <string name="kOpDesc_asset_reserve" formatted="false">%s 销毁 %s。</string>
     <string name="kOpDesc_asset_fund_fee_pool">注资手续费池。</string>
-    <string name="kOpDesc_asset_settle">%s 强制清算 %s。</string>
+    <string name="kOpDesc_asset_settle" formatted="false">%s 强制清算 %s。</string>
     <string name="kOpDesc_asset_global_settle">资产全局清算。</string>
     <string name="kOpDesc_asset_publish_feed">发布喂价。</string>
     <string name="kOpDesc_witness_create">创建见证人。</string>
     <string name="kOpDesc_witness_update">更新见证人。</string>
-    <string name="kOpDesc_proposal_create_with_id">%s 创建提案。#%s</string>
+    <string name="kOpDesc_proposal_create_with_id" formatted="false">%s 创建提案。#%s</string>
     <string name="kOpDesc_proposal_create">%s 创建提案。</string>
-    <string name="kOpDesc_proposal_update">%s 更新提案。#%s</string>
+    <string name="kOpDesc_proposal_update" formatted="false">%s 更新提案。#%s</string>
     <string name="kOpDesc_proposal_delete">删除提案。</string>
     <string name="kOpDesc_withdraw_permission_create">创建授权提款。</string>
     <string name="kOpDesc_withdraw_permission_update">更新授权提款。</string>
@@ -1251,30 +1251,30 @@
     <string name="kOpDesc_committee_member_update">更新理事会成员。</string>
     <string name="kOpDesc_committee_member_update_global_parameters">更新全局参数。</string>
     <string name="kOpDesc_vesting_balance_create">创建待解冻金额。</string>
-    <string name="kOpDesc_vesting_balance_withdraw">%s 提取待解冻金额 %s。</string>
+    <string name="kOpDesc_vesting_balance_withdraw" formatted="false">%s 提取待解冻金额 %s。</string>
     <string name="kOpDesc_worker_create">创建预算项目。</string>
     <string name="kOpDesc_custom">自定义。</string>
     <string name="kOpDesc_assert">断言。</string>
     <string name="kOpDesc_balance_claim">提取余额。</string>
     <string name="kOpDesc_override_transfer">回收资产。</string>
-    <string name="kOpDesc_transfer_to_blind">%s 转账 %s 到隐私账户。</string>
+    <string name="kOpDesc_transfer_to_blind" formatted="false">%s 转账 %s 到隐私账户。</string>
     <string name="kOpDesc_blind_transfer">隐私转账。</string>
-    <string name="kOpDesc_transfer_from_blind">隐私账户转账 %s 到 %s。</string>
+    <string name="kOpDesc_transfer_from_blind" formatted="false">隐私账户转账 %s 到 %s。</string>
     <string name="kOpDesc_asset_settle_cancel">取消清算。</string>
-    <string name="kOpDesc_asset_claim_fees">%s 提取 %s 资产手续费。</string>
+    <string name="kOpDesc_asset_claim_fees" formatted="false">%s 提取 %s 资产手续费。</string>
     <string name="kOpDesc_fba_distribute">FBA分发。</string>
     <string name="kOpDesc_bid_collateral">黑天鹅竞价。</string>
     <string name="kOpDesc_execute_bid">竞价成功。</string>
     <string name="kOpDesc_asset_claim_pool">提取手续费池资产。</string>
-    <string name="kOpDesc_asset_update_issuer">%s 更新 %s 资产的所有者账号为 %s。</string>
-    <string name="kOpDesc_htlc_create_with_id">%s 准备转账 %s 到 %s。#%s</string>
-    <string name="kOpDesc_htlc_create">%s 准备转账 %s 到 %s。</string>
-    <string name="kOpDesc_htlc_redeem">%s 使用原像 %s 赎回HTLC。#%s</string>
-    <string name="kOpDesc_htlc_redeemed">%s 赎回HTLC成功，%s 转入账号 %s。#%s</string>
-    <string name="kOpDesc_htlc_extend">%s 延长HTLC有效期 %s 秒。#%s</string>
-    <string name="kOpDesc_htlc_refund">HTLC过期，资产自动退回到账号 %s。#%s</string>
-    <string name="kOpDesc_ticket_create">%s 锁仓 %s，类型：%s。</string>
-    <string name="kOpDesc_ticket_update">%s 更新锁仓 #%s。</string>
+    <string name="kOpDesc_asset_update_issuer" formatted="false">%s 更新 %s 资产的所有者账号为 %s。</string>
+    <string name="kOpDesc_htlc_create_with_id" formatted="false">%s 准备转账 %s 到 %s。#%s</string>
+    <string name="kOpDesc_htlc_create" formatted="false">%s 准备转账 %s 到 %s。</string>
+    <string name="kOpDesc_htlc_redeem" formatted="false">%s 使用原像 %s 赎回HTLC。#%s</string>
+    <string name="kOpDesc_htlc_redeemed" formatted="false">%s 赎回HTLC成功，%s 转入账号 %s。#%s</string>
+    <string name="kOpDesc_htlc_extend" formatted="false">%s 延长HTLC有效期 %s 秒。#%s</string>
+    <string name="kOpDesc_htlc_refund" formatted="false">HTLC过期，资产自动退回到账号 %s。#%s</string>
+    <string name="kOpDesc_ticket_create" formatted="false">%s 锁仓 %s，类型：%s。</string>
+    <string name="kOpDesc_ticket_update" formatted="false">%s 更新锁仓 #%s。</string>
     <string name="kOpDesc_unknown_op">未知的操作 #%s。</string>
     <!-- 交易OP细化 -->
     <string name="kOpDetailFlagDangerous">危险操作</string>
@@ -1301,7 +1301,7 @@
     <string name="kOtcEntryUserAgreementBtnOK">同意协议</string>
     <string name="kOtcEntryDisableDefaultMsg">系统维护中，请稍后再试。</string>
     <string name="kOtcMgrMcActiveNoPolicy">商家制度未分配，请稍后再试。</string>
-    <string name="kOtcMgrMcActiveAskMessage">该功能需要先激活商家账号后才可使用，激活需要 %s%s 作为保证金，可在商家资产里转入。</string>
+    <string name="kOtcMgrMcActiveAskMessage" formatted="false">该功能需要先激活商家账号后才可使用，激活需要 %s%s 作为保证金，可在商家资产里转入。</string>
     <string name="kOtcMgrMcActiveFailedTipMessage">激活失败，请往商家账号转入足够的保证金。</string>
     <string name="kOtcMgrMcActiveAskBtnActiveNow">立即激活</string>
     <string name="kOtcMgrMcActiveTipsOK">激活成功。</string>
@@ -1482,7 +1482,7 @@
     <string name="kOtcOdCellLabelOrderID">订单编号</string>
     <string name="kOtcOdCellLabelOrderDate">下单日期</string>
     <string name="kOtcOdCellLabelUserAccount">用户账号</string>
-    <string name="kOtcOdCellPaymentSameNameTips01">请使用本人%s的%s向以下账户自行转账</string>
+    <string name="kOtcOdCellPaymentSameNameTips01" formatted="false">请使用本人%s的%s向以下账户自行转账</string>
     <string name="kOtcOdCellPaymentSameNameTips02">请使用本人名字的%s向以下账户自行转账</string>
     <string name="kOtcOdCellPaymentSameNameTitle">本人名字</string>
     <string name="kOtcOdCellPaymentSameNameTipsAndroidHeader01">请使用本人</string>
@@ -1627,8 +1627,8 @@
     <string name="kOtcMcAssetSubmitTipPleaseInputAmount">请输入划转金额。</string>
     <string name="kOtcMcAssetSubmitTipBalanceNotEnough">余额不足。</string>
     <string name="kOtcMcAssetSubmitAskSelectTransferAsset">请选择划转资产</string>
-    <string name="kOtcMcAssetSubmitAskTransferOut">您确认转出 %s %s 到个人账号吗？</string>
-    <string name="kOtcMcAssetSubmitAskTransferIn">您确认转入 %s %s 到商家账号吗？</string>
+    <string name="kOtcMcAssetSubmitAskTransferOut" formatted="false">您确认转出 %s %s 到个人账号吗？</string>
+    <string name="kOtcMcAssetSubmitAskTransferIn" formatted="false">您确认转入 %s %s 到商家账号吗？</string>
     <string name="kOtcMcAssetSubmitTipTransferInOK">转入成功。</string>
     <string name="kOtcMcAssetSubmitTipTransferOutOK">转出请求已提交，请耐心等待平台处理，请勿重复操作。</string>
     <string name="kOtcMcAssetCellTipsTransferOut">【温馨提示】\n从商家账号转账给个人账号，需要平台协同处理，划转成功后请耐心等待。</string>

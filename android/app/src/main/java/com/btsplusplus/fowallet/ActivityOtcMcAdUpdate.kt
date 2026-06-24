@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import bitshares.*
-import kotlinx.android.synthetic.main.activity_otc_mc_ad_update.*
+import com.btsplusplus.fowallet.databinding.ActivityOtcMcAdUpdateBinding
 import org.json.JSONArray
 import org.json.JSONObject
 import java.math.BigDecimal
 
 class ActivityOtcMcAdUpdate : BtsppActivity() {
+
+    private lateinit var binding: ActivityOtcMcAdUpdateBinding
 
     private lateinit var _ad_type_list: JSONArray
     private lateinit var _asset_type_list: JSONArray
@@ -53,6 +55,7 @@ class ActivityOtcMcAdUpdate : BtsppActivity() {
         super.onCreate(savedInstanceState)
         // 设置自动布局
         setAutoLayoutContentView(R.layout.activity_otc_mc_ad_update)
+        binding = ActivityOtcMcAdUpdateBinding.bind(findViewById<View>(android.R.id.content).rootView)
         // 设置全屏
         setFullScreen()
 
@@ -77,13 +80,13 @@ class ActivityOtcMcAdUpdate : BtsppActivity() {
 
         //  UI - 导航栏标题
         if (_bNewAd) {
-            btn_delete_ad.visibility = View.INVISIBLE
+            binding.btnDeleteAd.visibility = View.INVISIBLE
             findViewById<TextView>(R.id.title).text = resources.getString(R.string.kVcTitleOtcMcCreateAd)
-            btn_submit_01.text = resources.getString(R.string.kOtcMcAdBtnPublishAd)
-            btn_submit_02.text = resources.getString(R.string.kOtcMcAdBtnSaveAd)
+            binding.btnSubmit01.text = resources.getString(R.string.kOtcMcAdBtnPublishAd)
+            binding.btnSubmit02.text = resources.getString(R.string.kOtcMcAdBtnSaveAd)
         } else {
             findViewById<TextView>(R.id.title).text = resources.getString(R.string.kVcTitleOtcMcUpdateAd)
-            btn_delete_ad.setOnClickListener { onDeleteAdClicked() }
+            binding.btnDeleteAd.setOnClickListener { onDeleteAdClicked() }
             if (_ad_infos.getInt("status") == OtcManager.EOtcAdStatus.eoads_online.value) {
                 btn_submit_01.text = resources.getString(R.string.kOtcMcAdBtnUpdateAd)
             } else {
@@ -98,21 +101,21 @@ class ActivityOtcMcAdUpdate : BtsppActivity() {
         //  各种事件
         if (_bNewAd) {
             //  新建时才可点击
-            layout_ad_type.setOnClickListener { onAdTypeClicked() }
-            layout_asset_symbol.setOnClickListener { onAssetSymbolClicked() }
+            binding.layoutAdType.setOnClickListener { onAdTypeClicked() }
+            binding.layoutAssetSymbol.setOnClickListener { onAssetSymbolClicked() }
         }
-        layout_your_price.setOnClickListener { onYourPriceClicked() }
-        layout_trade_amount.setOnClickListener { onTradeAmountClicked() }
-        layout_min_limit.setOnClickListener { onMinLimitClicked() }
-        layout_max_limit.setOnClickListener { onMaxLimitClicked() }
-        layout_remark.setOnClickListener { onRemarkClicked() }
+        binding.layoutYourPrice.setOnClickListener { onYourPriceClicked() }
+        binding.layoutTradeAmount.setOnClickListener { onTradeAmountClicked() }
+        binding.layoutMinLimit.setOnClickListener { onMinLimitClicked() }
+        binding.layoutMaxLimit.setOnClickListener { onMaxLimitClicked() }
+        binding.layoutRemark.setOnClickListener { onRemarkClicked() }
         if (_bNewAd) {
-            btn_submit_01.setOnClickListener { onSubmitClicked(false) }
-            btn_submit_02.setOnClickListener { onSubmitClicked(true) }
+            binding.btnSubmit01.setOnClickListener { onSubmitClicked(false) }
+            binding.btnSubmit02.setOnClickListener { onSubmitClicked(true) }
         } else {
-            btn_submit_01.setOnClickListener { onSubmitClicked(false) }
+            binding.btnSubmit01.setOnClickListener { onSubmitClicked(false) }
         }
-        layout_back_from_otc_mc_ad_update.setOnClickListener { finish() }
+        binding.layoutBackFromOtcMcAdUpdate.setOnClickListener { finish() }
 
         //  查询数据
         queryAssetsAndBalance()
@@ -197,45 +200,45 @@ class ActivityOtcMcAdUpdate : BtsppActivity() {
 
         //  2、数字资产
         if (_ad_infos.has("assetSymbol")) {
-            tv_asset_symbol.text = _ad_infos.getString("assetSymbol")
+            binding.tvAssetSymbol.text = _ad_infos.getString("assetSymbol")
             if (_bNewAd) {
-                tv_asset_symbol.setTextColor(resources.getColor(R.color.theme01_textColorMain))
+                binding.tvAssetSymbol.setTextColor(resources.getColor(R.color.theme01_textColorMain))
             } else {
-                tv_asset_symbol.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
+                binding.tvAssetSymbol.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
             }
         } else {
-            tv_asset_symbol.text = resources.getString(R.string.kOtcMcAdEditCellAssetValueSelectPlaceholder)
-            tv_asset_symbol.setTextColor(resources.getColor(R.color.theme01_textColorGray))
+            binding.tvAssetSymbol.text = resources.getString(R.string.kOtcMcAdEditCellAssetValueSelectPlaceholder)
+            binding.tvAssetSymbol.setTextColor(resources.getColor(R.color.theme01_textColorGray))
         }
         //  新建的时候才可以编辑该字段
         if (!_bNewAd) {
-            img_icon_arrow_asset_symbol.visibility = View.GONE
+            binding.imgIconArrowAssetSymbol.visibility = View.GONE
         } else {
-            img_icon_arrow_asset_symbol.visibility = View.VISIBLE
+            binding.imgIconArrowAssetSymbol.visibility = View.VISIBLE
         }
 
         //  3、法币 TODO:3.0 暂时固定一种
-        tv_fiat_name.text = resources.getString(R.string.kOtcMcAdEditCellFiatAssetValueCN)
+        binding.tvFiatName.text = resources.getString(R.string.kOtcMcAdEditCellFiatAssetValueCN)
         if (_bNewAd) {
-            tv_fiat_name.setTextColor(resources.getColor(R.color.theme01_textColorMain))
+            binding.tvFiatName.setTextColor(resources.getColor(R.color.theme01_textColorMain))
         } else {
-            tv_fiat_name.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
+            binding.tvFiatName.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
         }
 
         //  4、定价方式
         when (_ad_infos.getInt("priceType")) {
             OtcManager.EOtcPriceType.eopt_price_fixed.value -> {
-                tv_price_type.text = resources.getString(R.string.kOtcMcAdEditCellPriceTypeFixed)
+                binding.tvPriceType.text = resources.getString(R.string.kOtcMcAdEditCellPriceTypeFixed)
             }
             else -> {
                 assert(false)
-                tv_price_type.text = String.format(resources.getString(R.string.kOtcMcAdEditCellPriceTypeUnknown), _ad_infos.getString("priceType"))
+                binding.tvPriceType.text = String.format(resources.getString(R.string.kOtcMcAdEditCellPriceTypeUnknown), _ad_infos.getString("priceType"))
             }
         }
         if (_bNewAd) {
-            tv_price_type.setTextColor(resources.getColor(R.color.theme01_textColorMain))
+            binding.tvPriceType.setTextColor(resources.getColor(R.color.theme01_textColorMain))
         } else {
-            tv_price_type.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
+            binding.tvPriceType.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
         }
 
         //  5、您的价格

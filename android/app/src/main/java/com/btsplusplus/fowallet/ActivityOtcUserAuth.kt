@@ -4,10 +4,12 @@ import android.os.Bundle
 import bitshares.AsyncTaskManager
 import bitshares.OtcManager
 import bitshares.isTrue
-import kotlinx.android.synthetic.main.activity_otc_user_auth.*
+import com.btsplusplus.fowallet.databinding.ActivityOtcUserAuthBinding
 import org.json.JSONObject
 
 class ActivityOtcUserAuth : BtsppActivity() {
+
+    private lateinit var binding: ActivityOtcUserAuthBinding
 
     private var _smsTimerId = 0
 
@@ -37,7 +39,7 @@ class ActivityOtcUserAuth : BtsppActivity() {
             return
         }
 
-        val str_phone = tf_phone.text.toString()
+        val str_phone = binding.tfPhone.text.toString()
         if (!OtcManager.checkIsValidPhoneNumber(str_phone)) {
             showToast(resources.getString(R.string.kOtcRmSubmitTipsInputPhoneNo))
             return
@@ -84,10 +86,10 @@ class ActivityOtcUserAuth : BtsppActivity() {
             return
         }
 
-        val str_realname = tf_realname.text.toString()
-        val str_idcard_no = tf_idcard_no.text.toString()
-        val str_phone = tf_phone.text.toString()
-        val str_smscode = tf_smscode.text.toString()
+        val str_realname = binding.tfRealname.text.toString()
+        val str_idcard_no = binding.tfIdcardNo.text.toString()
+        val str_phone = binding.tfPhone.text.toString()
+        val str_smscode = binding.tfSmscode.text.toString()
 
         if (str_realname.isEmpty()) {
             showToast(resources.getString(R.string.kOtcRmSubmitTipsInputRealname))

@@ -8,13 +8,15 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import bitshares.*
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_proposal_authorize_edit.*
+import com.btsplusplus.fowallet.databinding.ActivityProposalAuthorizeEditBinding
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.math.max
 import kotlin.math.min
 
 class ActivityProposalAuthorizeEdit : BtsppActivity() {
+
+    private lateinit var binding: ActivityProposalAuthorizeEditBinding
 
     private lateinit var _proposal: JSONObject
     private lateinit var _data_array: JSONArray
@@ -28,7 +30,8 @@ class ActivityProposalAuthorizeEdit : BtsppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_proposal_authorize_edit)
+        binding = ActivityProposalAuthorizeEditBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         //  设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()

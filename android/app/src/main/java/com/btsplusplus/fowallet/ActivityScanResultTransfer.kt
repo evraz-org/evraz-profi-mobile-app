@@ -7,12 +7,14 @@ import bitshares.*
 import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_scan_result_transfer.*
+import com.btsplusplus.fowallet.databinding.ActivityScanResultTransferBinding
 import org.json.JSONArray
 import org.json.JSONObject
 import java.math.BigDecimal
 
 class ActivityScanResultTransfer : BtsppActivity() {
+
+    private lateinit var binding: ActivityScanResultTransferBinding
 
     private lateinit var _to_account: JSONObject
     private lateinit var _asset: JSONObject
@@ -28,6 +30,7 @@ class ActivityScanResultTransfer : BtsppActivity() {
 
         // 设置自动布局
         setAutoLayoutContentView(R.layout.activity_scan_result_transfer)
+        binding = ActivityScanResultTransferBinding.bind(findViewById<View>(android.R.id.content).rootView)
 
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
@@ -40,10 +43,10 @@ class ActivityScanResultTransfer : BtsppActivity() {
         _default_memo = args.optString("memo", null)
 
         //  账号名称 & ID
-        val tv_account_name = account_name_from_scan_result_transfer
+        val tv_account_name = binding.accountNameFromScanResultTransfer
         tv_account_name.text = _to_account.getString("name")
 
-        val tv_account_id = account_id_from_scan_result_transfer
+        val tv_account_id = binding.accountIdFromScanResultTransfer
         tv_account_id.text = "#${_to_account.getString("id").split(".").last()}"
 
         //  初始化UI
@@ -53,32 +56,32 @@ class ActivityScanResultTransfer : BtsppActivity() {
         //  - 数量字段
         if (_bLockAmount) {
             //  数量：只读
-            layout_transfer_amount_auto_input.visibility = View.VISIBLE
-            layout_transfer_amount_input.visibility = View.GONE
+            binding.layoutTransferAmountAutoInput.visibility = View.VISIBLE
+            binding.layoutTransferAmountInput.visibility = View.GONE
 
-            val tv_transfer_amount = txt_transfer_amount_from_scan_result_transfer
+            val tv_transfer_amount = binding.txtTransferAmountFromScanResultTransfer
             tv_transfer_amount.text = "$_default_amount ${_asset.getString("symbol")}"
         } else {
             //  数量：用户输入
             layout_transfer_amount_auto_input.visibility = View.GONE
             layout_transfer_amount_input.visibility = View.VISIBLE
 
-            btn_transfer_asset.text = _asset.getString("symbol").toUpperCase()
+            binding.btnTransferAsset.text = _asset.getString("symbol").uppercase()
 
             //  绑定事件处理
             //  初始化事件
             _tf_amount_watcher = UtilsDigitTextWatcher().set_tf(findViewById<EditText>(R.id.tf_amount_from_scan_result_transfer)).set_precision(_asset.getInt("precision"))
-            tf_amount_from_scan_result_transfer.addTextChangedListener(_tf_amount_watcher!!)
+            binding.tfAmountFromScanResultTransfer.addTextChangedListener(_tf_amount_watcher!!)
             _tf_amount_watcher!!.on_value_changed(::onAmountChanged)
         }
 
         //  - 备注字段
         if (_bLockMemo) {
             //  备注：只读
-            layout_memo_info_auto_input.visibility = View.VISIBLE
-            layout_memo_info_input.visibility = View.GONE
+            binding.layoutMemoInfoAutoInput.visibility = View.VISIBLE
+            binding.layoutMemoInfoInput.visibility = View.GONE
 
-            txt_memo_info_from_scan_result_transfer.text = _default_memo
+            binding.txtMemoInfoFromScanResultTransfer.text = _default_memo
         } else {
             //  备注：用户输入
             layout_memo_info_auto_input.visibility = View.GONE
@@ -86,10 +89,10 @@ class ActivityScanResultTransfer : BtsppActivity() {
         }
 
         //  返回按钮
-        layout_back_from_scan_result_transfer.setOnClickListener { finish() }
+        binding.layoutBackFromScanResultTransfer.setOnClickListener { finish() }
 
         //  提交支付事件
-        button_payment_from_scan_result.setOnClickListener { onCommitCore() }
+        binding.buttonPaymentFromScanResult.setOnClickListener { onCommitCore() }
     }
 
     /**
@@ -176,7 +179,7 @@ class ActivityScanResultTransfer : BtsppActivity() {
         }
 
         //  1、检测付款金额参数是否正确、账户余额是否足够。
-        val str_amount = if (!_bLockAmount) findViewById<EditText>(R.id.tf_amount_from_scan_result_transfer).text.toString() else _default_amount!!
+        val str_amount = if (!_bLockAmount) binding.tfAmountFromScanResultTransfer.text.toString() else _default_amount!!
         if (str_amount == "") {
             showToast(resources.getString(R.string.kVcScanResultPaySubmitTipsInputPayAmount))
             return false
@@ -214,7 +217,7 @@ class ActivityScanResultTransfer : BtsppActivity() {
 
         //  2、检测备注信息
         var str_memo: String?
-        str_memo = if (!_bLockMemo) findViewById<EditText>(R.id.tf_memo_from_scan_result_transfer).text.toString() else _default_memo!!
+        str_memo = if (!_bLockMemo) binding.tfMemoFromScanResultTransfer.text.toString() else _default_memo!!
         if (str_memo == "") {
             str_memo = null
         }

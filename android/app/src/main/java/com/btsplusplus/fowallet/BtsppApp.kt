@@ -82,31 +82,34 @@ class BtsppApp : Application() {
      */
     private fun registerActivityListener() {
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
-            override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
-                _activity_list.add(activity)
-            }
-
-            override fun onActivityStarted(activity: Activity?) {
+            override fun onActivityCreated(p0: Activity, p1: Bundle?) {
                 //  ...
             }
 
-            override fun onActivityResumed(activity: Activity?) {
+            override fun onActivityDestroyed(p0: Activity) {
                 //  ...
             }
 
-            override fun onActivityPaused(activity: Activity?) {
+            override fun onActivityPaused(p0: Activity) {
                 //  ...
             }
 
-            override fun onActivityStopped(activity: Activity?) {
+            override fun onActivityResumed(p0: Activity) {
                 //  ...
             }
 
-            override fun onActivityDestroyed(activity: Activity?) {
-                _activity_list.remove(activity)
+            override fun onActivitySaveInstanceState(
+                p0: Activity,
+                p1: Bundle
+            ) {
+                //  ...
             }
 
-            override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
+            override fun onActivityStarted(p0: Activity) {
+                //  ...
+            }
+
+            override fun onActivityStopped(p0: Activity) {
                 //  ...
             }
         })

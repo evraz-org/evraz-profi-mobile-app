@@ -4,17 +4,19 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import bitshares.*
 import com.btsplusplus.fowallet.kline.TradingPair
 import com.btsplusplus.fowallet.utils.VcUtils
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_main.*
+import com.btsplusplus.fowallet.databinding.ActivityMainBinding
 import org.json.JSONArray
 import org.json.JSONObject
 
 class ActivityTradeMain : BtsppActivity() {
+
+    private lateinit var binding: ActivityMainBinding
 
     private val fragmens: ArrayList<Fragment> = ArrayList()
     lateinit var _tradingPair: TradingPair
@@ -46,6 +48,7 @@ class ActivityTradeMain : BtsppActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setAutoLayoutContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.bind(findViewById<View>(android.R.id.content).rootView)
 
         //  获取参数
         val params = btspp_args_as_JSONArray()
@@ -65,18 +68,18 @@ class ActivityTradeMain : BtsppActivity() {
         }
 
         //  返回
-        button_back_for_main.setOnClickListener { finish() }
+        binding.buttonBackForMain.setOnClickListener { finish() }
 
         //  标题
-        title_of_main.text = "${_tradingPair._quoteAsset.getString("symbol")}/${_tradingPair._baseAsset.getString("symbol")}"
+        binding.titleOfMain.text = "${_tradingPair._quoteAsset.getString("symbol")}/${_tradingPair._baseAsset.getString("symbol")}"
 
         //  收藏按钮
         if (AppCacheManager.sharedAppCacheManager().is_fav_market(_tradingPair._quoteAsset.getString("id"), _tradingPair._baseAsset.getString("id"))) {
-            btn_fav.setColorFilter(resources.getColor(R.color.theme01_textColorHighlight))
+            binding.btnFav.setColorFilter(resources.getColor(R.color.theme01_textColorHighlight))
         } else {
-            btn_fav.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
+            binding.btnFav.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
         }
-        btn_fav.setOnClickListener { _onFavClicked() }
+        binding.btnFav.setOnClickListener { _onFavClicked() }
 
         //  动态初始化TabItem
         findViewById<TabLayout>(R.id.tablayout_of_main_buy_and_sell).let { tab ->
@@ -185,7 +188,7 @@ class ActivityTradeMain : BtsppActivity() {
      * 收藏按钮点击事件
      */
     private fun _onFavClicked() {
-        VcUtils.processMyFavPairStateChanged(this, _tradingPair._quoteAsset, _tradingPair._baseAsset, associated_view = btn_fav)
+        VcUtils.processMyFavPairStateChanged(this, _tradingPair._quoteAsset, _tradingPair._baseAsset, associated_view = binding.btnFav)
     }
 
     /**

@@ -7,7 +7,7 @@ import android.widget.TextView
 import bitshares.*
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_create_proposal.*
+import com.btsplusplus.fowallet.databinding.ActivityCreateProposalBinding
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -30,9 +30,12 @@ class ActivityCreateProposal : BtsppActivity() {
     private val ARR_DEFAULT_APPROVE_PERIOD_HOURS = arrayOf(1 * 24, 2 * 24, 3 * 24, 5 * 24, 7 * 24, 15 * 24)
     private val ARR_DEFAULT_REVIEW_PERIOD_HOURS = arrayOf(1, 12, 1 * 24, 2 * 24, 3 * 24, 7 * 24)
 
+    private lateinit var binding: ActivityCreateProposalBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_create_proposal)
+        binding = ActivityCreateProposalBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         setFullScreen()
 
@@ -60,21 +63,21 @@ class ActivityCreateProposal : BtsppActivity() {
         }
 
         //  事件 - 返回按钮 / back button
-        layout_cancel_from_transfer_proposal.setOnClickListener {
+        binding.layoutCancelFromTransferProposal.setOnClickListener {
             onBackClicked(null)
         }
 
         //  事件 - 提交按钮 / submit button
-        submit_btn_of_transfer_proposal.setOnClickListener { onSubmitClicked() }
+        binding.submitBtnOfTransferProposal.setOnClickListener { onSubmitClicked() }
 
         //  事件 - 提案发起者 / proposal creator
-        layout_proposal_initiator_account_of_transfer_proposal.setOnClickListener { onProposalCreatorCellClicked() }
+        binding.layoutProposalInitiatorAccountOfTransferProposal.setOnClickListener { onProposalCreatorCellClicked() }
 
         //  事件 - 操作周期 / approve period
-        layout_proposal_approve_period_of_transfer_proposal.setOnClickListener { onProposalApprovePeriodCellClicked() }
+        binding.layoutProposalApprovePeriodOfTransferProposal.setOnClickListener { onProposalApprovePeriodCellClicked() }
 
         //  事件 - 审核周期 / review period
-        layout_proposal_review_period_of_transfer_proposal.setOnClickListener { onProposalReviewPeriodCellClicked() }
+        binding.layoutProposalReviewPeriodOfTransferProposal.setOnClickListener { onProposalReviewPeriodCellClicked() }
 
         //  初始化UI / initialize
         refreshDefaultUI()
@@ -90,8 +93,8 @@ class ActivityCreateProposal : BtsppActivity() {
 
     private fun refreshDefaultUI() {
         refreshPayingAccountUI()
-        label_approve_period_value.text = _fmtFromSec(_iProposalLifetime)
-        label_review_period_value.text = _fmtFromSec(_iProposalReviewtime)
+        binding.labelApprovePeriodValue.text = _fmtFromSec(_iProposalLifetime)
+        binding.labelReviewPeriodValue.text = _fmtFromSec(_iProposalReviewtime)
     }
 
     private fun refreshPayingAccountUI() {
@@ -103,7 +106,7 @@ class ActivityCreateProposal : BtsppActivity() {
     }
 
     private fun onQueryGrapheneObjectResponsed() {
-        val layout_body = layout_body_of_transfer_proposal
+        val layout_body = binding.layoutBodyOfTransferProposal
         layout_body.removeAllViews()
         //  刷新显示
         val uidata = OrgUtils.processOpdata2UiData(_opcode.value, _opdata, null, false, this)
@@ -195,7 +198,7 @@ class ActivityCreateProposal : BtsppActivity() {
             val sec = 3600 * ARR_DEFAULT_APPROVE_PERIOD_HOURS[_index]
             if (sec != _iProposalLifetime) {
                 _iProposalLifetime = sec
-                label_approve_period_value.text = txt
+                binding.labelApprovePeriodValue.text = txt
             }
         }.show()
     }
@@ -223,7 +226,7 @@ class ActivityCreateProposal : BtsppActivity() {
             val sec = 3600 * hours_list.getInt(_index)
             if (sec != _iProposalReviewtime) {
                 _iProposalReviewtime = sec
-                label_review_period_value.text = txt
+                binding.labelReviewPeriodValue.text = txt
             }
         }.show()
     }

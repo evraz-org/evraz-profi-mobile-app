@@ -1,25 +1,31 @@
 package com.btsplusplus.fowallet
 
 import android.os.Bundle
+import android.view.View
 import android.widget.EditText
 import bitshares.GrapheneConnectionManager
 import bitshares.TempManager
 import bitshares.forin
 import bitshares.jsonArrayfrom
+import com.btsplusplus.fowallet.databinding.ActivityAccountQueryResultBinding
 import com.btsplusplus.fowallet.utils.ModelUtils
-import kotlinx.android.synthetic.main.activity_account_query_result.*
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.Locale
+import java.util.Locale.getDefault
 
 class ActivityAccountQueryResult : BtsppActivity() {
 
     private var _searchType = ENetworkSearchType.enstAccount
     private lateinit var _tf_search_watcher: UtilsDigitTextWatcher
+    private lateinit var binding: ActivityAccountQueryResultBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setAutoLayoutContentView(R.layout.activity_account_query_result)
         setFullScreen()
+
+        binding = ActivityAccountQueryResultBinding.bind(findViewById<View>(android.R.id.content).rootView)
 
         //  获取参数
         val args = btspp_args_as_JSONObject()
@@ -29,7 +35,7 @@ class ActivityAccountQueryResult : BtsppActivity() {
         drawUI()
 
         //  事件 - 取消按钮
-        text_cancel_from_service_account_query.setOnClickListener { view ->
+        binding.textCancelFromServiceAccountQuery.setOnClickListener { view ->
             this.hideSoftKeyboard()
             finish()
         }
@@ -44,10 +50,10 @@ class ActivityAccountQueryResult : BtsppActivity() {
     private fun drawUI() {
         when (_searchType) {
             ENetworkSearchType.enstAccount -> {
-                tf_search_field.hint = resources.getString(R.string.kSearchPlaceholderAccount)
+                binding.tfSearchField.hint = resources.getString(R.string.kSearchPlaceholderAccount)
             }
             ENetworkSearchType.enstAssetAll, ENetworkSearchType.enstAssetSmart, ENetworkSearchType.enstAssetUIA -> {
-                tf_search_field.hint = resources.getString(R.string.kSearchPlaceholderAsset)
+                binding.tfSearchField.hint = resources.getString(R.string.kSearchPlaceholderAsset)
             }
             else -> assert(false)
         }
@@ -63,11 +69,11 @@ class ActivityAccountQueryResult : BtsppActivity() {
         when (_searchType) {
             ENetworkSearchType.enstAccount -> {
                 api_name = "lookup_accounts"
-                searchString = str_search_text.toLowerCase()
+                searchString = str_search_text.lowercase(getDefault())
             }
             else -> {
                 api_name = "list_assets"
-                searchString = str_search_text.toUpperCase()
+                searchString = str_search_text.uppercase(getDefault())
             }
         }
 
@@ -96,7 +102,7 @@ class ActivityAccountQueryResult : BtsppActivity() {
         }
 
         //  清空
-        lyt_search_result_view.removeAllViews()
+        binding.lytSearchResultView.removeAllViews()
 
         //  筛选是否匹配
         if (data_array != null) {
@@ -127,7 +133,7 @@ class ActivityAccountQueryResult : BtsppActivity() {
                     put("id", oid)
                 })
             }
-            lyt_search_result_view.addView(v)
+            binding.lytSearchResultView.addView(v)
         }
     }
 
@@ -160,7 +166,7 @@ class ActivityAccountQueryResult : BtsppActivity() {
             val v = ViewUtils.auxGenSearchAccountLineView(this, data.getString("symbol"), data.getString("id"), data) {
                 TempManager.sharedTempManager().call_query_account_callback(this, it as JSONObject)
             }
-            lyt_search_result_view.addView(v)
+            binding.lytSearchResultView.addView(v)
         }
     }
 

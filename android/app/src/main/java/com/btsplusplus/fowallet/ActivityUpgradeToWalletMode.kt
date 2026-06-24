@@ -5,10 +5,12 @@ import android.widget.EditText
 import android.widget.TextView
 import bitshares.*
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_upgrade_to_wallet_mode.*
+import com.btsplusplus.fowallet.databinding.ActivityUpgradeToWalletModeBinding
 import org.json.JSONObject
 
 class ActivityUpgradeToWalletMode : BtsppActivity() {
+
+    private lateinit var binding: ActivityUpgradeToWalletModeBinding
 
     private lateinit var _result_promise: Promise
 
@@ -21,7 +23,8 @@ class ActivityUpgradeToWalletMode : BtsppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_upgrade_to_wallet_mode)
+        binding = ActivityUpgradeToWalletModeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         setFullScreen()
 
@@ -33,15 +36,15 @@ class ActivityUpgradeToWalletMode : BtsppActivity() {
         refreshHeaderInfoUI()
 
         //  返回按钮事件
-        layout_back_from_page_of_upgrade_to_wallet_model.setOnClickListener { onBackClicked(false) }
+        binding.layoutBackFromPageOfUpgradeToWalletModel.setOnClickListener { onBackClicked(false) }
 
         //  帮助按钮事件
-        tip_link_wallet_password_of_upgrade_to_wallet.setOnClickListener {
+        binding.tipLinkWalletPasswordOfUpgradeToWallet.setOnClickListener {
             UtilsAlert.showMessageBox(this, R.string.kLoginRegTipsWalletPasswordFormat.xmlstring(this))
         }
 
         //  创建钱包按钮事件
-        button_create_wallet_of_upgrade_to_wallet.setOnClickListener { onSubmitClicked() }
+        binding.buttonCreateWalletOfUpgradeToWallet.setOnClickListener { onSubmitClicked() }
     }
 
     override fun onBackClicked(success: Any?) {

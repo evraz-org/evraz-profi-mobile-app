@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import bitshares.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -66,8 +66,10 @@ abstract class BtsppActivity : AppCompatActivity() {
     /**
      * 系统返回键
      */
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         onBackClicked(null)
+        super.onBackPressed()
     }
 
     open fun onBackClicked(result: Any?) {
@@ -78,10 +80,12 @@ abstract class BtsppActivity : AppCompatActivity() {
         super.attachBaseContext(LangManager.sharedLangManager().onAttach(newBase!!))
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+     fun onSaveInstanceState(outState: Bundle?) {
         //  保存参数
         outState?.putInt(ARG_PARAM_ID, _btspp_param_id)
-        super.onSaveInstanceState(outState)
+         if (outState != null) {
+             super.onSaveInstanceState(outState)
+         }
         //  [统计]
         btsppLogCustom("onBtsppParamsSave", jsonObjectfromKVS("activity", this::class.java.name))
     }

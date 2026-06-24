@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
@@ -377,7 +377,7 @@ class FragmentPermissionList : BtsppFragment() {
             return
         }
 
-        val mask = ViewMask(resources.getString(R.string.kTipsBeRequesting), _ctx)
+        val mask = ViewMask(resources.getString(R.string.kTipsBeRequesting), _ctx!!)
         mask.show()
         val account_data = WalletManager.sharedWalletManager().getWalletAccountInfo()!!.getJSONObject("account")
         ChainObjectManager.sharedChainObjectManager().queryAccountData(account_data.getString("id")).then {
@@ -423,7 +423,7 @@ class FragmentPermissionList : BtsppFragment() {
         (_ctx as Activity).GuardProposalOrNormalTransaction(EBitsharesOperations.ebo_account_update, false, false,
                 op_data, account_data) { isProposal: Boolean, proposal_create_args: JSONObject? ->
             assert(!isProposal)
-            val mask = ViewMask(resources.getString(R.string.kTipsBeRequesting), _ctx)
+            val mask = ViewMask(resources.getString(R.string.kTipsBeRequesting), _ctx!!)
             mask.show()
             BitsharesClientManager.sharedBitsharesClientManager().accountUpdate(op_data).then {
                 ChainObjectManager.sharedChainObjectManager().queryFullAccountInfo(uid).then {
@@ -465,7 +465,7 @@ class FragmentPermissionList : BtsppFragment() {
             }
         } else {
             //  REMARK：查询最大多签成员数量
-            val mask = ViewMask(resources.getString(R.string.kTipsBeRequesting), _ctx)
+            val mask = ViewMask(resources.getString(R.string.kTipsBeRequesting), _ctx!!)
             mask.show()
             ChainObjectManager.sharedChainObjectManager().queryGlobalProperties().then {
                 mask.dismiss()

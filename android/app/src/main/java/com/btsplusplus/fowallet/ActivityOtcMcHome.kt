@@ -4,16 +4,19 @@ import android.os.Bundle
 import bitshares.OtcManager
 import bitshares.isTrue
 import bitshares.toList
-import kotlinx.android.synthetic.main.activity_otc_mc_home.*
+import com.btsplusplus.fowallet.databinding.ActivityOtcMcHomeBinding
 import org.json.JSONObject
 
 class ActivityOtcMcHome : BtsppActivity() {
+
+    private lateinit var binding: ActivityOtcMcHomeBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // 设置自动布局
         setAutoLayoutContentView(R.layout.activity_otc_mc_home)
+        binding = ActivityOtcMcHomeBinding.bind(findViewById<View>(android.R.id.content).rootView)
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
@@ -23,23 +26,23 @@ class ActivityOtcMcHome : BtsppActivity() {
 
         //  初始化图标颜色
         val iconcolor = resources.getColor(R.color.theme01_textColorNormal)
-        img_icon_otc_mc_asset.setColorFilter(iconcolor)
-        img_icon_otc_mc_ad.setColorFilter(iconcolor)
-        img_icon_otc_mc_order.setColorFilter(iconcolor)
-        img_icon_otc_mc_payment.setColorFilter(iconcolor)
-        img_icon_otc_mc_receive.setColorFilter(iconcolor)
+        binding.imgIconOtcMcAsset.setColorFilter(iconcolor)
+        binding.imgIconOtcMcAd.setColorFilter(iconcolor)
+        binding.imgIconOtcMcOrder.setColorFilter(iconcolor)
+        binding.imgIconOtcMcPayment.setColorFilter(iconcolor)
+        binding.imgIconOtcMcReceive.setColorFilter(iconcolor)
 
         val nickname = merchant_detail.getString("nickname")
-        tv_mc_first_name_from_otc_mc_home.text = nickname.substring(0, 1)
-        tv_mc_first_name_from_otc_mc_home.background = getDrawable(R.drawable.circle_character_view)
+        binding.tvMcFirstNameFromOtcMcHome.text = nickname.substring(0, 1)
+        binding.tvMcFirstNameFromOtcMcHome.background = getDrawable(R.drawable.circle_character_view)
 
         //  TODO:2.9 status
-        tv_mc_name_from_otc_mc_home.text = nickname
-        tv_auth_text_from_otc_mc_home.text = "已认证"
-        tv_date_from_otc_mc_home.text = OtcManager.fmtMerchantTime(merchant_detail.getString("ctime"))
+        binding.tvMcNameFromOtcMcHome.text = nickname
+        binding.tvAuthTextFromOtcMcHome.text = "已认证"
+        binding.tvDateFromOtcMcHome.text = OtcManager.fmtMerchantTime(merchant_detail.getString("ctime"))
 
         //  基本信息
-        layout_otc_merchant_home_basic.setOnClickListener {
+        binding.layoutOtcMerchantHomeBasic.setOnClickListener {
             OtcManager.sharedOtcManager().guardUserIdVerified(this, null) { auth_info, _ ->
                 goTo(ActivityOtcUserAuthInfos::class.java, true, args = JSONObject().apply {
                     put("auth_info", auth_info)
@@ -48,7 +51,7 @@ class ActivityOtcMcHome : BtsppActivity() {
         }
 
         //  商家资产
-        layout_asset_list_from_otc_mc_home.setOnClickListener {
+        binding.layoutAssetListFromOtcMcHome.setOnClickListener {
             OtcManager.sharedOtcManager().guardUserIdVerified(this, null) { auth_info, _ ->
                 goTo(ActivityOtcMcAssetList::class.java, true, args = JSONObject().apply {
                     put("auth_info", auth_info)
@@ -59,7 +62,7 @@ class ActivityOtcMcHome : BtsppActivity() {
         }
 
         //  商家广告
-        layout_ad_list_from_otc_mc_home.setOnClickListener {
+        binding.layoutAdListFromOtcMcHome.setOnClickListener {
             OtcManager.sharedOtcManager().guardUserIdVerified(this, null) { auth_info, _ ->
                 //  TODO:3.0 激活代码临时放在这里
                 if (merchant_detail.getInt("status") == OtcManager.EOtcMcStatus.eoms_not_active.value ||
@@ -76,7 +79,7 @@ class ActivityOtcMcHome : BtsppActivity() {
         }
 
         //  商家订单
-        layout_order_list_from_otc_mc_home.setOnClickListener {
+        binding.layoutOrderListFromOtcMcHome.setOnClickListener {
             OtcManager.sharedOtcManager().guardUserIdVerified(this, null) { auth_info, _ ->
                 goTo(ActivityOtcOrderList::class.java, true, args = JSONObject().apply {
                     put("auth_info", auth_info)
@@ -86,7 +89,7 @@ class ActivityOtcMcHome : BtsppActivity() {
         }
 
         //  收款方式
-        layout_receive_methods_from_otc_mc_home.setOnClickListener {
+        binding.layoutReceiveMethodsFromOtcMcHome.setOnClickListener {
             OtcManager.sharedOtcManager().guardUserIdVerified(this, null) { auth_info, _ ->
                 goTo(ActivityOtcReceiveMethods::class.java, true, args = JSONObject().apply {
                     put("auth_info", auth_info)
@@ -96,7 +99,7 @@ class ActivityOtcMcHome : BtsppActivity() {
         }
 
         //  付款方式
-        layout_payment_methods_from_otc_mc_home.setOnClickListener {
+        binding.layoutPaymentMethodsFromOtcMcHome.setOnClickListener {
             OtcManager.sharedOtcManager().guardUserIdVerified(this, null) { auth_info, _ ->
                 goTo(ActivityOtcMcPaymentMethods::class.java, true, args = JSONObject().apply {
                     put("auth_info", auth_info)
@@ -106,7 +109,7 @@ class ActivityOtcMcHome : BtsppActivity() {
         }
 
         //  返回按钮事件
-        layout_back_from_otc_mc_home.setOnClickListener { finish() }
+        binding.layoutBackFromOtcMcHome.setOnClickListener { finish() }
     }
 
     private fun processMerchantActive(auto_info: JSONObject, merchant_detail: JSONObject) {

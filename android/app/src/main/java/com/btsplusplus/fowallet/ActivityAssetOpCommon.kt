@@ -5,11 +5,11 @@ import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityAssetOpCommonBinding
 import com.btsplusplus.fowallet.utils.ModelUtils
 import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_asset_op_common.*
 import org.json.JSONObject
 import java.math.BigDecimal
 
@@ -25,6 +25,8 @@ class ActivityAssetOpCommon : BtsppActivity() {
     private var _nCurrBalance = BigDecimal.ZERO
     private lateinit var _tf_amount_watcher: UtilsDigitTextWatcher
 
+    private lateinit var binding: ActivityAssetOpCommonBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -32,6 +34,8 @@ class ActivityAssetOpCommon : BtsppActivity() {
         setAutoLayoutContentView(R.layout.activity_asset_op_common)
         //  设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
+
+        binding = ActivityAssetOpCommonBinding.bind(findViewById<View>(android.R.id.content).rootView)
 
         //  获取参数
         val args = btspp_args_as_JSONObject()
@@ -50,13 +54,13 @@ class ActivityAssetOpCommon : BtsppActivity() {
         drawUI_balance(false)
 
         //  事件 - 全部
-        btn_tf_tailer_all.setOnClickListener { onSelectAllClicked() }
+        binding.btnTfTailerAll.setOnClickListener { onSelectAllClicked() }
 
         //  事件 - 提交
-        btn_op_submit.setOnClickListener { onSubmitClicked() }
+        binding.btnOpSubmit.setOnClickListener { onSubmitClicked() }
 
         //  事件 - 返回
-        layout_back_from_assets_op_common.setOnClickListener { finish() }
+        binding.layoutBackFromAssetsOpCommon.setOnClickListener { finish() }
 
         //  输入框 TODO:7.0 如果切换资产则需要切换精度
         val tf = findViewById<EditText>(R.id.tf_amount)
@@ -106,9 +110,9 @@ class ActivityAssetOpCommon : BtsppActivity() {
     }
 
     private fun drawUI_once() {
-        tf_amount.hint = _op_extra_args.optString("kMsgAmountPlaceholder")
-        btn_op_submit.text = _op_extra_args.optString("kMsgBtnName")
-        tv_ui_msg.text = _op_extra_args.optString("kMsgTips")
+        binding.tfAmount.hint = _op_extra_args.optString("kMsgAmountPlaceholder")
+        binding.btnOpSubmit.text = _op_extra_args.optString("kMsgBtnName")
+        binding.tvUiMsg.text = _op_extra_args.optString("kMsgTips")
     }
 
     /**
@@ -127,34 +131,34 @@ class ActivityAssetOpCommon : BtsppActivity() {
 
     private fun drawUI_currAsset() {
         //  REMARK：这里显示选中资产名称，而不是余额资产名称。
-        tv_asset_symbol.text = _curr_selected_asset.getString("symbol")
+        binding.tvAssetSymbol.text = _curr_selected_asset.getString("symbol")
 
         if (isEnableSwitchAsset()) {
-            tv_asset_symbol.setTextColor(resources.getColor(R.color.theme01_textColorMain))
-            iv_select_asset_right_arrow.visibility = View.VISIBLE
+            binding.tvAssetSymbol.setTextColor(resources.getColor(R.color.theme01_textColorMain))
+            binding.ivSelectAssetRightArrow.visibility = View.VISIBLE
 
             //  事件 - 选择资产
-            iv_select_asset_right_arrow.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
-            layout_select_asset_from_assets_op_common.setOnClickListener { onSelectAsset() }
+            binding.ivSelectAssetRightArrow.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
+            binding.layoutSelectAssetFromAssetsOpCommon.setOnClickListener { onSelectAsset() }
         } else {
-            tv_asset_symbol.setTextColor(resources.getColor(R.color.theme01_textColorGray))
-            iv_select_asset_right_arrow.visibility = View.INVISIBLE
+            binding.tvAssetSymbol.setTextColor(resources.getColor(R.color.theme01_textColorGray))
+            binding.ivSelectAssetRightArrow.visibility = View.INVISIBLE
             //  事件 - 无（不可选择）
-            layout_select_asset_from_assets_op_common.setOnClickListener(null)
+            binding.layoutSelectAssetFromAssetsOpCommon.setOnClickListener(null)
         }
 
         //  输入框尾部资产名称：这是当前余额资产名
-        tv_tf_tailer_asset_symbol.text = _curr_balance_asset.getString("symbol")
+        binding.tvTfTailerAssetSymbol.text = _curr_balance_asset.getString("symbol")
     }
 
     private fun drawUI_balance(not_enough: Boolean) {
         val symbol = _curr_balance_asset.getString("symbol")
         if (not_enough) {
-            tv_curr_balance.text = "${resources.getString(R.string.kOtcMcAssetCellAvailable)} ${_nCurrBalance.toPlainString()} $symbol(${resources.getString(R.string.kOtcMcAssetTransferBalanceNotEnough)})"
-            tv_curr_balance.setTextColor(resources.getColor(R.color.theme01_tintColor))
+            binding.tvCurrBalance.text = "${resources.getString(R.string.kOtcMcAssetCellAvailable)} ${_nCurrBalance.toPlainString()} $symbol(${resources.getString(R.string.kOtcMcAssetTransferBalanceNotEnough)})"
+            binding.tvCurrBalance.setTextColor(resources.getColor(R.color.theme01_tintColor))
         } else {
-            tv_curr_balance.text = "${resources.getString(R.string.kOtcMcAssetCellAvailable)} ${_nCurrBalance.toPlainString()} $symbol"
-            tv_curr_balance.setTextColor(resources.getColor(R.color.theme01_textColorMain))
+            binding.tvCurrBalance.text = "${resources.getString(R.string.kOtcMcAssetCellAvailable)} ${_nCurrBalance.toPlainString()} $symbol"
+            binding.tvCurrBalance.setTextColor(resources.getColor(R.color.theme01_textColorMain))
         }
     }
 

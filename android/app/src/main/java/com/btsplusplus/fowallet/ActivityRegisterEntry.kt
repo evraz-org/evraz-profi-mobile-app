@@ -1,11 +1,13 @@
 package com.btsplusplus.fowallet
 
 import android.os.Bundle
+import com.btsplusplus.fowallet.databinding.ActivityRegisterEntryBinding
 import com.fowallet.walletcore.bts.ChainObjectManager
-import kotlinx.android.synthetic.main.activity_register_entry.*
 import org.json.JSONObject
 
 class ActivityRegisterEntry : BtsppActivity() {
+
+    private lateinit var binding: ActivityRegisterEntryBinding
 
     private lateinit var _account_condition: ViewFormatConditons
 
@@ -14,26 +16,27 @@ class ActivityRegisterEntry : BtsppActivity() {
 
         // 设置自动布局
         setAutoLayoutContentView(R.layout.activity_register_entry)
+        binding = ActivityRegisterEntryBinding.bind(findViewById<View>(android.R.id.content))
 
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
         //  初始化账号条件格式说明
-        tf_account_name.let { tf ->
+        binding.tfAccountName.let { tf ->
             _account_condition = ViewFormatConditons(this).apply {
                 //  一直显示
                 this.isAlwaysShow = true
                 auxFastConditionsViewForAccountNameFormat()
                 bindingTextField(tf)
             }
-            layout_format_view_container.addView(_account_condition)
+            binding.layoutFormatViewContainer.addView(_account_condition)
         }
 
         //  事件 - 返回
-        layout_back_from_register_entry.setOnClickListener { finish() }
+        binding.layoutBackFromRegisterEntry.setOnClickListener { finish() }
 
         //  事件 - 下一步
-        btn_next_step.setOnClickListener { onNextButtonClicked() }
+        binding.btnNextStep.setOnClickListener { onNextButtonClicked() }
     }
 
     /**
@@ -46,7 +49,7 @@ class ActivityRegisterEntry : BtsppActivity() {
             return
         }
         val self = this
-        val new_account_name = tf_account_name.text.toString().toLowerCase()
+        val new_account_name = binding.tfAccountName.text.toString().lowercase()
         val mask = ViewMask(resources.getString(R.string.kTipsBeRequesting), this).apply { show() }
         ChainObjectManager.sharedChainObjectManager().isAccountExistOnBlockChain(new_account_name).then {
             mask.dismiss()

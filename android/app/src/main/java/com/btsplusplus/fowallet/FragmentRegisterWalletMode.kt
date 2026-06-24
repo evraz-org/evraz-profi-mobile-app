@@ -3,13 +3,13 @@ package com.btsplusplus.fowallet
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.fragment.app.Fragment
 import bitshares.*
 import com.btsplusplus.fowallet.utils.VcUtils
 import com.fowallet.walletcore.bts.ChainObjectManager
@@ -65,7 +65,7 @@ class FragmentRegisterWalletMode : Fragment() {
         val mask = ViewMask(R.string.kTipsBeRequesting.xmlstring(this.activity!!), this.activity!!)
         mask.show()
         //  1、查询名字是否被占用。
-        val username = account_name.toLowerCase()
+        val username = account_name.lowercase()
         val chainMgr = ChainObjectManager.sharedChainObjectManager()
         chainMgr.isAccountExistOnBlockChain(username).then {
             if (it != null && it as Boolean) {
@@ -81,18 +81,18 @@ class FragmentRegisterWalletMode : Fragment() {
             val active_key = OrgUtils.genBtsAddressFromWifPrivateKey(private_active)!!
             val memo_key = OrgUtils.genBtsAddressFromWifPrivateKey(private_memo)!!
 
-            OrgUtils.asyncCreateAccountFromFaucet(activity!!, username, owner_key, active_key, memo_key, refcode, BuildConfig.kAppChannelID).then {
+            OrgUtils.asyncCreateAccountFromFaucet(requireActivity(), username, owner_key, active_key, memo_key, refcode, BuildConfig.kAppChannelID).then {
                 val err_msg = it as? String
                 //  注册失败
                 if (err_msg != null) {
                     mask.dismiss()
                     //  [统计]
                     btsppLogCustom("faucetFailed", jsonObjectfromKVS("err", err_msg))
-                    activity!!.showToast(err_msg)
+                    requireActivity().showToast(err_msg)
                     return@then null
                 }
                 //  3、注册成功
-                val full_wallet_bin = WalletManager.sharedWalletManager().genFullWalletData(activity!!, username, jsonArrayfrom(private_active, private_owner, private_memo), password)
+                val full_wallet_bin = WalletManager.sharedWalletManager().genFullWalletData(requireActivity(), username, jsonArrayfrom(private_active, private_owner, private_memo), password)
                 //  查询完整帐号信息
                 chainMgr.queryFullAccountInfo(username, retry_num = 3).then {
                     mask.dismiss()

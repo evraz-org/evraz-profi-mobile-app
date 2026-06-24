@@ -1,9 +1,7 @@
 package com.btsplusplus.fowallet
 
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
-import android.support.v4.view.ViewPager
+import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.animation.OvershootInterpolator
 import android.widget.ImageButton
@@ -13,11 +11,13 @@ import bitshares.btsppLogCustom
 import bitshares.jsonArrayfrom
 import bitshares.jsonObjectfromKVS
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_my_assets.*
+import com.btsplusplus.fowallet.databinding.ActivityMyAssetsBinding
 import org.json.JSONObject
 import java.lang.reflect.Field
 
 class ActivityMyAssets : BtsppActivity() {
+
+    private lateinit var binding: ActivityMyAssetsBinding
 
     private val fragmens: ArrayList<Fragment> = ArrayList()
     private var tablayout: TabLayout? = null
@@ -29,6 +29,7 @@ class ActivityMyAssets : BtsppActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setAutoLayoutContentView(R.layout.activity_my_assets)
+        binding = ActivityMyAssetsBinding.bind(findViewById<View>(android.R.id.content).rootView)
 
         //  获取参数
         val args = btspp_args_as_JSONArray()
@@ -41,7 +42,7 @@ class ActivityMyAssets : BtsppActivity() {
         if (WalletManager.sharedWalletManager().isMyselfAccount(target_name)) {
             findViewById<TextView>(R.id.title).text = resources.getString(R.string.kVcTitleMyBalance)
             //  不显示关注按钮
-            btn_fav.visibility = View.GONE
+            binding.btnFav.visibility = View.GONE
         } else {
             findViewById<TextView>(R.id.title).text = target_name
             //  关注按钮事件
@@ -50,18 +51,18 @@ class ActivityMyAssets : BtsppActivity() {
             } else {
                 findViewById<ImageButton>(R.id.btn_fav).setColorFilter(resources.getColor(R.color.theme01_textColorGray))
             }
-            btn_fav.setOnClickListener {
+            binding.btnFav.setOnClickListener {
                 _onFavClicked(it as ImageButton, account)
             }
         }
 
-        layout_back_from_my_assets.setOnClickListener { finish() }
+        binding.layoutBackFromMyAssets.setOnClickListener { finish() }
 
         setFullScreen()
 
         // 设置 tablelayout 和 view_pager
-        tablayout = tablayout_of_my_assets
-        view_pager = view_pager_of_my_assets
+        tablayout = binding.tablayoutOfMyAssets
+        view_pager = binding.viewPagerOfMyAssets
 
         // 添加 fargments
         setFragments()

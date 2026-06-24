@@ -1,18 +1,22 @@
 package com.btsplusplus.fowallet
 
 import android.os.Bundle
+import android.view.View
 import bitshares.OtcManager
 import bitshares.Promise
-import kotlinx.android.synthetic.main.activity_otc_add_alipay.*
+import com.btsplusplus.fowallet.databinding.ActivityOtcAddAlipayBinding
 import org.json.JSONObject
 
 class ActivityOtcAddAlipay : BtsppActivity() {
+
+    private lateinit var binding: ActivityOtcAddAlipayBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         //  设置自动布局
         setAutoLayoutContentView(R.layout.activity_otc_add_alipay)
+        binding = ActivityOtcAddAlipayBinding.bind(findViewById<View>(android.R.id.content).rootView)
         //  设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
@@ -24,21 +28,21 @@ class ActivityOtcAddAlipay : BtsppActivity() {
         //  初始化值
         val name = auth_info.optString("realName")
         if (name.isNotEmpty()) {
-            tf_realname.setText(name)
-            tf_realname.isEnabled = false
+            binding.tfRealname.setText(name)
+            binding.tfRealname.isEnabled = false
         }
 
         // 返回
-        layout_back_from_otc_add_apipay.setOnClickListener { finish() }
+        binding.layoutBackFromOtcAddApipay.setOnClickListener { finish() }
 
         //  提交
-        tv_submit_from_otc_add_alipay.setOnClickListener { onSubmit(result_promise) }
+        binding.tvSubmitFromOtcAddAlipay.setOnClickListener { onSubmit(result_promise) }
 
     }
 
     private fun onSubmit(result_promise: Promise?) {
-        val str_realname = tf_realname.text.toString()
-        val str_account = tf_account.text.toString()
+        val str_realname = binding.tfRealname.text.toString()
+        val str_account = binding.tfAccount.text.toString()
 
         if (str_realname == "") {
             showToast(resources.getString(R.string.kOtcRmSubmitTipsInputRealname))

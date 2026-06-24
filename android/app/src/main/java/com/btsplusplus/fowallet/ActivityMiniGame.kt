@@ -6,20 +6,21 @@ import android.view.View
 import android.webkit.*
 import bitshares.JsCallNativeRouter
 import bitshares.Utils
-import kotlinx.android.synthetic.main.activity_mini_game.*
+import com.btsplusplus.fowallet.databinding.ActivityMiniGameBinding
 import org.json.JSONObject
 
 //  TODO: pending
 
 class ActivityMiniGame : BtsppActivity() {
 
-    lateinit var web_view: WebView
+    private lateinit var binding: ActivityMiniGameBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_mini_game)
+        binding = ActivityMiniGameBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        web_view = findViewById(R.id.web_view_of_game)
+        val web_view = binding.webViewOfGame
 
         //  设置webview参数
         web_view.setBackgroundColor(Color.TRANSPARENT)
@@ -60,9 +61,9 @@ class ActivityMiniGame : BtsppActivity() {
         //  加载
         web_view.loadUrl("file:///android_asset/www/game/index.html")
 
-        layout_back_from_game.setOnClickListener { finish() }
+        binding.layoutBackFromGame.setOnClickListener { finish() }
 
-        button_refresh_of_game.setOnClickListener { web_view.reload() }
+        binding.buttonRefreshOfGame.setOnClickListener { web_view.reload() }
 
         setFullScreen()
     }

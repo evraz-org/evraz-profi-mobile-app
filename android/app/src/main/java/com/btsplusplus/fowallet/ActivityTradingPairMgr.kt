@@ -9,10 +9,12 @@ import android.widget.TextView
 import bitshares.*
 import com.btsplusplus.fowallet.utils.VcUtils
 import com.fowallet.walletcore.bts.ChainObjectManager
-import kotlinx.android.synthetic.main.activity_trading_pair_mgr.*
+import com.btsplusplus.fowallet.databinding.ActivityTradingPairMgrBinding
 import org.json.JSONObject
 
 class ActivityTradingPairMgr : BtsppActivity() {
+
+    private lateinit var binding: ActivityTradingPairMgrBinding
 
     private val _data_array_pairs = mutableListOf<JSONObject>()
     private val _args_pair_info = JSONObject()
@@ -22,6 +24,7 @@ class ActivityTradingPairMgr : BtsppActivity() {
 
         // 设置自动布局
         setAutoLayoutContentView(R.layout.activity_trading_pair_mgr)
+        binding = ActivityTradingPairMgrBinding.bind(findViewById<View>(android.R.id.content).rootView)
 
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
@@ -34,23 +37,23 @@ class ActivityTradingPairMgr : BtsppActivity() {
         _data_array_pairs.sortBy { it.getString("base") }
 
         //  初始化UI -  切换图片改变颜色
-        icon_switch_button.setColorFilter(resources.getColor(R.color.theme01_textColorMain))
+        binding.iconSwitchButton.setColorFilter(resources.getColor(R.color.theme01_textColorMain))
         _draw_ui_all()
 
         //  添加按钮事件
-        btn_add_from_trading_pair_mgr.setOnClickListener { onAddButtonClicked() }
+        binding.btnAddFromTradingPairMgr.setOnClickListener { onAddButtonClicked() }
 
         //  交易资产点击事件
-        layout_quote_asset.setOnClickListener { onQuoteAssetClicked() }
+        binding.layoutQuoteAsset.setOnClickListener { onQuoteAssetClicked() }
 
         //  中间切换按钮点击事件
-        layout_switch_button.setOnClickListener { onSwitchButtonClicked() }
+        binding.layoutSwitchButton.setOnClickListener { onSwitchButtonClicked() }
 
         //  报价资产点击事件
-        layout_base_asset.setOnClickListener { onBaseAssetClicked() }
+        binding.layoutBaseAsset.setOnClickListener { onBaseAssetClicked() }
 
         //  返回按钮事件
-        layout_back_from_trading_pair_mgr.setOnClickListener { finish() }
+        binding.layoutBackFromTradingPairMgr.setOnClickListener { finish() }
     }
 
     private fun onAddPairCore(quote: JSONObject, base: JSONObject) {
@@ -166,25 +169,25 @@ class ActivityTradingPairMgr : BtsppActivity() {
     private fun _draw_ui_current_pair_assets() {
         val quote = _args_pair_info.optJSONObject("quote")
         if (quote != null) {
-            tv_quote_asset.text = quote.getString("symbol")
-            tv_quote_asset.setTextColor(resources.getColor(R.color.theme01_textColorMain))
+            binding.tvQuoteAsset.text = quote.getString("symbol")
+            binding.tvQuoteAsset.setTextColor(resources.getColor(R.color.theme01_textColorMain))
         } else {
-            tv_quote_asset.text = "--"
-            tv_quote_asset.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
+            binding.tvQuoteAsset.text = "--"
+            binding.tvQuoteAsset.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
         }
 
         val base = _args_pair_info.optJSONObject("base")
         if (base != null) {
-            tv_base_asset.text = base.getString("symbol")
-            tv_base_asset.setTextColor(resources.getColor(R.color.theme01_textColorMain))
+            binding.tvBaseAsset.text = base.getString("symbol")
+            binding.tvBaseAsset.setTextColor(resources.getColor(R.color.theme01_textColorMain))
         } else {
-            tv_base_asset.text = "--"
-            tv_base_asset.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
+            binding.tvBaseAsset.text = "--"
+            binding.tvBaseAsset.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
         }
     }
 
     private fun _draw_ui_my_pairs_title() {
-        tv_my_pairs_title.text = String.format(resources.getString(R.string.kSearchTipsMyCustomPairs), _data_array_pairs.size.toString())
+        binding.tvMyPairsTitle.text = String.format(resources.getString(R.string.kSearchTipsMyCustomPairs), _data_array_pairs.size.toString())
     }
 
     private fun _draw_ui_all() {
@@ -194,7 +197,7 @@ class ActivityTradingPairMgr : BtsppActivity() {
     }
 
     private fun _draw_ui_pairs_list() {
-        val container = layout_trading_pairs_from_trading_pair_mgr
+        val container = binding.layoutTradingPairsFromTradingPairMgr
         container.removeAllViews()
 
         if (_data_array_pairs.isEmpty()) {

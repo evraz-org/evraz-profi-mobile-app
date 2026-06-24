@@ -1,16 +1,19 @@
 package com.btsplusplus.fowallet
 
 import android.os.Bundle
+import android.view.View
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityAssetManagerBinding
 import com.btsplusplus.fowallet.utils.ModelUtils
 import com.btsplusplus.fowallet.utils.VcUtils
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_asset_manager.*
 import org.json.JSONArray
 import org.json.JSONObject
 
 class ActivityAssetManager : BtsppActivity() {
+
+    private lateinit var binding: ActivityAssetManagerBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,8 +23,10 @@ class ActivityAssetManager : BtsppActivity() {
         //  设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
+        binding = ActivityAssetManagerBinding.bind(findViewById<View>(android.R.id.content).rootView)
+
         //  事件 - 创建资产
-        button_add_from_assets_manager.setOnClickListener {
+        binding.buttonAddFromAssetsManager.setOnClickListener {
             val result_promise = Promise()
             goTo(ActivityAssetCreateOrEdit::class.java, true, args = JSONObject().apply {
                 put("kTitle", resources.getString(R.string.kVcTitleAssetOpCreate))
@@ -36,7 +41,7 @@ class ActivityAssetManager : BtsppActivity() {
         }
 
         //  事件 - 返回
-        layout_back_from_assets_manager.setOnClickListener { finish() }
+        binding.layoutBackFromAssetsManager.setOnClickListener { finish() }
 
         //  查询
         queryMyIssuedAssets()
@@ -84,7 +89,7 @@ class ActivityAssetManager : BtsppActivity() {
     }
 
     private fun drawUI(data_array: JSONArray) {
-        lay_cell_container.let { layout ->
+        binding.layCellContainer.let { layout ->
             layout.removeAllViews()
             if (data_array.length() > 0) {
                 data_array.forEach<JSONObject> {
@@ -293,6 +298,8 @@ class ActivityAssetManager : BtsppActivity() {
                         }
                     }
                 }
+
+                else -> {}
             }
         }
 

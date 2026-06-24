@@ -6,10 +6,12 @@ import android.view.View
 import bitshares.Utils
 import bitshares.xmlstring
 import com.btsplusplus.fowallet.gateway.GatewayAssetItemData
-import kotlinx.android.synthetic.main.activity_gateway_recharge.*
+import com.btsplusplus.fowallet.databinding.ActivityGatewayRechargeBinding
 import org.json.JSONObject
 
 class ActivityGatewayDeposit : BtsppActivity() {
+
+    private lateinit var binding: ActivityGatewayRechargeBinding
 
     private lateinit var _fullAccountData: JSONObject
     private lateinit var _depositAddrItem: JSONObject
@@ -18,7 +20,8 @@ class ActivityGatewayDeposit : BtsppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_gateway_recharge)
+        binding = ActivityGatewayRechargeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         //  获取参数 / get params
         val args = btspp_args_as_JSONObject()
@@ -35,33 +38,33 @@ class ActivityGatewayDeposit : BtsppActivity() {
         setFullScreen()
 
         //  back button
-        layout_back_from_gateway_recharge.setOnClickListener { finish() }
+        binding.layoutBackFromGatewayRecharge.setOnClickListener { finish() }
 
         //  title
-        title_of_gateway_recharge.text = args.getString("title")
+        binding.titleOfGatewayRecharge.text = args.getString("title")
 
         //  qrcode
-        iv_qrcode_of_recharge_page.setImageBitmap(args.get("qrbitmap") as Bitmap)
+        binding.ivQrcodeOfRechargePage.setImageBitmap(args.get("qrbitmap") as Bitmap)
 
         //  地址
-        id_label_address.text = _depositAddrItem.getString("inputAddress")
+        binding.idLabelAddress.text = _depositAddrItem.getString("inputAddress")
         //  备注
         if (_depositMemoData != null) {
-            id_label_memo.text = _depositMemoData!!
+            binding.idLabelMemo.text = _depositMemoData!!
         } else {
-            id_label_memo.visibility = View.GONE
-            btn_copy_memo.visibility = View.GONE
+            binding.idLabelMemo.visibility = View.GONE
+            binding.btnCopyMemo.visibility = View.GONE
         }
 
         //  Tip
         drawDepositTipMessages()
 
         //  event - copy address
-        btn_copy_address.setOnClickListener { onCopyAddressClicked() }
+        binding.btnCopyAddress.setOnClickListener { onCopyAddressClicked() }
 
         //  events - copy memo
         if (_depositMemoData != null) {
-            btn_copy_memo.setOnClickListener { onCopyMemoClicked() }
+            binding.btnCopyMemo.setOnClickListener { onCopyMemoClicked() }
         }
     }
 
@@ -70,7 +73,7 @@ class ActivityGatewayDeposit : BtsppActivity() {
         val msgArray = mutableListOf<String>()
         msgArray.add(R.string.kVcDWTipsImportantTitle.xmlstring(this))
         //  min deposit value
-        val inputCoinType = _depositAddrItem.getString("inputCoinType").toUpperCase()
+        val inputCoinType = _depositAddrItem.getString("inputCoinType").uppercase()
         val minAmount = appext.depositMinAmount
         if (minAmount != null && minAmount.isNotEmpty()) {
             msgArray.add(String.format(R.string.kVcDWTipsMinDepositAmount.xmlstring(this), minAmount, inputCoinType))
@@ -87,7 +90,7 @@ class ActivityGatewayDeposit : BtsppActivity() {
         //  default tips
         msgArray.add(R.string.kVcDWTipsFindCustomService.xmlstring(this))
 
-        tip_of_recharge_page.text = msgArray.joinToString("\n")
+        binding.tipOfRechargePage.text = msgArray.joinToString("\n")
     }
 
     private fun onCopyAddressClicked() {

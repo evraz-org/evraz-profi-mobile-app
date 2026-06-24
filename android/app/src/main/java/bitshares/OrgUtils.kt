@@ -22,6 +22,8 @@ import java.net.InetAddress
 import java.net.URL
 import java.net.URLEncoder
 import java.text.DecimalFormat
+import java.util.Locale
+import java.util.Locale.getDefault
 import kotlin.math.max
 import kotlin.math.pow
 
@@ -486,7 +488,7 @@ class OrgUtils {
                         if (error != null) {
                             val server_error = error.optJSONArray("base")?.optString(0, null)
                             if (server_error != null) {
-                                val lowermsg = server_error.toLowerCase()
+                                val lowermsg = server_error.lowercase(getDefault())
                                 //  特化错误信息
                                 err_msg = if (lowermsg.indexOf("account exists") >= 0) {
                                     R.string.kLoginFaucetTipsAccountAlreadyExist.xmlstring(ctx)

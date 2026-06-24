@@ -9,10 +9,10 @@ import com.yanzhenjie.andserver.Server
 import com.yanzhenjie.andserver.SimpleRequestHandler
 import com.yanzhenjie.andserver.view.View
 import com.yanzhenjie.andserver.website.AssetsWebsite
-import kotlinx.android.synthetic.main.activity_wallet_backup.*
-import org.apache.httpcore.HttpRequest
-import org.apache.httpcore.HttpResponse
-import org.apache.httpcore.entity.FileEntity
+import com.btsplusplus.fowallet.databinding.ActivityWalletBackupBinding
+import org.apache.http.HttpRequest
+import org.apache.http.HttpResponse
+import org.apache.http.entity.FileEntity
 import java.io.File
 import java.lang.Exception
 import java.net.InetAddress
@@ -20,6 +20,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ActivityWalletBackup : BtsppActivity() {
+
+    private lateinit var binding: ActivityWalletBackupBinding
 
     private var _webserver: Server? = null
     private var _fullpath: String = ""
@@ -34,20 +36,21 @@ class ActivityWalletBackup : BtsppActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setAutoLayoutContentView(R.layout.activity_wallet_backup)
+        binding = ActivityWalletBackupBinding.bind(findViewById<View>(android.R.id.content).rootView)
 
-        layout_back_from_backup_wallet.setOnClickListener { finish() }
+        binding.layoutBackFromBackupWallet.setOnClickListener { finish() }
 
         //  导出钱包
         if (backupWalletToWebdir()) {
             //  初始化webserver
             val nowifi = Utils.isWifi(this)
             if (!nowifi) {
-                findViewById<TextView>(R.id.label_txt_address_or_error).text = resources.getString(R.string.kBackupWalletOnlyViaWIFI)
+                binding.labelTxtAddressOrError.text = resources.getString(R.string.kBackupWalletOnlyViaWIFI)
             } else {
                 startInitWebserver(this)
             }
         } else {
-            findViewById<TextView>(R.id.label_txt_address_or_error).text = resources.getString(R.string.registerLoginTipBackupError)
+            binding.labelTxtAddressOrError.text = resources.getString(R.string.registerLoginTipBackupError)
         }
     }
 
@@ -87,7 +90,7 @@ class ActivityWalletBackup : BtsppActivity() {
         }
         val ipv4 = Utils.getIpv4Address(context)
         if (ipv4 == null) {
-            findViewById<TextView>(R.id.label_txt_address_or_error).text = R.string.registerLoginWebServerErrorIp.xmlstring(context)
+            binding.labelTxtAddressOrError.text = R.string.registerLoginWebServerErrorIp.xmlstring(context)
             return
         }
         //  REMARK：不能绑定到80端口，会出现无权限错误。
@@ -96,13 +99,13 @@ class ActivityWalletBackup : BtsppActivity() {
         val website = AssetsWebsite(context.assets, "www/${R.string.webserverDownloadPage.xmlstring(context)}")
         _webserver = AndServer.serverBuilder().port(port).inetAddress(address!!).website(website).registerHandler("/download", DownloadHandler()).listener(object : Server.ServerListener {
             override fun onStarted() {
-                findViewById<TextView>(R.id.label_txt_address_or_error).text = "${ipv4}:${port}"
+                binding.labelTxtAddressOrError.text = "${ipv4}:${port}"
             }
 
             override fun onError(e: Exception) {
                 btsppLogCustom("webserver_download_init_error", jsonObjectfromKVS("message", e.message
                         ?: "unknown"))
-                findViewById<TextView>(R.id.label_txt_address_or_error).text = R.string.registerLoginWebServerErrorInit.xmlstring(context)
+                binding.labelTxtAddressOrError.text = R.string.registerLoginWebServerErrorInit.xmlstring(context)
             }
 
             override fun onStopped() {

@@ -7,28 +7,31 @@ import bitshares.Promise
 import bitshares.TempManager
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_permission_add_one.*
+import com.btsplusplus.fowallet.databinding.ActivityPermissionAddOneBinding
 import org.json.JSONObject
 
 class ActivityPermissionAddOne : BtsppActivity() {
+
+    private lateinit var binding: ActivityPermissionAddOneBinding
 
     private lateinit var _result_promise: Promise
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setAutoLayoutContentView(R.layout.activity_permission_add_one)
+        binding = ActivityPermissionAddOneBinding.bind(findViewById<View>(android.R.id.content).rootView)
         setFullScreen()
 
         //  获取参数
         val args = btspp_args_as_JSONObject()
         _result_promise = args.get("result_promise") as Promise
 
-        layout_back_from_add_one_permission.setOnClickListener {
+        binding.layoutBackFromAddOnePermission.setOnClickListener {
             finish()
         }
 
         //  搜索账号
-        btn_search.setOnClickListener {
+        binding.btnSearch.setOnClickListener {
             TempManager.sharedTempManager().set_query_account_callback { last_activity, it ->
                 last_activity.goTo(ActivityPermissionAddOne::class.java, true, back = true)
                 val tf = findViewById<EditText>(R.id.tf_authority_name)
@@ -39,14 +42,14 @@ class ActivityPermissionAddOne : BtsppActivity() {
         }
 
         //  提交按钮
-        btn_submitt_from_add_one_permission.setOnClickListener {
+        binding.btnSubmittFromAddOnePermission.setOnClickListener {
             _onSubmitClicked()
         }
     }
 
     private fun _onSubmitClicked() {
-        val str_authority = findViewById<EditText>(R.id.tf_authority_name).text.toString().trim()
-        val str_weight = findViewById<EditText>(R.id.tf_weight).text.toString().trim()
+        val str_authority = binding.tfAuthorityName.text.toString().trim()
+        val str_weight = binding.tfWeight.text.toString().trim()
 
         //  有效性检查
         if (str_authority == "") {

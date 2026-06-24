@@ -313,6 +313,8 @@ class ViewKLineCross : ViewBase {
                     val boll_value = main_values.getJSONObject("boll_value")
                     str_array = arrayOf("BOLL(${boll_value.getInt("n")},${boll_value.getInt("p")})", "UB", "LB")
                 }
+
+                else -> {}
             }
             if (_model.main_index01 != null) {
                 fMaOffsetX += 8.0f.dp + drawOneMaValue(canvas, str_array!![0], _model.main_index01!!, fMaOffsetX, 4f.dp, resources.getColor(R.color.theme01_ma5Color))

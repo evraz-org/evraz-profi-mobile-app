@@ -6,30 +6,33 @@ import bitshares.Promise
 import bitshares.xmlstring
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_advanced_feature.*
+import com.btsplusplus.fowallet.databinding.ActivityAdvancedFeatureBinding
 import org.json.JSONArray
 import org.json.JSONObject
 
 class ActivityAdvancedFeature : BtsppActivity() {
 
+    private lateinit var binding: ActivityAdvancedFeatureBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_advanced_feature)
+        binding = ActivityAdvancedFeatureBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         //  设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
         //  设置图标颜色
         val iconcolor = resources.getColor(R.color.theme01_textColorNormal)
-        img_icon_preimage.setColorFilter(iconcolor)
-        img_icon_hashcode.setColorFilter(iconcolor)
-        img_icon_blind_transfer.setColorFilter(iconcolor)
+        binding.imgIconPreimage.setColorFilter(iconcolor)
+        binding.imgIconHashcode.setColorFilter(iconcolor)
+        binding.imgIconBlindTransfer.setColorFilter(iconcolor)
 
         //  点击事件
-        layout_back_from_advanced_feature.setOnClickListener { finish() }
-        layout_htlc_preimage_of_advanced_feature.setOnClickListener { onClickCreateHtlc(EHtlcDeployMode.EDM_PREIMAGE.value) }
-        layout_htlc_hash_of_advanced_feature.setOnClickListener { onClickCreateHtlc(EHtlcDeployMode.EDM_HASHCODE.value) }
-        layout_stealth_transfer.setOnClickListener { _gotoStealthTransfer() }
+        binding.layoutBackFromAdvancedFeature.setOnClickListener { finish() }
+        binding.layoutHtlcPreimageOfAdvancedFeature.setOnClickListener { onClickCreateHtlc(EHtlcDeployMode.EDM_PREIMAGE.value) }
+        binding.layoutHtlcHashOfAdvancedFeature.setOnClickListener { onClickCreateHtlc(EHtlcDeployMode.EDM_HASHCODE.value) }
+        binding.layoutStealthTransfer.setOnClickListener { _gotoStealthTransfer() }
     }
 
     private fun onClickCreateHtlc(mode: Int) {

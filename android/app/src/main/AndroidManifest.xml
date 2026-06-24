@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.btsplusplus.fowallet">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- 网络权限 -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -63,6 +62,7 @@
         <activity
             android:name=".ActivityLaunch"
             android:screenOrientation="portrait"
+            android:exported="true"
             android:theme="@style/LaunchTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

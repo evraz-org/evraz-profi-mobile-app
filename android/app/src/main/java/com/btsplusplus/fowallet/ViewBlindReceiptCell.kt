@@ -56,7 +56,7 @@ class ViewBlindReceiptCell : LinearLayout {
         val decrypted_memo = _blind_balance.getJSONObject("decrypted_memo")
         val amount_item = decrypted_memo.getJSONObject("amount")
         val check_sum = decrypted_memo.getLong("check")
-        val hex_check_num = BinSerializer().write_u32(check_sum).get_data().hexEncode().toUpperCase()
+        val hex_check_num = BinSerializer().write_u32(check_sum).get_data().hexEncode().uppercase()
         val asset = ChainObjectManager.sharedChainObjectManager().getChainObjectByID(amount_item.getString("asset_id"))
         val n_amount = bigDecimalfromAmount(amount_item.getString("amount"), asset.getInt("precision"))
         val real_to_key = _blind_balance.getString("real_to_key")

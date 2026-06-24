@@ -5,15 +5,16 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityAssetCreateOrEditBinding
 import com.btsplusplus.fowallet.utils.ModelUtils
 import com.btsplusplus.fowallet.utils.VcUtils
 import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_asset_create_or_edit.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.math.BigDecimal
+import java.util.Locale.getDefault
 
 const val kPermissionActionDisablePermanently = 0   //  永久禁用（不可再开启）
 const val kPermissionActionActivateLater = 1        //  暂不激活（后续可开启）
@@ -42,6 +43,8 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
     private var _old_issuer_permissions = 0                 //  编辑之前的权限。（仅编辑资产才存在）
     private var _flags = 0                                  //  激活标记
 
+    private lateinit var binding: ActivityAssetCreateOrEditBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -49,6 +52,8 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
         setAutoLayoutContentView(R.layout.activity_asset_create_or_edit)
         //  设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
+
+        binding = ActivityAssetCreateOrEditBinding.bind(findViewById<View>(android.R.id.content).rootView)
 
         //  获取参数
         val args = btspp_args_as_JSONObject()
@@ -72,22 +77,22 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
         _drawUI_tips()
 
         //  绑定事件 - 基本信息
-        layout_basic_asset_symbol.setOnClickListener { onAssetSymbolClicked() }
-        layout_basic_max_supply.setOnClickListener { onAssetMaxSupplyClicked() }
-        layout_basic_desc.setOnClickListener { onAssetDescClicked() }
-        layout_basic_asset_precision.setOnClickListener { onAssetPrecisionClicked() }
+        binding.layoutBasicAssetSymbol.setOnClickListener { onAssetSymbolClicked() }
+        binding.layoutBasicMaxSupply.setOnClickListener { onAssetMaxSupplyClicked() }
+        binding.layoutBasicDesc.setOnClickListener { onAssetDescClicked() }
+        binding.layoutBasicAssetPrecision.setOnClickListener { onAssetPrecisionClicked() }
 
         //  绑定事件 - 手续费信息
-        layout_market_fee_percent.setOnClickListener {
+        binding.layoutMarketFeePercent.setOnClickListener {
             onInputDecimalClicked(resources.getString(R.string.kVcAssetMgrCellTitleFeeMarketFeeRatio),
                     resources.getString(R.string.kVcAssetMgrInputPlaceholderFeeMarketFeeRatio), 2,
                     BigDecimal.valueOf(100),
                     Utils.auxGetStringDecimalNumberValue(GRAPHENE_1_PERCENT.toString())) { n_value ->
                 _market_fee_percent = n_value.toInt()
-                _drawValue_percentValue(tv_market_fee_percent, _market_fee_percent)
+                _drawValue_percentValue(binding.tvMarketFeePercent, _market_fee_percent)
             }
         }
-        layout_fee_max_value.setOnClickListener {
+        binding.layoutFeeMaxValue.setOnClickListener {
             onInputDecimalClicked(resources.getString(R.string.kVcAssetMgrCellTitleFeeMaxFeeValue),
                     resources.getString(R.string.kVcAssetMgrInputPlaceholderFeeMaxFeeValue), _precision,
                     _max_supply_editable,
@@ -96,64 +101,64 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
                 _drawValue_maxMarketFee()
             }
         }
-        layout_fee_ref_percent.setOnClickListener {
+        binding.layoutFeeRefPercent.setOnClickListener {
             //  REMARK：这个最大值小于 100
             onInputDecimalClicked(resources.getString(R.string.kVcAssetMgrCellTitleFeeRefPercent),
                     resources.getString(R.string.kVcAssetMgrInputPlaceholderFeeRefPercent), 2,
                     BigDecimal("99.99"),
                     Utils.auxGetStringDecimalNumberValue(GRAPHENE_1_PERCENT.toString())) { n_value ->
                 _reward_percent = n_value.toInt()
-                _drawValue_percentValue(tv_fee_ref_percent, _reward_percent)
+                _drawValue_percentValue(binding.tvFeeRefPercent, _reward_percent)
             }
         }
 
         //  绑定事件 - 智能币
         if (isCreateAsset()) {
-            layout_smart_backing_asset.setOnClickListener { onSmartBackingAssetClicked() }
+            binding.layoutSmartBackingAsset.setOnClickListener { onSmartBackingAssetClicked() }
         }
-        layout_smart_feed_lifetime.setOnClickListener {
+        binding.layoutSmartFeedLifetime.setOnClickListener {
             onSmartArgsClicked(resources.getString(R.string.kVcAssetMgrInputTitleSmartFeedLifeTime),
                     resources.getString(R.string.kVcAssetMgrInputPlaceholderSmartFeedLifeTime), "feed_lifetime_sec", null,
                     BigDecimal.valueOf(60), true, 0)
         }
-        layout_smart_min_feed_num.setOnClickListener {
+        binding.layoutSmartMinFeedNum.setOnClickListener {
             onSmartArgsClicked(resources.getString(R.string.kVcAssetMgrCellTitleSmartMinFeedNum),
                     resources.getString(R.string.kVcAssetMgrInputPlaceholderSmartMinFeedNum), "minimum_feeds", null,
                     null, true, 0)
         }
-        layout_smart_delay_for_settle.setOnClickListener {
+        binding.layoutSmartDelayForSettle.setOnClickListener {
             onSmartArgsClicked(resources.getString(R.string.kVcAssetMgrInputTitleSmartDelayForSettle),
                     resources.getString(R.string.kVcAssetMgrInputPlaceholderSmartDelayForSettle), "force_settlement_delay_sec", null,
                     BigDecimal.valueOf(60), false, 0)
         }
-        layout_smart_offset_settle.setOnClickListener {
+        binding.layoutSmartOffsetSettle.setOnClickListener {
             onSmartArgsClicked(resources.getString(R.string.kVcAssetMgrCellTitleSmartOffsetSettle),
                     resources.getString(R.string.kVcAssetMgrInputPlaceholderSmartOffsetSettle), "force_settlement_offset_percent", BigDecimal.valueOf(100),
                     Utils.auxGetStringDecimalNumberValue(GRAPHENE_1_PERCENT.toString()), false, 2)
         }
-        layout_smart_max_settle_volume.setOnClickListener {
+        binding.layoutSmartMaxSettleVolume.setOnClickListener {
             onSmartArgsClicked(resources.getString(R.string.kVcAssetMgrCellTitleSmartMaxSettleValuePerHour),
                     resources.getString(R.string.kVcAssetMgrInputPlaceholderSmartMaxSettleValuePerHour), "maximum_force_settlement_volume", BigDecimal.valueOf(100),
                     Utils.auxGetStringDecimalNumberValue(GRAPHENE_1_PERCENT.toString()), true, 2)
         }
 
         //  绑定事件 - 权限信息
-        layout_permission_market_fee.setOnClickListener { onSmartPermissionClicked(EBitsharesAssetFlags.ebat_charge_market_fee) }
-        layout_permission_whitelisted.setOnClickListener { onSmartPermissionClicked(EBitsharesAssetFlags.ebat_white_list) }
-        layout_permission_override_transfer.setOnClickListener { onSmartPermissionClicked(EBitsharesAssetFlags.ebat_override_authority) }
-        layout_permission_need_issuer_approved.setOnClickListener { onSmartPermissionClicked(EBitsharesAssetFlags.ebat_transfer_restricted) }
-        layout_permission_disabled_cond_transfer.setOnClickListener { onSmartPermissionClicked(EBitsharesAssetFlags.ebat_disable_confidential) }
-        layout_permission_disabled_force_settlements.setOnClickListener { onSmartPermissionClicked(EBitsharesAssetFlags.ebat_disable_force_settle) }
-        layout_permission_allow_global_settle.setOnClickListener { onSmartPermissionClicked(EBitsharesAssetFlags.ebat_global_settle) }
-        layout_permission_allow_witness_feed.setOnClickListener { onSmartPermissionClicked(EBitsharesAssetFlags.ebat_witness_fed_asset) }
-        layout_permission_allow_committee_feed.setOnClickListener { onSmartPermissionClicked(EBitsharesAssetFlags.ebat_committee_fed_asset) }
+        binding.layoutPermissionMarketFee.setOnClickListener { onSmartPermissionClicked(EBitsharesAssetFlags.ebat_charge_market_fee) }
+        binding.layoutPermissionWhitelisted.setOnClickListener { onSmartPermissionClicked(EBitsharesAssetFlags.ebat_white_list) }
+        binding.layoutPermissionOverrideTransfer.setOnClickListener { onSmartPermissionClicked(EBitsharesAssetFlags.ebat_override_authority) }
+        binding.layoutPermissionNeedIssuerApproved.setOnClickListener { onSmartPermissionClicked(EBitsharesAssetFlags.ebat_transfer_restricted) }
+        binding.layoutPermissionDisabledCondTransfer.setOnClickListener { onSmartPermissionClicked(EBitsharesAssetFlags.ebat_disable_confidential) }
+        binding.layoutPermissionDisabledForceSettlements.setOnClickListener { onSmartPermissionClicked(EBitsharesAssetFlags.ebat_disable_force_settle) }
+        binding.layoutPermissionAllowGlobalSettle.setOnClickListener { onSmartPermissionClicked(EBitsharesAssetFlags.ebat_global_settle) }
+        binding.layoutPermissionAllowWitnessFeed.setOnClickListener { onSmartPermissionClicked(EBitsharesAssetFlags.ebat_witness_fed_asset) }
+        binding.layoutPermissionAllowCommitteeFeed.setOnClickListener { onSmartPermissionClicked(EBitsharesAssetFlags.ebat_committee_fed_asset) }
 
         //  事件 - 提交按钮
-        btn_submit.setOnClickListener { onSubmitClicked() }
+        binding.btnSubmit.setOnClickListener { onSubmitClicked() }
 
 
         //  事件 - 返回
-        layout_back_from_assets_create_or_edit.setOnClickListener { finish() }
+        binding.layoutBackFromAssetsCreateOrEdit.setOnClickListener { finish() }
     }
 
     /**
@@ -237,15 +242,15 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
      */
     private fun _drawUI_fixInfo() {
         if (isEditAsset()) {
-            layout_segment_fixinfos.visibility = View.VISIBLE
+            binding.layoutSegmentFixinfos.visibility = View.VISIBLE
 
-            tv_fixed_asset_symbol.text = _edit_asset!!.getString("symbol")
-            tv_fixed_asset_precision.text = String.format(resources.getString(R.string.kVcAssetMgrCellValueAssetPrecision), _edit_asset!!.getString("precision"))
+            binding.tvFixedAssetSymbol.text = _edit_asset!!.getString("symbol")
+            binding.tvFixedAssetPrecision.text = String.format(resources.getString(R.string.kVcAssetMgrCellValueAssetPrecision), _edit_asset!!.getString("precision"))
 
-            tv_fixed_asset_symbol.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
-            tv_fixed_asset_precision.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
+            binding. tvFixedAssetSymbol.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
+            binding.tvFixedAssetPrecision.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
         } else {
-            layout_segment_fixinfos.visibility = View.GONE
+            binding.layoutSegmentFixinfos.visibility = View.GONE
         }
     }
 
@@ -257,15 +262,15 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
             _enable_more_args = on
 
             if (_enable_more_args) {
-                layout_basic_asset_precision.visibility = View.VISIBLE
-                layout_basic_asset_precision_line.visibility = View.VISIBLE
+                binding.layoutBasicAssetPrecision.visibility = View.VISIBLE
+                binding.layoutBasicAssetPrecisionLine.visibility = View.VISIBLE
 
                 _drawUI_smartInfo()
             } else {
-                layout_basic_asset_precision.visibility = View.GONE
-                layout_basic_asset_precision_line.visibility = View.GONE
+                binding.layoutBasicAssetPrecision.visibility = View.GONE
+                binding.layoutBasicAssetPrecisionLine.visibility = View.GONE
 
-                layout_segment_smartinfos.visibility = View.GONE
+                binding.layoutSegmentSmartinfos.visibility = View.GONE
             }
         }
     }
@@ -275,14 +280,14 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
      */
     private fun _drawUI_basicInfo() {
         if (isCreateAsset()) {
-            layout_segment_basicinfos.visibility = View.VISIBLE
+            binding.layoutSegmentBasicinfos.visibility = View.VISIBLE
 
-            layout_basic_asset_symbol.visibility = View.VISIBLE
-            layout_btn_switch_adv.visibility = View.VISIBLE
-            layout_basic_asset_precision.visibility = View.VISIBLE
-            layout_basic_asset_symbol_line.visibility = View.VISIBLE
-            layout_btn_switch_adv_line.visibility = View.VISIBLE
-            layout_basic_asset_precision_line.visibility = View.VISIBLE
+            binding.layoutBasicAssetSymbol.visibility = View.VISIBLE
+            binding.layoutBtnSwitchAdv.visibility = View.VISIBLE
+            binding.layoutBasicAssetPrecision.visibility = View.VISIBLE
+            binding.layoutBasicAssetSymbolLine.visibility = View.VISIBLE
+            binding.layoutBtnSwitchAdvLine.visibility = View.VISIBLE
+            binding.layoutBasicAssetPrecisionLine.visibility = View.VISIBLE
 
             //  描绘
             _drawValue_assetSymbol()
@@ -291,22 +296,22 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
             _drawValue_assetDesc()
 
             //  事件 - 高级设置
-            btn_switch_adv.setOnCheckedChangeListener { _, isChecked: Boolean -> _drawUI_visible_onAdvSwitchChanged(isChecked) }
+            binding.btnSwitchAdv.setOnCheckedChangeListener { _, isChecked: Boolean -> _drawUI_visible_onAdvSwitchChanged(isChecked) }
         } else if (isEditBasicInfo()) {
-            layout_segment_basicinfos.visibility = View.VISIBLE
+            binding.layoutSegmentBasicinfos.visibility = View.VISIBLE
 
-            layout_basic_asset_symbol.visibility = View.GONE
-            layout_btn_switch_adv.visibility = View.GONE
-            layout_basic_asset_precision.visibility = View.GONE
-            layout_basic_asset_symbol_line.visibility = View.GONE
-            layout_btn_switch_adv_line.visibility = View.GONE
-            layout_basic_asset_precision_line.visibility = View.GONE
+            binding.layoutBasicAssetSymbol.visibility = View.GONE
+            binding.layoutBtnSwitchAdv.visibility = View.GONE
+            binding.layoutBasicAssetPrecision.visibility = View.GONE
+            binding.layoutBasicAssetSymbolLine.visibility = View.GONE
+            binding.layoutBtnSwitchAdvLine.visibility = View.GONE
+            binding.layoutBasicAssetPrecisionLine.visibility = View.GONE
 
             //  描绘
             _drawValue_maxSupply()
             _drawValue_assetDesc()
         } else {
-            layout_segment_basicinfos.visibility = View.GONE
+            binding.layoutSegmentBasicinfos.visibility = View.GONE
         }
     }
 
@@ -317,7 +322,7 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
         if (!isCreateAsset()) {
             return
         }
-        tv_basic_asset_symbol.let { label ->
+        binding.tvBasicAssetSymbol.let { label ->
             if (_symbol.isNotEmpty()) {
                 label.text = _symbol
                 label.setTextColor(resources.getColor(R.color.theme01_textColorMain))
@@ -332,7 +337,7 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
      *  描绘值 - 最大供应量
      */
     private fun _drawValue_maxSupply() {
-        tv_basic_max_supply.let { label ->
+        binding.tvBasicMaxSupply.let { label ->
             if (_max_supply != null && _max_supply!! > BigDecimal.ZERO) {
                 label.text = OrgUtils.formatFloatValue(_max_supply!!.toDouble(), _precision, has_comma = true)
                 label.setTextColor(resources.getColor(R.color.theme01_textColorMain))
@@ -347,7 +352,7 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
      *  描绘值 - 资产描述
      */
     private fun _drawValue_assetDesc() {
-        tv_basic_desc.let { label ->
+        binding.tvBasicDesc.let { label ->
             if (_description.isNotEmpty()) {
                 label.text = _description
                 label.setTextColor(resources.getColor(R.color.theme01_textColorMain))
@@ -365,7 +370,7 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
         if (!isCreateAsset()) {
             return
         }
-        tv_basic_asset_precision.let { label ->
+        binding.tvBasicAssetPrecision.let { label ->
             label.text = String.format(resources.getString(R.string.kVcAssetMgrCellValueAssetPrecision), _precision.toString())
             label.setTextColor(resources.getColor(R.color.theme01_textColorMain))
         }
@@ -375,7 +380,7 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
      *  描绘值 - 单笔最大手续费
      */
     private fun _drawValue_maxMarketFee() {
-        tv_fee_max_value.let { label ->
+        binding.tvFeeMaxValue.let { label ->
             if (_max_market_fee != null) {
                 label.setTextColor(resources.getColor(R.color.theme01_textColorMain))
                 label.text = OrgUtils.formatFloatValue(_max_market_fee!!.toDouble(), _precision, has_comma = true)
@@ -391,14 +396,14 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
      */
     private fun _drawUI_marketFeeInfo() {
         if (isEditBasicInfo() && _flags.and(EBitsharesAssetFlags.ebat_charge_market_fee.value) != 0) {
-            layout_segment_marketfeeinfos.visibility = View.VISIBLE
+            binding.layoutSegmentMarketfeeinfos.visibility = View.VISIBLE
 
             //  描绘
-            _drawValue_percentValue(tv_market_fee_percent, _market_fee_percent)
+            _drawValue_percentValue(binding.tvMarketFeePercent, _market_fee_percent)
             _drawValue_maxMarketFee()
-            _drawValue_percentValue(tv_fee_ref_percent, _reward_percent)
+            _drawValue_percentValue(binding.tvFeeRefPercent, _reward_percent)
         } else {
-            layout_segment_marketfeeinfos.visibility = View.GONE
+            binding.layoutSegmentMarketfeeinfos.visibility = View.GONE
         }
     }
 
@@ -407,25 +412,25 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
      */
     private fun _drawUI_visible_smartPermissionRows(isSmartCorin: Boolean) {
         if (isSmartCorin) {
-            layout_permission_disabled_force_settlements.visibility = View.VISIBLE
-            layout_permission_allow_global_settle.visibility = View.VISIBLE
-            layout_permission_allow_witness_feed.visibility = View.VISIBLE
-            layout_permission_allow_committee_feed.visibility = View.VISIBLE
+            binding.layoutPermissionDisabledForceSettlements.visibility = View.VISIBLE
+            binding.layoutPermissionAllowGlobalSettle.visibility = View.VISIBLE
+            binding.layoutPermissionAllowWitnessFeed.visibility = View.VISIBLE
+            binding.layoutPermissionAllowCommitteeFeed.visibility = View.VISIBLE
 
-            layout_permission_disabled_force_settlements_line.visibility = View.VISIBLE
-            layout_permission_allow_global_settle_line.visibility = View.VISIBLE
-            layout_permission_allow_witness_feed_line.visibility = View.VISIBLE
-            layout_permission_allow_committee_feed_line.visibility = View.VISIBLE
+            binding.layoutPermissionDisabledForceSettlementsLine.visibility = View.VISIBLE
+            binding.layoutPermissionAllowGlobalSettleLine.visibility = View.VISIBLE
+            binding.layoutPermissionAllowWitnessFeedLine.visibility = View.VISIBLE
+            binding.layoutPermissionAllowCommitteeFeedLine.visibility = View.VISIBLE
         } else {
-            layout_permission_disabled_force_settlements.visibility = View.GONE
-            layout_permission_allow_global_settle.visibility = View.GONE
-            layout_permission_allow_witness_feed.visibility = View.GONE
-            layout_permission_allow_committee_feed.visibility = View.GONE
+            binding.layoutPermissionDisabledForceSettlements.visibility = View.GONE
+            binding.layoutPermissionAllowGlobalSettle.visibility = View.GONE
+            binding.layoutPermissionAllowWitnessFeed.visibility = View.GONE
+            binding.layoutPermissionAllowCommitteeFeed.visibility = View.GONE
 
-            layout_permission_disabled_force_settlements_line.visibility = View.GONE
-            layout_permission_allow_global_settle_line.visibility = View.GONE
-            layout_permission_allow_witness_feed_line.visibility = View.GONE
-            layout_permission_allow_committee_feed_line.visibility = View.GONE
+            binding.layoutPermissionDisabledForceSettlementsLine.visibility = View.GONE
+            binding.layoutPermissionAllowGlobalSettleLine.visibility = View.GONE
+            binding.layoutPermissionAllowWitnessFeedLine.visibility = View.GONE
+            binding.layoutPermissionAllowCommitteeFeedLine.visibility = View.GONE
         }
     }
 
@@ -434,23 +439,23 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
      */
     private fun _drawUI_permissionInfo() {
         if (isEditBasicInfo()) {
-            layout_segment_permissioninfos.visibility = View.VISIBLE
+            binding.layoutSegmentPermissioninfos.visibility = View.VISIBLE
 
             //  描绘
-            _drawUI_onePermission(tv_title_permission_market_fee, tv_permission_market_fee, img_arrow_permission_market_fee, EBitsharesAssetFlags.ebat_charge_market_fee)
-            _drawUI_onePermission(tv_title_permission_whitelisted, tv_permission_whitelisted, img_arrow_permission_whitelisted, EBitsharesAssetFlags.ebat_white_list)
-            _drawUI_onePermission(tv_title_permission_override_transfer, tv_permission_override_transfer, img_arrow_permission_override_transfer, EBitsharesAssetFlags.ebat_override_authority)
-            _drawUI_onePermission(tv_title_permission_need_issuer_approved, tv_permission_need_issuer_approved, img_arrow_permission_need_issuer_approved, EBitsharesAssetFlags.ebat_transfer_restricted)
-            _drawUI_onePermission(tv_title_permission_disabled_cond_transfer, tv_permission_disabled_cond_transfer, img_arrow_permission_disabled_cond_transfer, EBitsharesAssetFlags.ebat_disable_confidential)
+            _drawUI_onePermission(binding.tvTitlePermissionMarketFee, binding.tvPermissionMarketFee, binding.imgArrowPermissionMarketFee, EBitsharesAssetFlags.ebat_charge_market_fee)
+            _drawUI_onePermission(binding.tvTitlePermissionWhitelisted, binding.tvPermissionWhitelisted, binding.imgArrowPermissionWhitelisted, EBitsharesAssetFlags.ebat_white_list)
+            _drawUI_onePermission(binding.tvTitlePermissionOverrideTransfer, binding.tvPermissionOverrideTransfer, binding.imgArrowPermissionOverrideTransfer, EBitsharesAssetFlags.ebat_override_authority)
+            _drawUI_onePermission(binding.tvTitlePermissionNeedIssuerApproved, binding.tvPermissionNeedIssuerApproved, binding.imgArrowPermissionNeedIssuerApproved, EBitsharesAssetFlags.ebat_transfer_restricted)
+            _drawUI_onePermission(binding.tvTitlePermissionDisabledCondTransfer, binding.tvPermissionDisabledCondTransfer, binding.imgArrowPermissionDisabledCondTransfer, EBitsharesAssetFlags.ebat_disable_confidential)
 
-            _drawUI_onePermission(tv_title_permission_disabled_force_settlements, tv_permission_disabled_force_settlements, img_arrow_permission_disabled_force_settlements, EBitsharesAssetFlags.ebat_disable_force_settle)
-            _drawUI_onePermission(tv_title_permission_allow_global_settle, tv_permission_allow_global_settle, img_arrow_permission_allow_global_settle, EBitsharesAssetFlags.ebat_global_settle)
-            _drawUI_onePermission(tv_title_permission_allow_witness_feed, tv_permission_allow_witness_feed, img_arrow_permission_allow_witness_feed, EBitsharesAssetFlags.ebat_witness_fed_asset)
-            _drawUI_onePermission(tv_title_permission_allow_committee_feed, tv_permission_allow_committee_feed, img_arrow_permission_allow_committee_feed, EBitsharesAssetFlags.ebat_committee_fed_asset)
+            _drawUI_onePermission(binding.tvTitlePermissionDisabledForceSettlements, binding.tvPermissionDisabledForceSettlements, binding.imgArrowPermissionDisabledForceSettlements, EBitsharesAssetFlags.ebat_disable_force_settle)
+            _drawUI_onePermission(binding.tvTitlePermissionAllowGlobalSettle, binding.tvPermissionAllowGlobalSettle, binding.imgArrowPermissionAllowGlobalSettle, EBitsharesAssetFlags.ebat_global_settle)
+            _drawUI_onePermission(binding.tvTitlePermissionAllowWitnessFeed, binding.tvPermissionAllowWitnessFeed, binding.imgArrowPermissionAllowWitnessFeed, EBitsharesAssetFlags.ebat_witness_fed_asset)
+            _drawUI_onePermission(binding.tvTitlePermissionAllowCommitteeFeed, binding.tvPermissionAllowCommitteeFeed, binding.imgArrowPermissionAllowCommitteeFeed, EBitsharesAssetFlags.ebat_committee_fed_asset)
 
             _drawUI_visible_smartPermissionRows(ModelUtils.assetIsSmart(_edit_asset!!))
         } else {
-            layout_segment_permissioninfos.visibility = View.GONE
+            binding.layoutSegmentPermissioninfos.visibility = View.GONE
         }
     }
 
@@ -459,29 +464,29 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
      */
     private fun _drawUI_visible_smartRows(isSmartCorin: Boolean) {
         if (isSmartCorin) {
-            layout_smart_feed_lifetime.visibility = View.VISIBLE
-            layout_smart_min_feed_num.visibility = View.VISIBLE
-            layout_smart_delay_for_settle.visibility = View.VISIBLE
-            layout_smart_offset_settle.visibility = View.VISIBLE
-            layout_smart_max_settle_volume.visibility = View.VISIBLE
+            binding.layoutSmartFeedLifetime.visibility = View.VISIBLE
+            binding.layoutSmartMinFeedNum.visibility = View.VISIBLE
+            binding.layoutSmartDelayForSettle.visibility = View.VISIBLE
+            binding.layoutSmartOffsetSettle.visibility = View.VISIBLE
+            binding.layoutSmartMaxSettleVolume.visibility = View.VISIBLE
 
-            layout_smart_feed_lifetime_line.visibility = View.VISIBLE
-            layout_smart_min_feed_num_line.visibility = View.VISIBLE
-            layout_smart_delay_for_settle_line.visibility = View.VISIBLE
-            layout_smart_offset_settle_line.visibility = View.VISIBLE
-            layout_smart_max_settle_volume_line.visibility = View.VISIBLE
+            binding.layoutSmartFeedLifetimeLine.visibility = View.VISIBLE
+            binding.layoutSmartMinFeedNumLine.visibility = View.VISIBLE
+            binding.layoutSmartDelayForSettleLine.visibility = View.VISIBLE
+            binding.layoutSmartOffsetSettleLine.visibility = View.VISIBLE
+            binding.layoutSmartMaxSettleVolumeLine.visibility = View.VISIBLE
         } else {
-            layout_smart_feed_lifetime.visibility = View.GONE
-            layout_smart_min_feed_num.visibility = View.GONE
-            layout_smart_delay_for_settle.visibility = View.GONE
-            layout_smart_offset_settle.visibility = View.GONE
-            layout_smart_max_settle_volume.visibility = View.GONE
+            binding.layoutSmartFeedLifetime.visibility = View.GONE
+            binding.layoutSmartMinFeedNum.visibility = View.GONE
+            binding.layoutSmartDelayForSettle.visibility = View.GONE
+            binding.layoutSmartOffsetSettle.visibility = View.GONE
+            binding.layoutSmartMaxSettleVolume.visibility = View.GONE
 
-            layout_smart_feed_lifetime_line.visibility = View.GONE
-            layout_smart_min_feed_num_line.visibility = View.GONE
-            layout_smart_delay_for_settle_line.visibility = View.GONE
-            layout_smart_offset_settle_line.visibility = View.GONE
-            layout_smart_max_settle_volume_line.visibility = View.GONE
+            binding.layoutSmartFeedLifetimeLine.visibility = View.GONE
+            binding.layoutSmartMinFeedNumLine.visibility = View.GONE
+            binding.layoutSmartDelayForSettleLine.visibility = View.GONE
+            binding.layoutSmartOffsetSettleLine.visibility = View.GONE
+            binding.layoutSmartMaxSettleVolumeLine.visibility = View.GONE
         }
     }
 
@@ -489,11 +494,11 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
      *  描绘值 - 智能币背书资产
      */
     private fun _drawValue_smartBackingAsset() {
-        img_arrow_smart_backing_asset.visibility = View.VISIBLE
-        tv_smart_backing_asset.let { label ->
+        binding.imgArrowSmartBackingAsset.visibility = View.VISIBLE
+        binding.tvSmartBackingAsset.let { label ->
             if (_bitasset_options_args != null) {
                 if (isEditSmartInfo()) {
-                    img_arrow_smart_backing_asset.visibility = View.GONE
+                    binding.imgArrowSmartBackingAsset.visibility = View.GONE
                     label.text = ChainObjectManager.sharedChainObjectManager().getChainObjectByID(_bitasset_options_args!!.getString("short_backing_asset")).getString("symbol")
                     label.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
                 } else {
@@ -536,17 +541,17 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
      */
     private fun _drawValue_allSmartArgs() {
         _drawValue_smartBackingAsset()
-        _drawValue_smartValues(tv_smart_feed_lifetime, "feed_lifetime_sec") { lb, value ->
+        _drawValue_smartValues(binding.tvSmartFeedLifetime, "feed_lifetime_sec") { lb, value ->
             lb.text = String.format(resources.getString(R.string.kVcAssetMgrCellValueSmartMinN), value.toString().toInt() / 60)
         }
-        _drawValue_smartValues(tv_smart_min_feed_num, "minimum_feeds") { lb, value ->
+        _drawValue_smartValues(binding.tvSmartMinFeedNum, "minimum_feeds") { lb, value ->
             lb.text = value.toString()
         }
-        _drawValue_smartValues(tv_smart_delay_for_settle, "force_settlement_delay_sec") { lb, value ->
+        _drawValue_smartValues(binding.tvSmartDelayForSettle, "force_settlement_delay_sec") { lb, value ->
             lb.text = String.format(resources.getString(R.string.kVcAssetMgrCellValueSmartMinN), value.toString().toInt() / 60)
         }
-        _drawValue_smartValues(tv_smart_offset_settle, "force_settlement_offset_percent") { lb, value -> _drawValue_percentValue(lb, value) }
-        _drawValue_smartValues(tv_smart_max_settle_volume, "maximum_force_settlement_volume") { lb, value -> _drawValue_percentValue(lb, value) }
+        _drawValue_smartValues(binding.tvSmartOffsetSettle, "force_settlement_offset_percent") { lb, value -> _drawValue_percentValue(lb, value) }
+        _drawValue_smartValues(binding.tvSmartMaxSettleVolume, "maximum_force_settlement_volume") { lb, value -> _drawValue_percentValue(lb, value) }
     }
 
     /**
@@ -554,7 +559,7 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
      */
     private fun _drawUI_smartInfo() {
         if ((isCreateAsset() && _enable_more_args) || isEditSmartInfo()) {
-            layout_segment_smartinfos.visibility = View.VISIBLE
+            binding.layoutSegmentSmartinfos.visibility = View.VISIBLE
 
             //  描绘
             _drawValue_allSmartArgs()
@@ -565,7 +570,7 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
                 _drawUI_visible_smartRows(_bitasset_options_args != null)
             }
         } else {
-            layout_segment_smartinfos.visibility = View.GONE
+            binding.layoutSegmentSmartinfos.visibility = View.GONE
         }
     }
 
@@ -574,11 +579,11 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
      */
     private fun _drawUI_button() {
         if (isCreateAsset()) {
-            btn_submit.text = resources.getString(R.string.kVcAssetMgrAssetCreateButton)
+            binding.btnSubmit.text = resources.getString(R.string.kVcAssetMgrAssetCreateButton)
         } else if (isEditBasicInfo()) {
-            btn_submit.text = resources.getString(R.string.kVcAssetMgrAssetUpdateAssetButton)
+            binding.btnSubmit.text = resources.getString(R.string.kVcAssetMgrAssetUpdateAssetButton)
         } else {
-            btn_submit.text = resources.getString(R.string.kVcAssetMgrAssetUpdateBitassetButton)
+            binding.btnSubmit.text = resources.getString(R.string.kVcAssetMgrAssetUpdateBitassetButton)
         }
     }
 
@@ -587,13 +592,13 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
      */
     private fun _drawUI_tips() {
         if (isCreateAsset()) {
-            layout_tips_info_segment.visibility = View.VISIBLE
-            layout_tips_info_segment.text = resources.getString(R.string.kVcAssetMgrCreateUiTipsCreate)
+            binding.layoutTipsInfoSegment.visibility = View.VISIBLE
+            binding.layoutTipsInfoSegment.text = resources.getString(R.string.kVcAssetMgrCreateUiTipsCreate)
         } else if (isEditBasicInfo()) {
-            layout_tips_info_segment.visibility = View.VISIBLE
-            layout_tips_info_segment.text = resources.getString(R.string.kVcAssetMgrCreateUiTipsUpdateAsset)
+            binding.layoutTipsInfoSegment.visibility = View.VISIBLE
+            binding.layoutTipsInfoSegment.text = resources.getString(R.string.kVcAssetMgrCreateUiTipsUpdateAsset)
         } else {
-            layout_tips_info_segment.visibility = View.GONE
+            binding.layoutTipsInfoSegment.visibility = View.GONE
         }
     }
 
@@ -654,7 +659,7 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
             val value = it as? String
             if (value != null) {
                 //  资产名称有效性再提交的时候检测
-                _symbol = value.toUpperCase()
+                _symbol = value.uppercase(getDefault())
                 _drawValue_assetSymbol()
             }
             return@then null
@@ -924,7 +929,7 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
         }
 
         //  各种条件校验
-        val sym = _symbol.toUpperCase().trim()
+        val sym = _symbol.uppercase(getDefault()).trim()
         if (!_checkAssetSymbolName(sym)) {
             return
         }

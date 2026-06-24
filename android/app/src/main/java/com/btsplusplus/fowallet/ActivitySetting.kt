@@ -1,13 +1,16 @@
 package com.btsplusplus.fowallet
 
 import android.os.Bundle
+import android.view.View
 import bitshares.*
 import com.btsplusplus.fowallet.utils.VcUtils
 import com.fowallet.walletcore.bts.ChainObjectManager
-import kotlinx.android.synthetic.main.activity_setting.*
+import com.btsplusplus.fowallet.databinding.ActivitySettingBinding
 import org.json.JSONObject
 
 class ActivitySetting : BtsppActivity() {
+
+    private lateinit var binding: ActivitySettingBinding
 
     private lateinit var _result_promise: Promise
 
@@ -25,6 +28,7 @@ class ActivitySetting : BtsppActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setAutoLayoutContentView(R.layout.activity_setting)
+        binding = ActivitySettingBinding.bind(findViewById<View>(android.R.id.content).rootView)
 
         //  获取参数 / get params
         val args = btspp_args_as_JSONObject()
@@ -34,10 +38,10 @@ class ActivitySetting : BtsppActivity() {
         setFullScreen()
 
         //  事件 - 返回
-        layout_back_from_setting.setOnClickListener { onBackClicked(false) }
+        binding.layoutBackFromSetting.setOnClickListener { onBackClicked(false) }
 
         //  事件 - 多语言
-        layout_language_from_setting.setOnClickListener {
+        binding.layoutLanguageFromSetting.setOnClickListener {
             val saveCurrLangCode = LangManager.sharedLangManager().currLangCode
             val result_promise = Promise()
             goTo(ActivitySettingLanguage::class.java, true, args = jsonObjectfromKVS("result_promise", result_promise))
@@ -50,21 +54,21 @@ class ActivitySetting : BtsppActivity() {
         }
 
         //  事件 - 计价单位
-        layout_currency_from_setting.setOnClickListener { goTo(ActivitySettingCurrency::class.java, true) }
+        binding.layoutCurrencyFromSetting.setOnClickListener { goTo(ActivitySettingCurrency::class.java, true) }
 
         //  事件 - 横板交易界面
-        btn_enable_hor_ui.setOnCheckedChangeListener { _, isChecked ->
+        binding.btnEnableHorUi.setOnCheckedChangeListener { _, isChecked ->
             SettingManager.sharedSettingManager().setUseConfigBoolean(kSettingKey_EnableHorTradeUI, isChecked)
         }
 
         //  事件 - API节点
-        layout_apinode.setOnClickListener { goTo(ActivitySelectApiNode::class.java, true) }
+        binding.layoutApinode.setOnClickListener { goTo(ActivitySelectApiNode::class.java, true) }
 
         //  事件 - 版本
-        layout_version.setOnClickListener { onVersionCellClicked() }
+        binding.layoutVersion.setOnClickListener { onVersionCellClicked() }
 
         //  事件 - 关于
-        layout_about.setOnClickListener { goTo(ActivityAbout::class.java, true) }
+        binding.layoutAbout.setOnClickListener { goTo(ActivityAbout::class.java, true) }
     }
 
     /**
@@ -87,7 +91,7 @@ class ActivitySetting : BtsppActivity() {
     private fun _refreshUI() {
         _refresh_language()
         _refresh_currency()
-        btn_enable_hor_ui.isChecked = SettingManager.sharedSettingManager().isEnableHorTradeUI()
+        binding.btnEnableHorUi.isChecked = SettingManager.sharedSettingManager().isEnableHorTradeUI()
         _refresh_apinode()
         _refresh_version()
     }
@@ -96,7 +100,7 @@ class ActivitySetting : BtsppActivity() {
      * 显示当前语言
      */
     private fun _refresh_language() {
-        label_txt_language.text = LangManager.sharedLangManager().getCurrentLanguageName(this)
+        binding.labelTxtLanguage.text = LangManager.sharedLangManager().getCurrentLanguageName(this)
     }
 
     /**
@@ -105,7 +109,7 @@ class ActivitySetting : BtsppActivity() {
     private fun _refresh_currency() {
         val assetSymbol = SettingManager.sharedSettingManager().getEstimateAssetSymbol()
         val currency = ChainObjectManager.sharedChainObjectManager().getEstimateUnitBySymbol(assetSymbol)
-        label_txt_currency.text = resources.getString(resources.getIdentifier(currency.getString("namekey"), "string", this.packageName))
+        binding.labelTxtCurrency.text = resources.getString(resources.getIdentifier(currency.getString("namekey"), "string", this.packageName))
     }
 
     /**
@@ -117,12 +121,12 @@ class ActivitySetting : BtsppActivity() {
         if (current_node != null) {
             val namekey = current_node.optString("namekey", "")
             if (namekey.isNotEmpty()) {
-                label_txt_apinode.text = resources.getString(resources.getIdentifier(namekey, "string", packageName))
+                binding.labelTxtApinode.text = resources.getString(resources.getIdentifier(namekey, "string", packageName))
             } else {
-                label_txt_apinode.text = current_node.optString("location", null) ?: current_node.optString("name")
+                binding.labelTxtApinode.text = current_node.optString("location", null) ?: current_node.optString("name")
             }
         } else {
-            label_txt_apinode.text = resources.getString(R.string.kSettingApiCellValueRandom)
+            binding.labelTxtApinode.text = resources.getString(R.string.kSettingApiCellValueRandom)
         }
     }
 
@@ -130,6 +134,6 @@ class ActivitySetting : BtsppActivity() {
      * 显示当前版本
      */
     private fun _refresh_version() {
-        label_txt_version.text = String.format("v%s", Utils.appVersionName())
+        binding.labelTxtVersion.text = String.format("v%s", Utils.appVersionName())
     }
 }

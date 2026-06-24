@@ -10,6 +10,8 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.util.Locale
+import java.util.Locale.getDefault
 import kotlin.math.floor
 
 
@@ -1716,7 +1718,11 @@ class ChainObjectManager {
     fun queryAccountData(account_name_or_id: String): Promise {
         val p = Promise()
         val conn = GrapheneConnectionManager.sharedGrapheneConnectionManager().any_connection()
-        conn.async_exec_db("get_accounts", jsonArrayfrom(jsonArrayfrom(account_name_or_id.toLowerCase()))).then {
+        conn.async_exec_db("get_accounts", jsonArrayfrom(jsonArrayfrom(
+            account_name_or_id.lowercase(
+                getDefault()
+            )
+        ))).then {
             val data_array = it as JSONArray?
             if (data_array == null || data_array.length() <= 0) {
                 p.resolve(null)

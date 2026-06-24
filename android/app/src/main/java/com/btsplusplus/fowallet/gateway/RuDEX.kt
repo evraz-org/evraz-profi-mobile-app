@@ -5,6 +5,8 @@ import bitshares.*
 import com.btsplusplus.fowallet.R
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.Locale
+import java.util.Locale.getDefault
 
 class RuDEX : GatewayBase() {
 
@@ -48,7 +50,7 @@ class RuDEX : GatewayBase() {
                 confirm_block_number = confirmations.getString("value")
             }
 
-            val symbol = item.getString("symbol").toUpperCase()
+            val symbol = item.getString("symbol").uppercase(getDefault())
             val balance_item = balanceHash.optJSONObject(symbol)
                     ?: jsonObjectfromKVS("iszero", true)
 
@@ -56,7 +58,7 @@ class RuDEX : GatewayBase() {
             appext.enableWithdraw = enableWithdraw
             appext.enableDeposit = enableDeposit
             appext.symbol = symbol
-            appext.backSymbol = item.getString("backingCoin").toUpperCase()
+            appext.backSymbol = item.getString("backingCoin").uppercase(getDefault())
             appext.name = item.getString("name")
             appext.intermediateAccount = item.optString("issuerId") ?: item.optString("issuer")
             appext.balance = balance_item
@@ -101,10 +103,10 @@ class RuDEX : GatewayBase() {
         if (inputAddress != null) {
             val depositItem = JSONObject().apply {
                 put("inputAddress", inputAddress)
-                put("inputCoinType", appext.backingCoinType.toLowerCase())
+                put("inputCoinType", appext.backingCoinType.lowercase(getDefault()))
                 put("inputMemo", inputMemo)
                 put("outputAddress", account_name)
-                put("outputCoinType", appext.coinType.toLowerCase())
+                put("outputCoinType", appext.coinType.lowercase(getDefault()))
             }
             p.resolve(depositItem)
         } else {
@@ -150,7 +152,7 @@ class RuDEX : GatewayBase() {
         //  useFullAssetName        - 部分网关提币备注资产名需要 网关.资产
         //  assetWithdrawlAlias     - 部分网关部分币种提币备注和bts上资产名字不同。
         //  REMARK：RUDEX 网关背书资产需要小写。
-        val assetName = appext.backSymbol.toLowerCase()
+        val assetName = appext.backSymbol.lowercase(getDefault())
         val final_memo = if (memo != null && memo != "") {
             String.format("%s:%s:%s", assetName, address, memo)
         } else {

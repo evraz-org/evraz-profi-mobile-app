@@ -3,7 +3,7 @@ package com.btsplusplus.fowallet
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -173,7 +173,7 @@ class FragmentMarketInfo : BtsppFragment() {
                 val group = group_list.getJSONObject(i)
 
                 //  分组名称
-                val flmain = FrameLayout(_context).apply {
+                val flmain = FrameLayout(_context!!).apply {
                     layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, toDp(32f))
                 }
                 val tvmain = TextView(_context).apply {
@@ -187,7 +187,7 @@ class FragmentMarketInfo : BtsppFragment() {
                 tvmain.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 13f)
                 val group_key = group.getString("group_key")
                 val group_info = ChainObjectManager.sharedChainObjectManager().getGroupInfoFromGroupKey(group_key)
-                tvmain.text = resources.getString(resources.getIdentifier(group_info.getString("name_key"), "string", context!!.packageName))
+                tvmain.text = resources.getString(resources.getIdentifier(group_info.getString("name_key"), "string", requireContext().packageName))
                 flmain.addView(tvmain)
 
                 //  介绍按钮
@@ -202,7 +202,7 @@ class FragmentMarketInfo : BtsppFragment() {
                         setTextColor(resources.getColor(R.color.theme01_textColorGray))
                         setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12f)
                         setOnClickListener {
-                            VcUtils.gotoQaView(activity!!, "qa_gateway", resources.getString(R.string.kVcTitleWhatIsGateway))
+                            VcUtils.gotoQaView(requireActivity(), "qa_gateway", resources.getString(R.string.kVcTitleWhatIsGateway))
                         }
                     }
                     flmain.addView(inmain)

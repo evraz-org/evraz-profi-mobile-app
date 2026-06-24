@@ -3,13 +3,13 @@ package com.btsplusplus.fowallet
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.fragment.app.Fragment
 import bitshares.*
 import com.btsplusplus.fowallet.utils.VcUtils
 import com.fowallet.walletcore.bts.ChainObjectManager
@@ -65,7 +65,7 @@ class FragmentRegisterAccountMode : Fragment() {
         val mask = ViewMask(R.string.kTipsBeRequesting.xmlstring(this.activity!!), this.activity!!)
         mask.show()
         val chainMgr = ChainObjectManager.sharedChainObjectManager()
-        val username = account_name.toLowerCase()
+        val username = account_name.lowercase()
         //  1、查询名字是否被占用。
         chainMgr.isAccountExistOnBlockChain(username).then {
             if (it != null && it as Boolean) {

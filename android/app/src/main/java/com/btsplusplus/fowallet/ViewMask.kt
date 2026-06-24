@@ -20,11 +20,11 @@ class ViewMask : Dialog {
     private var _owner: Context? = null
 
     @SuppressLint("ResourceType")
-    constructor(loading_text: String, context: Context?) : super(context) {
+    constructor(loading_text: String, context: Context) : super(context) {
         _owner = context
 
         //  加载中文字
-        val textView = TextView(context!!)
+        val textView = TextView(context)
         textView.text = loading_text
         textView.setTextColor(context.resources.getColor(R.color.theme01_textColorMain))
         textView.gravity = Gravity.CENTER
@@ -59,13 +59,13 @@ class ViewMask : Dialog {
         setCancelable(false)
 
         //  dialog 窗口属性
-        val attr = window.attributes
+        val attr = window!!.attributes
         attr.gravity = Gravity.CENTER
         attr.width = LinearLayout.LayoutParams.WRAP_CONTENT
         attr.title = null
         attr.height = LinearLayout.LayoutParams.WRAP_CONTENT
-        this.window.setBackgroundDrawableResource(R.color.transparent)
-        this.window.attributes = attr
+        this.window!!.setBackgroundDrawableResource(R.color.transparent)
+        this.window!!.attributes = attr
 
         // REMARK 部分机型去除标题栏
         val v = this.findViewById<View>(android.R.id.title)

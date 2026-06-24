@@ -1,14 +1,15 @@
 package com.btsplusplus.fowallet
 
 import android.os.Bundle
+import android.view.View
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityBlindTransferBinding
 import com.btsplusplus.fowallet.utils.ModelUtils
 import com.btsplusplus.fowallet.utils.StealthTransferUtils
 import com.btsplusplus.fowallet.utils.kAppBlindReceiptBlockNum
 import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_blind_transfer.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.math.BigDecimal
@@ -23,6 +24,8 @@ class ActivityBlindTransfer : BtsppActivity() {
     private lateinit var _viewBlindInputs: ViewBlindAccountsOrReceipt
     private lateinit var _viewBlindOutputs: ViewBlindAccountsOrReceipt
 
+    private lateinit var binding: ActivityBlindTransferBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -30,6 +33,8 @@ class ActivityBlindTransfer : BtsppActivity() {
         setAutoLayoutContentView(R.layout.activity_blind_transfer)
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
+
+        binding = ActivityBlindTransferBinding.bind(findViewById<View>(android.R.id.content).rootView)
 
         //  获取参数
         val args = btspp_args_as_JSONObject()
@@ -39,15 +44,15 @@ class ActivityBlindTransfer : BtsppActivity() {
         }
 
         //  初始化UI
-        _viewBlindInputs = ViewBlindAccountsOrReceipt(this, kBlindItemTypeInput, layout_blind_receipt_list_from_blind_transfer, callback_remove = { _on_remove_input_clicked(it) }, callback_add = { _on_add_one_input_clicked() })
-        _viewBlindOutputs = ViewBlindAccountsOrReceipt(this, kBlindItemTypeOutput, layout_blind_account_list_from_blind_transfer, callback_remove = { _on_remove_output_clicked(it) }, callback_add = { _on_add_one_output_clicked() })
+        _viewBlindInputs = ViewBlindAccountsOrReceipt(this, kBlindItemTypeInput, binding.layoutBlindReceiptListFromBlindTransfer, callback_remove = { _on_remove_input_clicked(it) }, callback_add = { _on_add_one_input_clicked() })
+        _viewBlindOutputs = ViewBlindAccountsOrReceipt(this, kBlindItemTypeOutput, binding.layoutBlindAccountListFromBlindTransfer, callback_remove = { _on_remove_output_clicked(it) }, callback_add = { _on_add_one_output_clicked() })
         refreshUI()
 
         //  提交事件
-        btn_commit.setOnClickListener { onSubmit() }
+        binding.btnCommit.setOnClickListener { onSubmit() }
 
         //  返回事件
-        layout_back_from_blind_transfer.setOnClickListener { finish() }
+        binding.layoutBackFromBlindTransfer.setOnClickListener { finish() }
     }
 
     private fun calcBlindInputTotalAmount(): BigDecimal {
@@ -267,7 +272,7 @@ class ActivityBlindTransfer : BtsppActivity() {
         }
 
         //  收据总金额
-        tv_total_input_value.let { tv ->
+        binding.tvTotalInputValue.let { tv ->
             if (_curr_blind_asset != null) {
                 val base_str = String.format("%s %s", n_total_input!!.toPriceAmountString(), _curr_blind_asset!!.getString("symbol"))
                 if (n_fee != null && n_total_input < n_total_output!!.add(n_fee)) {
@@ -285,16 +290,16 @@ class ActivityBlindTransfer : BtsppActivity() {
 
         //  输出总金额
         if (_curr_blind_asset != null) {
-            tv_total_output_value.text = String.format("%s %s", n_total_output!!.toPriceAmountString(), _curr_blind_asset!!.getString("symbol"))
+            binding.tvTotalOutputValue.text = String.format("%s %s", n_total_output!!.toPriceAmountString(), _curr_blind_asset!!.getString("symbol"))
         } else {
-            tv_total_output_value.text = "--"
+            binding.tvTotalOutputValue.text = "--"
         }
 
         //  广播手续费
         if (n_fee != null) {
-            tv_network_fee_value.text = String.format("%s %s", n_fee.toPriceAmountString(), _curr_blind_asset!!.getString("symbol"))
+            binding.tvNetworkFeeValue.text = String.format("%s %s", n_fee.toPriceAmountString(), _curr_blind_asset!!.getString("symbol"))
         } else {
-            tv_network_fee_value.text = "--"
+            binding.tvNetworkFeeValue.text = "--"
         }
     }
 

@@ -7,7 +7,7 @@ import com.btsplusplus.fowallet.utils.VcUtils
 import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_new_account_password_confirm.*
+import com.btsplusplus.fowallet.databinding.ActivityNewAccountPasswordConfirmBinding
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -16,6 +16,8 @@ const val kModifyOnlyActivePermission = 1   //  仅修改【资金权限】
 const val kModifyOnlyOwnerPermission = 2    //  仅修改【账号权限】
 
 class ActivityNewAccountPasswordConfirm : BtsppActivity() {
+
+    private lateinit var binding: ActivityNewAccountPasswordConfirmBinding
 
     private var _curr_modify_range = kModifyAllPermissions
 
@@ -29,6 +31,7 @@ class ActivityNewAccountPasswordConfirm : BtsppActivity() {
 
         // 设置自动布局
         setAutoLayoutContentView(R.layout.activity_new_account_password_confirm)
+        binding = ActivityNewAccountPasswordConfirmBinding.bind(findViewById<View>(android.R.id.content).rootView)
 
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
@@ -44,53 +47,53 @@ class ActivityNewAccountPasswordConfirm : BtsppActivity() {
         when (_scene) {
             kNewPasswordSceneRegAccount -> {
                 //  注册账号
-                btn_terms_of_service.visibility = View.VISIBLE
-                layout_modify_range.visibility = View.GONE
+                binding.btnTermsOfService.visibility = View.VISIBLE
+                binding.layoutModifyRange.visibility = View.GONE
                 //  UI - 新账号名
-                tv_your_account_name_title.text = resources.getString(R.string.kEditPasswordCellTItleYourNewAccountName)
-                tv_curr_account_name_value.setText(_new_account_name!!)
-                tv_curr_account_name_value.isEnabled = false
+                binding.tvYourAccountNameTitle.text = resources.getString(R.string.kEditPasswordCellTItleYourNewAccountName)
+                binding.tvCurrAccountNameValue.setText(_new_account_name!!)
+                binding.tvCurrAccountNameValue.isEnabled = false
                 //  UI - 提交按钮名字
-                btn_submit.text = resources.getString(R.string.kLoginCellBtnAgreeAndReg)
+                binding.btnSubmit.text = resources.getString(R.string.kLoginCellBtnAgreeAndReg)
                 //  事件 - 用户协议
-                btn_terms_of_service.setOnClickListener { onTermsOfServiceClicked() }
+                binding.btnTermsOfService.setOnClickListener { onTermsOfServiceClicked() }
             }
             kNewPasswordSceneChangePassowrd -> {
                 //  修改密码
-                btn_terms_of_service.visibility = View.INVISIBLE
-                layout_modify_range.visibility = View.VISIBLE
+                binding.btnTermsOfService.visibility = View.INVISIBLE
+                binding.layoutModifyRange.visibility = View.VISIBLE
                 //  UI - 账号名
-                tv_your_account_name_title.text = resources.getString(R.string.kEditPasswordCellTitleCurrAccountName)
-                tv_curr_account_name_value.setText(WalletManager.sharedWalletManager().getWalletAccountInfo()!!.getJSONObject("account").getString("name"))
-                tv_curr_account_name_value.isEnabled = false
+                binding.tvYourAccountNameTitle.text = resources.getString(R.string.kEditPasswordCellTitleCurrAccountName)
+                binding.tvCurrAccountNameValue.setText(WalletManager.sharedWalletManager().getWalletAccountInfo()!!.getJSONObject("account").getString("name"))
+                binding.tvCurrAccountNameValue.isEnabled = false
                 //  UI - 提交按钮名字
-                btn_submit.text = resources.getString(R.string.kEditPasswordBtnSubmmit)
+                binding.btnSubmit.text = resources.getString(R.string.kEditPasswordBtnSubmmit)
                 //  UI - 修改范围
                 _draw_ui_modify_range()
                 //  事件 - 选择修改范围
-                layout_modify_range_cell.setOnClickListener { onModifyRangeClicked() }
+                binding.layoutModifyRangeCell.setOnClickListener { onModifyRangeClicked() }
                 //  UI - 箭头颜色
-                img_arrow_modify_range.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
+                binding.imgArrowModifyRange.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
             }
             kNewPasswordSceneGenBlindAccountBrainKey -> {
                 //  创建隐私账号
-                btn_terms_of_service.visibility = View.INVISIBLE
-                layout_modify_range.visibility = View.GONE
+                binding.btnTermsOfService.visibility = View.INVISIBLE
+                binding.layoutModifyRange.visibility = View.GONE
                 //  UI - 别名
-                tv_your_account_name_title.text = resources.getString(R.string.kVcStCellTitleAliasName)
-                tv_curr_account_name_value.hint = resources.getString(R.string.kVcStPlaceholderInputAliasName)
-                tv_curr_account_name_value.isEnabled = true
+                binding.tvYourAccountNameTitle.text = resources.getString(R.string.kVcStCellTitleAliasName)
+                binding.tvCurrAccountNameValue.hint = resources.getString(R.string.kVcStPlaceholderInputAliasName)
+                binding.tvCurrAccountNameValue.isEnabled = true
                 //  UI - 提交按钮名字
-                btn_submit.text = resources.getString(R.string.kEditPasswordBtnCreateBlindAccount)
+                binding.btnSubmit.text = resources.getString(R.string.kEditPasswordBtnCreateBlindAccount)
             }
             else -> assert(false)
         }
 
         //  事件 - 提交事件
-        btn_submit.setOnClickListener { onBtnSubmit() }
+        binding.btnSubmit.setOnClickListener { onBtnSubmit() }
 
         //  事件 - 返回
-        layout_back_from_new_account_password_confirm.setOnClickListener { finish() }
+        binding.layoutBackFromNewAccountPasswordConfirm.setOnClickListener { finish() }
     }
 
     /**
@@ -106,10 +109,10 @@ class ActivityNewAccountPasswordConfirm : BtsppActivity() {
      */
     private fun _draw_ui_modify_range() {
         when (_curr_modify_range) {
-            kModifyAllPermissions -> tv_modify_range_value.text = resources.getString(R.string.kEditPasswordCellValueEditRangeOwnerAndActive)
-            kModifyOnlyActivePermission -> tv_modify_range_value.text = resources.getString(R.string.kEditPasswordCellValueEditRangeOnlyActive)
-            kModifyOnlyOwnerPermission -> tv_modify_range_value.text = resources.getString(R.string.kEditPasswordCellValueEditRangeOnlyOwner)
-            else -> tv_modify_range_value.text = ""
+            kModifyAllPermissions -> binding.tvModifyRangeValue.text = resources.getString(R.string.kEditPasswordCellValueEditRangeOwnerAndActive)
+            kModifyOnlyActivePermission -> binding.tvModifyRangeValue.text = resources.getString(R.string.kEditPasswordCellValueEditRangeOnlyActive)
+            kModifyOnlyOwnerPermission -> binding.tvModifyRangeValue.text = resources.getString(R.string.kEditPasswordCellValueEditRangeOnlyOwner)
+            else -> binding.tvModifyRangeValue.text = ""
         }
     }
 
@@ -341,7 +344,7 @@ class ActivityNewAccountPasswordConfirm : BtsppActivity() {
      */
     private fun onBtnSubmit() {
         //  校验参数
-        val confirm_password = tf_confirm_password.text.toString()
+        val confirm_password = binding.tfConfirmPassword.text.toString()
         if (confirm_password != _curr_password) {
             showToast(resources.getString(R.string.kEditPasswordSubmitTipsConfirmFailed))
             return
@@ -363,7 +366,7 @@ class ActivityNewAccountPasswordConfirm : BtsppActivity() {
                 }
             }
             kNewPasswordSceneGenBlindAccountBrainKey -> {
-                val str_alias_name = tv_curr_account_name_value.text.toString().trim()
+                val str_alias_name = binding.tvCurrAccountNameValue.text.toString().trim()
                 VcUtils.processImportBlindAccount(this, str_alias_name, _curr_password) { blind_account ->
                     //  转到账号管理界面
                     val self = this

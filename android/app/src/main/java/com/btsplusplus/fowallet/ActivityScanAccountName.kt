@@ -8,16 +8,19 @@ import bitshares.jsonObjectfromKVS
 import bitshares.xmlstring
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_scan_account_name.*
+import com.btsplusplus.fowallet.databinding.ActivityScanAccountNameBinding
 import org.json.JSONArray
 import org.json.JSONObject
 
 class ActivityScanAccountName : BtsppActivity() {
 
+    private lateinit var binding: ActivityScanAccountNameBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // 设置自动布局
         setAutoLayoutContentView(R.layout.activity_scan_account_name)
+        binding = ActivityScanAccountNameBinding.bind(findViewById<View>(android.R.id.content).rootView)
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
@@ -33,13 +36,13 @@ class ActivityScanAccountName : BtsppActivity() {
         tv_account_name.text = account.getString("name")
 
         //  返回
-        layout_back_from_scan_result_account_name.setOnClickListener { finish() }
+        binding.layoutBackFromScanResultAccountName.setOnClickListener { finish() }
 
         //  转账
-        btn_transfer.setOnClickListener { onGotoTransfer(account) }
+        binding.btnTransfer.setOnClickListener { onGotoTransfer(account) }
 
         //  查看详情
-        btn_detail.setOnClickListener { viewUserAssets(account.getString("name")) }
+        binding.btnDetail.setOnClickListener { viewUserAssets(account.getString("name")) }
     }
 
     private fun onGotoTransfer(default_to: JSONObject) {

@@ -9,6 +9,8 @@ import com.btsplusplus.fowallet.utils.StealthTransferUtils
 import org.json.JSONArray
 import org.json.JSONObject
 import java.math.BigDecimal
+import java.util.Locale
+import java.util.Locale.getDefault
 import kotlin.math.max
 import kotlin.math.min
 
@@ -711,7 +713,9 @@ class BitsharesClientManager {
                             }
                             //  b. 手续费池余额不足错误（仅针对非core资产）
                             if (unknown_commitment == null) {
-                                val first_stack_format = stack.optJSONObject(0).optString("format", null)?.toLowerCase()
+                                val first_stack_format =
+                                    stack.optJSONObject(0).optString("format", null)
+                                        .lowercase(getDefault())
                                 //  "core_fee_paid <= fee_asset_dyn_data->fee_pool: Fee pool balance of '${b}' is less than the ${r} required to convert ${c}"
                                 if (first_stack_format != null && first_stack_format.indexOf("fee pool balance") >= 0) {
                                     //  验证结果：手续费池不足

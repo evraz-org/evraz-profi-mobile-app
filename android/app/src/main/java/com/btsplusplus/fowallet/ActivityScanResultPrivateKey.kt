@@ -8,17 +8,20 @@ import android.widget.ImageView
 import android.widget.TextView
 import bitshares.*
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_scan_result_private_key.*
+import com.btsplusplus.fowallet.databinding.ActivityScanResultPrivateKeyBinding
 import org.json.JSONArray
 import org.json.JSONObject
 
 class ActivityScanResultPrivateKey : BtsppActivity() {
+
+    private lateinit var binding: ActivityScanResultPrivateKeyBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         //  设置自动布局
         setAutoLayoutContentView(R.layout.activity_scan_result_private_key)
+        binding = ActivityScanResultPrivateKeyBinding.bind(findViewById<View>(android.R.id.content).rootView)
 
         //  设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
@@ -62,18 +65,18 @@ class ActivityScanResultPrivateKey : BtsppActivity() {
         //  初始化ID、名字、类型
         findViewById<TextView>(R.id.txt_account_id).text = account_data.getString("id")
         findViewById<TextView>(R.id.txt_account_name).text = account_data.getString("name")
-        findViewById<TextView>(R.id.txt_private_key_type).let {
+        binding.txtPrivateKeyType.let {
             it.text = priKeyTypeArray.toList<String>().joinToString(" ")
         }
 
         //  初始化钱包密码（可选）
         val bNeedWalletPassword = _needWalletPasswordField()
         if (bNeedWalletPassword) {
-            lay_wallet_password.visibility = View.VISIBLE
+            binding.layWalletPassword.visibility = View.VISIBLE
             //  交易密码 tip
-            findViewById<ImageView>(R.id.tip_password).setOnClickListener { UtilsAlert.showMessageBox(this, resources.getString(R.string.kLoginRegTipsWalletPasswordFormat)) }
+            binding.tipPassword.setOnClickListener { UtilsAlert.showMessageBox(this, resources.getString(R.string.kLoginRegTipsWalletPasswordFormat)) }
         } else {
-            lay_wallet_password.visibility = View.GONE
+            binding.layWalletPassword.visibility = View.GONE
         }
 
         //  初始化导入按钮文字
@@ -85,11 +88,11 @@ class ActivityScanResultPrivateKey : BtsppActivity() {
         }
 
         //  事件 - 返回
-        layout_back_from_scan_result_private_key.setOnClickListener { finish() }
+        binding.layoutBackFromScanResultPrivateKey.setOnClickListener { finish() }
 
         //  事件 - 导入
-        btn_import.setOnClickListener {
-            val trade_password = if (bNeedWalletPassword) findViewById<EditText>(R.id.tf_password).text.toString().trim() else null
+        binding.btnImport.setOnClickListener {
+            val trade_password = if (bNeedWalletPassword) binding.tfPassword.text.toString().trim() else null
             _onImportClicked(full_account_data, publicKey, privateKey, trade_password)
         }
     }

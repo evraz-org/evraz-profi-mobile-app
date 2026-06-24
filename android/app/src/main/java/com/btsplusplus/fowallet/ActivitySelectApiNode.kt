@@ -9,7 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import bitshares.*
 import com.fowallet.walletcore.bts.ChainObjectManager
-import kotlinx.android.synthetic.main.activity_select_api_node.*
+import com.btsplusplus.fowallet.databinding.ActivitySelectApiNodeBinding
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -19,6 +19,8 @@ const val kActionOpCopyURL = 2      //  复制节点URL
 
 class ActivitySelectApiNode : BtsppActivity() {
 
+    private lateinit var binding: ActivitySelectApiNodeBinding
+
     private var _data_array = JSONArray()
     private var _user_config = JSONObject()
 
@@ -27,6 +29,7 @@ class ActivitySelectApiNode : BtsppActivity() {
 
         // 设置自动布局
         setAutoLayoutContentView(R.layout.activity_select_api_node)
+        binding = ActivitySelectApiNodeBinding.bind(findViewById<View>(android.R.id.content).rootView)
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
@@ -46,13 +49,13 @@ class ActivitySelectApiNode : BtsppActivity() {
         _refresh_ui(_data_array)
 
         //  事件 - 新增
-        button_add_from_select_api_node.setOnClickListener { _onAddNewNodeClicked() }
+        binding.buttonAddFromSelectApiNode.setOnClickListener { _onAddNewNodeClicked() }
 
         //  事件 - 随机选择
-        layout_random.setOnClickListener { _onNodeCellClicked(null, img_icon_arrow_random) }
+        binding.layoutRandom.setOnClickListener { _onNodeCellClicked(null, binding.imgIconArrowRandom) }
 
         //  事件 - 返回
-        layout_back_from_select_api_node.setOnClickListener { finish() }
+        binding.layoutBackFromSelectApiNode.setOnClickListener { finish() }
     }
 
     private fun _onNodeCellClicked(node: JSONObject?, arrow_view: ImageView) {
@@ -73,7 +76,116 @@ class ActivitySelectApiNode : BtsppActivity() {
                     showToast(resources.getString(R.string.tip_network_error))
                 }
             }
+        }
+    }
+
+    private fun onSetNewCurrentNode(node: JSONObject?) {
+        if (node != null) {
+            //  选择：新节点
+            _user_config.put(kSettingKey_ApiNode_Current, node)
         } else {
+            //  选择：随机 - 移除之前的节点
+            _user_config.remove(kSettingKey_ApiNode_Current)
+        }
+        SettingManager.sharedSettingManager().setUseConfig(kSettingKey_ApiNode, _user_config)
+        //  刷新UI
+        _refresh_ui(_data_array)
+    }
+
+    /**
+     *  (private) 切换到 - 随机选择节点，切换成功返回 Promise YES，否则返回 Promise NO。
+     */
+    private fun switchToRandomSelectCore(): Promise {
+        val p = Promise()
+        val mask = ViewMask(resources.getString(R.string.kSettingApiSwitchTips), this).apply { show() }
+        val connMgr = GrapheneConnectionManager()
+        connMgr.Start(resources.getString(R.string.serverWssLangKey), force_use_random_node = true).then {
+            mask.dismiss()
+            GrapheneConnectionManager.replaceWithNewGrapheneConnectionManager(connMgr)
+            p.resolve(true)
+            return@then null
+        }.catch {
+            mask.dismiss()
+            p.resolve(false)
+        }
+        return p
+    }
+
+    /**
+     *  (private) 删除节点
+     */
+    private fun _onActionRemoveNodeClicked(remove_node: JSONObject) {
+        val remove_url = remove_node.getString("url")
+        val list = _user_config.getJSONArray(kSettingKey_ApiNode_CustomList)
+        var idx = 0
+        for (node in list.forin<JSONObject>()) {
+            if (node!!.getString("url") == remove_url) {
+                list.remove(idx)
+                //  使用中的节点不可删除。
+                assert(_user_config.optJSONObject(kSettingKey_ApiNode_Current) == null ||
+                        _user_config.getJSONObject(kSettingKey_ApiNode_Current).getString("url") != remove_url)
+                //  保存
+                SettingManager.sharedSettingManager().setUseConfig(kSettingKey_ApiNode, _user_config)
+                break
+            }
+            ++idx
+        }
+        //  刷新UI
+        idx = 0
+        for (node in _data_array.forin<JSONObject>()) {
+            if (node!!.getString("url") == remove_url) {
+                _data_array.remove(idx)
+                break
+            }
+            ++idx
+        }
+        _refresh_ui(_data_array)
+    }
+
+    /**
+     *  (private) 新增API节点
+     */
+    private fun _onAddNewNodeClicked() {
+        val url_hash = JSONObject()
+        for (node in _data_array.forin<JSONObject>()) {
+            url_hash.put(node!!.getString("url"), true)
+        }
+        val result_promise = Promise()
+        goTo(ActivityAddNewApiNode::class.java, true, args = JSONObject().apply {
+            put("url_hash", url_hash)
+            put("result_promise", result_promise)
+        })
+        result_promise.then { result ->
+            val new_node = result as? JSONObject
+            if (new_node != null) {
+                assert(!url_hash.has(new_node.getString("url")))
+                //  添加到列表
+                var list = _user_config.optJSONArray(kSettingKey_ApiNode_CustomList)
+                if (list == null) {
+                    list = JSONArray()
+                    _user_config.put(kSettingKey_ApiNode_CustomList, list)
+                }
+                list.put(new_node)
+                SettingManager.sharedSettingManager().setUseConfig(kSettingKey_ApiNode, _user_config)
+                //  刷新UI
+                _data_array.put(new_node)
+                _refresh_ui(_data_array)
+            }
+        }
+    }
+
+    private fun _refresh_ui(data_array: JSONArray) {
+        //  描绘随机选择后面的箭头
+        val current_node = _user_config.optJSONObject(kSettingKey_ApiNode_Current)
+        if (current_node != null) {
+            binding.imgIconArrowRandom.visibility = View.INVISIBLE
+        } else {
+            binding.imgIconArrowRandom.visibility = View.VISIBLE
+        }
+
+        //  描绘所有节点
+        val ctx = this
+        binding.layoutNodelistContainer.let { container ->
             //  点击某个节点
             val oplist = JSONArray()
             val bCurrentUsingNode = current_node != null && current_node.getString("url") == node.getString("url")
@@ -234,14 +346,7 @@ class ActivitySelectApiNode : BtsppActivity() {
         //  描绘随机选择后面的箭头
         val current_node = _user_config.optJSONObject(kSettingKey_ApiNode_Current)
         if (current_node != null) {
-            img_icon_arrow_random.visibility = View.INVISIBLE
-        } else {
-            img_icon_arrow_random.visibility = View.VISIBLE
-        }
 
-        //  描绘所有节点
-        val ctx = this
-        layout_nodelist_container.let { container ->
             //  清空
             container.removeAllViews()
             container.addView(ViewLine(this, 0.dp, 10.dp))

@@ -1,11 +1,12 @@
 package com.btsplusplus.fowallet
 
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
-import android.support.v4.view.ViewPager
+import android.view.View
+import androidx.fragment.app.Fragment
 import android.view.animation.OvershootInterpolator
-import kotlinx.android.synthetic.main.activity_account_info.*
+import androidx.viewpager.widget.ViewPager
+import com.btsplusplus.fowallet.databinding.ActivityAccountInfoBinding
+import com.google.android.material.tabs.TabLayout
 import java.lang.reflect.Field
 
 class ActivityAccountInfo : BtsppActivity() {
@@ -13,6 +14,8 @@ class ActivityAccountInfo : BtsppActivity() {
     private val fragmens: ArrayList<Fragment> = ArrayList()
     private var tablayout: TabLayout? = null
     private var view_pager: ViewPager? = null
+
+    private lateinit var binding: ActivityAccountInfoBinding
 
     override fun onBackClicked(result: Any?) {
         super.onBackClicked(result)
@@ -23,9 +26,11 @@ class ActivityAccountInfo : BtsppActivity() {
         setAutoLayoutContentView(R.layout.activity_account_info)
         setFullScreen()
 
+        binding = ActivityAccountInfoBinding.bind(findViewById<View>(android.R.id.content).rootView)
+
         // 设置 tablelayout 和 view_pager
-        tablayout = tablayout_of_account_info
-        view_pager = view_pager_of_account_info
+        tablayout = binding.tablayoutOfAccountInfo
+        view_pager = binding.viewPagerOfAccountInfo
 
         // 添加 fargments
         setFragments()
@@ -37,7 +42,7 @@ class ActivityAccountInfo : BtsppActivity() {
         setTabListener()
 
         //  返回
-        layout_back_from_account_detail.setOnClickListener { onBackClicked(null) }
+        binding.layoutBackFromAccountDetail.setOnClickListener { onBackClicked(null) }
     }
 
 

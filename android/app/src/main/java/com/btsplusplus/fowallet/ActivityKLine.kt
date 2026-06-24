@@ -1,9 +1,9 @@
 package com.btsplusplus.fowallet
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.support.design.widget.TabLayout
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageButton
@@ -14,7 +14,8 @@ import com.btsplusplus.fowallet.kline.MKlineItemData
 import com.btsplusplus.fowallet.kline.TradingPair
 import com.btsplusplus.fowallet.utils.VcUtils
 import com.fowallet.walletcore.bts.ChainObjectManager
-import kotlinx.android.synthetic.main.activity_kline.*
+import com.btsplusplus.fowallet.databinding.ActivityKlineBinding
+import com.google.android.material.tabs.TabLayout
 import org.json.JSONArray
 import org.json.JSONObject
 import java.math.BigDecimal
@@ -31,6 +32,7 @@ class ActivityKLine : BtsppActivity() {
     }
 
 
+    private lateinit var binding: ActivityKlineBinding
     lateinit var _tradingPair: TradingPair
     lateinit var _layout_trade_pair: LinearLayout
 
@@ -65,6 +67,7 @@ class ActivityKLine : BtsppActivity() {
         super.onCreate(savedInstanceState)
 
         setAutoLayoutContentView(R.layout.activity_kline)
+        binding = ActivityKlineBinding.bind(findViewById<View>(android.R.id.content).rootView)
         setFullScreen()
 
         //  获取参数
@@ -75,9 +78,13 @@ class ActivityKLine : BtsppActivity() {
         //  Custom initialization
         _tradingPair = TradingPair().initWithBaseAsset(base, quote)
         _dataArrayHistory = JSONArray()
+
+        @SuppressLint("HandlerLeak")
         _notify_handler = object : Handler() {
-            override fun handleMessage(msg: Message?) {
-                super.handleMessage(msg)
+            fun handleMessage(msg: Message?) {
+                if (msg != null) {
+                    super.handleMessage(msg)
+                }
                 if (msg != null) {
                     onSubMarketNotifyNewData(msg)
                 }
@@ -90,7 +97,7 @@ class ActivityKLine : BtsppActivity() {
         findViewById<TextView>(R.id.layout_kline_title).text = "${quote.getString("symbol")}/${base.getString("symbol")}"
 
         // 切换交易对按钮颜色
-        iv_switch_trade_pair_from_kline.setColorFilter(resources.getColor(R.color.theme01_textColorMain))
+        binding.ivSwitchTradePairFromKline.setColorFilter(resources.getColor(R.color.theme01_textColorMain))
 
         //  获取屏幕宽高
         val sw = Utils.screen_width
@@ -100,54 +107,54 @@ class ActivityKLine : BtsppActivity() {
         //  初始化 K线视图
         _viewKLine = ViewKLine(this, sw, _tradingPair)
         _viewKLine.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, toDp(px2dip(sw + 16f.dp).toFloat()))
-        layout_kline_area_from_kline.addView(_viewKLine)
+        binding.layoutKlineAreaFromKline.addView(_viewKLine)
 
         //  十字叉
         _viewCrss = ViewKLineCross(this, sw, _tradingPair)
         _viewCrss.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, toDp(px2dip(sw + 16f.dp).toFloat()))
-        layout_view_cross.addView(_viewCrss)
+        binding.layoutViewCross.addView(_viewCrss)
         //  TODO:交叉引用 是否能释放，测试后删除TODO
         _viewKLine.crossView = _viewCrss
         _viewCrss._kline = _viewKLine
 
         //  事件 - 返回
-        layout_back_from_kline.setOnClickListener { finish() }
+        binding.layoutBackFromKline.setOnClickListener { finish() }
 
         //  事件 - 切换交易对
-        _layout_trade_pair = layout_switch_trade_pair_from_kline
+        _layout_trade_pair = binding.layoutSwitchTradePairFromKline
         _layout_trade_pair.setOnClickListener { onTitleSwitchButtonClicked() }
 
         //  深度图
         _viewDeepGraph = ViewDeepGraph(this, sw, _tradingPair)
         _viewDeepGraph.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, toDp(px2dip(ceil(sw / 2.0f + 16f.dp).toFloat()).toFloat()))
-        layout_depth_area_from_kline.addView(_viewDeepGraph)
+        binding.layoutDepthAreaFromKline.addView(_viewDeepGraph)
 
         //  子界面 买卖盘口信息
         _viewBidAsk = ViewBidAsk(this).initView(28f, 20, _tradingPair)
-        layout_order_book_from_kline.addView(_viewBidAsk)
+        binding.layoutOrderBookFromKline.addView(_viewBidAsk)
 
         //  子界面 成交记录
         _viewTradeHistory = ViewTradeHistory(this).initView(24f, 20, _tradingPair)
-        layout_volume_from_kline.addView(_viewTradeHistory)
+        binding.layoutVolumeFromKline.addView(_viewTradeHistory)
 
         //  买
-        btn_buy_of_kline.setOnClickListener {
+        binding.btnBuyOfKline.setOnClickListener {
             goTo(ActivityTradeMain::class.java, true, args = jsonArrayfrom(_tradingPair, true))
         }
         //  卖
-        btn_sell_of_kline.setOnClickListener {
+        binding.btnSellOfKline.setOnClickListener {
             goTo(ActivityTradeMain::class.java, true, args = jsonArrayfrom(_tradingPair, false))
         }
         //  收藏
         _refreshFavButtonStatus()
-        img_btn_fav_of_kline.setOnClickListener {
+        binding.imgBtnFavOfKline.setOnClickListener {
             onButtomFavButtonClicked(it)
         }
 
         setTabListener()
 
         //  事件 / events
-        btn_index.setOnClickListener { _onIndexButtonClicked() }
+        binding.btnIndex.setOnClickListener { _onIndexButtonClicked() }
 
         //  获取默认查询的K线周期数据
         val parameters = ChainObjectManager.sharedChainObjectManager().getDefaultParameters()
@@ -170,7 +177,7 @@ class ActivityKLine : BtsppActivity() {
         ScheduleManager.sharedScheduleManager().unsub_market_notify(_tradingPair)
         //  交换交易对
         _tradingPair = TradingPair().initWithBaseAsset(_tradingPair._quoteAsset, _tradingPair._baseAsset)
-        layout_kline_title.text = String.format("%s/%s", _tradingPair._quoteAsset.getString("symbol"), _tradingPair._baseAsset.getString("symbol"))
+        binding.layoutKlineTitle.text = String.format("%s/%s", _tradingPair._quoteAsset.getString("symbol"), _tradingPair._baseAsset.getString("symbol"))
         //  刷新收藏按钮状态
         _refreshFavButtonStatus()
         //  更新关联数据
@@ -299,8 +306,8 @@ class ActivityKLine : BtsppActivity() {
 
     private fun setTabListener() {
         //  More Tab
-        val tab_more_index = tablayout_of_kline.tabCount - 1
-        val tab_more = tablayout_of_kline.getTabAt(tab_more_index)
+        val tab_more_index = binding.tablayoutOfKline.tabCount - 1
+        val tab_more = binding.tablayoutOfKline.getTabAt(tab_more_index)
         if (tab_more != null) {
             (tab_more.view as View).setOnTouchListener { _, event ->
                 if (event.action == MotionEvent.ACTION_DOWN) {
@@ -315,13 +322,13 @@ class ActivityKLine : BtsppActivity() {
         assert(kline_period_default_index < tab_more_index)
 
         //  顶部K线tab
-        tablayout_of_kline.getTabAt(kline_period_default_index)!!.select()
-        tablayout_of_kline!!.setOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        binding.tablayoutOfKline.getTabAt(kline_period_default_index)!!.select()
+        binding.tablayoutOfKline!!.setOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 val current_type = if (tab.position == tab_more_index) {
                     tab.tag as ViewKLine.EKlineDatePeriodType
                 } else {
-                    tablayout_of_kline.getTabAt(tab_more_index)!!.text = resources.getString(R.string.kLabelEkdptBtnMore)
+                    binding.tablayoutOfKline.getTabAt(tab_more_index)!!.text = resources.getString(R.string.kLabelEkdptBtnMore)
                     when (tab.position) {
                         0 -> ViewKLine.EKlineDatePeriodType.ekdpt_timeline
                         1 -> ViewKLine.EKlineDatePeriodType.ekdpt_15m
@@ -343,19 +350,19 @@ class ActivityKLine : BtsppActivity() {
         })
 
         //  深度和成交tab
-        tablayout_depth_of_kline!!.setOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        binding.tablayoutDepthOfKline!!.setOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 if (tab.position == 0) {
-                    layout_depth_area_title_from_kline.visibility = View.VISIBLE
-                    layout_depth_area_from_kline.visibility = View.VISIBLE
-                    layout_order_book_from_kline.visibility = View.VISIBLE
-                    layout_volume_from_kline.visibility = View.GONE
+                    binding.layoutDepthAreaTitleFromKline.visibility = View.VISIBLE
+                    binding.layoutDepthAreaFromKline.visibility = View.VISIBLE
+                    binding.layoutOrderBookFromKline.visibility = View.VISIBLE
+                    binding.layoutVolumeFromKline.visibility = View.GONE
                 }
                 if (tab.position == 1) {
-                    layout_depth_area_title_from_kline.visibility = View.GONE
-                    layout_depth_area_from_kline.visibility = View.GONE
-                    layout_order_book_from_kline.visibility = View.GONE
-                    layout_volume_from_kline.visibility = View.VISIBLE
+                    binding.layoutDepthAreaTitleFromKline.visibility = View.GONE
+                    binding.layoutDepthAreaFromKline.visibility = View.GONE
+                    binding.layoutOrderBookFromKline.visibility = View.GONE
+                    binding.layoutVolumeFromKline.visibility = View.VISIBLE
                 }
             }
 
@@ -399,10 +406,10 @@ class ActivityKLine : BtsppActivity() {
         _feedPriceInfo = settlement_data?.opt("feed_price_market") as? BigDecimal
         //  显示喂价
         if (_feedPriceInfo != null) {
-            field_feedprice.visibility = View.VISIBLE
-            label_txt_feed_price_value.text = _feedPriceInfo!!.toPlainString()
+            binding.fieldFeedprice.visibility = View.VISIBLE
+            binding.labelTxtFeedPriceValue.text = _feedPriceInfo!!.toPlainString()
         } else {
-            field_feedprice.visibility = View.INVISIBLE
+            binding.fieldFeedprice.visibility = View.INVISIBLE
         }
     }
 
@@ -417,12 +424,12 @@ class ActivityKLine : BtsppActivity() {
                     _tradingPair._quotePrecision,
                     null,
                     null)
-            label_txt_high_value.text = "${model.nPriceHigh}"
-            label_txt_low_value.text = "${model.nPriceLow}"
-            label_txt_24h_value.text = "${model.n24Vol}"
+            binding.labelTxtHighValue.text = "${model.nPriceHigh}"
+            binding.labelTxtLowValue.text = "${model.nPriceLow}"
+            binding.labelTxt24hValue.text = "${model.n24Vol}"
             _refreshCurrentTickerData()
         } else {
-            label_txt_24h_value.text = "0"
+            binding.labelTxt24hValue.text = "0"
         }
     }
 
@@ -434,20 +441,20 @@ class ActivityKLine : BtsppActivity() {
             latest = OrgUtils.formatFloatValue(ticker_data.getString("latest").toDouble(), _tradingPair._basePrecision)
             percent_change = ticker_data.getString("percent_change")
         }
-        label_txt_latest_price.text = latest
+        binding.labelTxtLatestPrice.text = latest
         val percent = percent_change.toDouble()
         if (percent > 0) {
-            label_txt_latest_price_percent.text = "+${percent_change}%"
-            label_txt_latest_price_percent.setTextColor(this.resources.getColor(R.color.theme01_buyColor))
-            label_txt_latest_price.setTextColor(this.resources.getColor(R.color.theme01_buyColor))
+            binding.labelTxtLatestPricePercent.text = "+${percent_change}%"
+            binding.labelTxtLatestPricePercent.setTextColor(this.resources.getColor(R.color.theme01_buyColor))
+            binding.labelTxtLatestPrice.setTextColor(this.resources.getColor(R.color.theme01_buyColor))
         } else if (percent < 0) {
-            label_txt_latest_price_percent.text = "${percent_change}%"
-            label_txt_latest_price_percent.setTextColor(this.resources.getColor(R.color.theme01_sellColor))
-            label_txt_latest_price.setTextColor(this.resources.getColor(R.color.theme01_sellColor))
+            binding.labelTxtLatestPricePercent.text = "${percent_change}%"
+            binding.labelTxtLatestPricePercent.setTextColor(this.resources.getColor(R.color.theme01_sellColor))
+            binding.labelTxtLatestPrice.setTextColor(this.resources.getColor(R.color.theme01_sellColor))
         } else {
-            label_txt_latest_price_percent.text = "${percent_change}%"
-            label_txt_latest_price_percent.setTextColor(this.resources.getColor(R.color.theme01_zeroColor))
-            label_txt_latest_price.setTextColor(this.resources.getColor(R.color.theme01_zeroColor))
+            binding.labelTxtLatestPricePercent.text = "${percent_change}%"
+            binding.labelTxtLatestPricePercent.setTextColor(this.resources.getColor(R.color.theme01_zeroColor))
+            binding.labelTxtLatestPrice.setTextColor(this.resources.getColor(R.color.theme01_zeroColor))
         }
     }
 
@@ -530,9 +537,9 @@ class ActivityKLine : BtsppActivity() {
      */
     private fun _refreshFavButtonStatus() {
         if (AppCacheManager.sharedAppCacheManager().is_fav_market(_tradingPair._quoteAsset.getString("id"), _tradingPair._baseAsset.getString("id"))) {
-            img_btn_fav_of_kline.setColorFilter(resources.getColor(R.color.theme01_textColorHighlight))
+            binding.imgBtnFavOfKline.setColorFilter(resources.getColor(R.color.theme01_textColorHighlight))
         } else {
-            img_btn_fav_of_kline.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
+            binding.imgBtnFavOfKline.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
         }
     }
 

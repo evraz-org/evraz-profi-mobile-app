@@ -8,12 +8,13 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityCreateHtlcContractBinding
 import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_create_htlc_contract.*
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.Locale.getDefault
 import kotlin.math.pow
 
 
@@ -49,9 +50,13 @@ class ActivityCreateHtlcContract : BtsppActivity() {
     private lateinit var _tv_amount: EditText
     private lateinit var _tv_preimage_or_hash: EditText
 
+    private lateinit var binding: ActivityCreateHtlcContractBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_htlc_contract)
+
+        binding = ActivityCreateHtlcContractBinding.bind(findViewById<View>(android.R.id.content).rootView)
 
         //  获取参数val
         val args = btspp_args_as_JSONObject()
@@ -64,14 +69,14 @@ class ActivityCreateHtlcContract : BtsppActivity() {
 
         _lock_field = _ref_htlc != null
 
-        _tv_amount = et_amount_from_create_htlc_contract
-        _tv_preimage_or_hash = if (_mode == EHtlcDeployMode.EDM_PREIMAGE.value) tv_preimage else tv_hashcode
+        _tv_amount = binding.etAmountFromCreateHtlcContract
+        _tv_preimage_or_hash = if (_mode == EHtlcDeployMode.EDM_PREIMAGE.value) binding.tvPreimage else binding.tvHashcode
 
         //  设置标题栏标题
         if (_lock_field) {
-            title_from_create_htlc_contract.text = R.string.kVcTitleCreateSubHTLC.xmlstring(this)
+            binding.titleFromCreateHtlcContract.text = R.string.kVcTitleCreateSubHTLC.xmlstring(this)
         } else {
-            title_from_create_htlc_contract.text = R.string.kVcTitleCreateHTLC.xmlstring(this)
+            binding.titleFromCreateHtlcContract.text = R.string.kVcTitleCreateHTLC.xmlstring(this)
         }
 
         //  设置全屏(隐藏状态栏和虚拟导航栏)
@@ -173,7 +178,7 @@ class ActivityCreateHtlcContract : BtsppActivity() {
         }
 
         //  返回
-        layout_back_from_create_htlc_contract.setOnClickListener { finish() }
+        binding.layoutBackFromCreateHtlcContract.setOnClickListener { finish() }
 
         //  TO
         findViewById<LinearLayout>(R.id.cell_to_account).setOnClickListener {
@@ -226,7 +231,8 @@ class ActivityCreateHtlcContract : BtsppActivity() {
      */
     private fun _randomSecurePreimage(): String {
         //  TODO:fowallet 最大原像不能超过 o.preimage_size <= htlc_options->max_preimage_size
-        return String.format("BTSPP%sPREIMAGE", WalletManager.randomPrivateKeyWIF()).toUpperCase()
+        return String.format("BTSPP%sPREIMAGE", WalletManager.randomPrivateKeyWIF())
+            .uppercase(getDefault())
     }
 
     /**
@@ -253,18 +259,18 @@ class ActivityCreateHtlcContract : BtsppActivity() {
         //  初始化原像和哈希模式控件默认状态
         if (_mode == EHtlcDeployMode.EDM_PREIMAGE.value) {
             //  from 原像
-            layout_hashcode.visibility = View.GONE
-            layout_preimage_length.visibility = View.GONE
-            switch_advance_setting_of_create_htlc_contract.setOnCheckedChangeListener { _, isChecked: Boolean ->
-                layout_hashtype_and_expiry_group.visibility = if (isChecked) View.VISIBLE else View.GONE
+            binding.layoutHashcode.visibility = View.GONE
+            binding.layoutPreimageLength.visibility = View.GONE
+            binding.switchAdvanceSettingOfCreateHtlcContract.setOnCheckedChangeListener { _, isChecked: Boolean ->
+                binding.layoutHashtypeAndExpiryGroup.visibility = if (isChecked) View.VISIBLE else View.GONE
             }
             //  默认原像
             _tv_preimage_or_hash.text = SpannableStringBuilder(_randomSecurePreimage())
         } else {
             //  from 原像哈希
-            layout_preimage.visibility = View.GONE
-            layout_moresetting.visibility = View.GONE
-            layout_hashtype_and_expiry_group.visibility = View.VISIBLE
+            binding.layoutPreimage.visibility = View.GONE
+            binding.layoutMoresetting.visibility = View.GONE
+            binding.layoutHashtypeAndExpiryGroup.visibility = View.VISIBLE
         }
 
         //  ※ 锁定：根据对方合约创建
@@ -286,24 +292,26 @@ class ActivityCreateHtlcContract : BtsppActivity() {
             assert(_currHashType != null)
 
             //  复制粘贴按钮
-            tv_copy_preimage.visibility = View.GONE
-            tv_paste_preimage_value.visibility = View.GONE
+            binding.tvCopyPreimage.visibility = View.GONE
+            binding.tvPastePreimageValue.visibility = View.GONE
 
             //  原像hash ui 默认值 和 不可编辑
-            _tv_preimage_or_hash.text = SpannableStringBuilder(preimage_hash.last<String>()!!.toUpperCase())
+            _tv_preimage_or_hash.text = SpannableStringBuilder(
+                preimage_hash.last<String>()!!.uppercase(getDefault())
+            )
             _tv_preimage_or_hash.setTextColor(resources.getColor(R.color.theme01_textColorGray))
             _tv_preimage_or_hash.ellipsize = TextUtils.TruncateAt.valueOf("END")
             _tv_preimage_or_hash.isEnabled = false
             _tv_preimage_or_hash.setFocusable(false)
             _tv_preimage_or_hash.keyListener = null
 
-            lbl_hashcode.setTextColor(resources.getColor(R.color.theme01_textColorGray))
-            tv_preimage_length.setTextColor(resources.getColor(R.color.theme01_textColorGray))
-            lbl_preimage_length.setTextColor(resources.getColor(R.color.theme01_textColorGray))
-            tv_hashtype.setTextColor(resources.getColor(R.color.theme01_textColorGray))
-            lbl_hashtype.setTextColor(resources.getColor(R.color.theme01_textColorGray))
-            tailer_arrow_hashtype.visibility = View.GONE
-            tailer_arrow_preimage_length.visibility = View.GONE
+            binding.lblHashcode.setTextColor(resources.getColor(R.color.theme01_textColorGray))
+            binding.tvPreimageLength.setTextColor(resources.getColor(R.color.theme01_textColorGray))
+            binding.lblPreimageLength.setTextColor(resources.getColor(R.color.theme01_textColorGray))
+            binding.tvHashtype.setTextColor(resources.getColor(R.color.theme01_textColorGray))
+            binding.lblHashtype.setTextColor(resources.getColor(R.color.theme01_textColorGray))
+            binding.tailerArrowHashtype.visibility = View.GONE
+            binding.tailerArrowPreimageLength.visibility = View.GONE
 
             val tv_to = findViewById<TextView>(R.id.txt_value_to_name)
             tv_to.text = _ref_to!!.getString("name")
@@ -314,13 +322,13 @@ class ActivityCreateHtlcContract : BtsppActivity() {
         } else {
             //  复制 or 粘贴按钮事件
             if (_mode == EHtlcDeployMode.EDM_PREIMAGE.value) {
-                tv_copy_preimage.setOnClickListener { onCopyButtonClicked() }
+                binding.tvCopyPreimage.setOnClickListener { onCopyButtonClicked() }
             } else {
-                tv_paste_preimage_value.setOnClickListener { onPasteButtonClicked() }
+                binding.tvPastePreimageValue.setOnClickListener { onPasteButtonClicked() }
             }
 
             //  原像长度
-            layout_preimage_length.setOnClickListener {
+            binding.layoutPreimageLength.setOnClickListener {
                 var defaultIndex = 0
                 val list = JSONArray()
                 for (i in 1..256) {
@@ -333,13 +341,13 @@ class ActivityCreateHtlcContract : BtsppActivity() {
                     })
                 }
                 ViewDialogNumberPicker(this, R.string.kVcHtlcPlaceholderInputPreimageLength.xmlstring(this), list, "name", defaultIndex) { _index: Int, txt: String ->
-                    tv_preimage_length.text = txt
+                    binding.tvPreimageLength.text = txt
                     _currPreimageLength = list.getJSONObject(_index).getInt("value")
                 }.show()
             }
 
             //  哈希算法
-            layout_hashtype.setOnClickListener {
+            binding.layoutHashtype.setOnClickListener {
                 var defaultIndex = 0
                 val currValue = _currHashType!!.getInt("value")
                 var idx = 0
@@ -351,14 +359,14 @@ class ActivityCreateHtlcContract : BtsppActivity() {
                     ++idx
                 }
                 ViewDialogNumberPicker(this, R.string.kVcHtlcPlaceholderInputHashType.xmlstring(this), _const_hashtype_list!!, "name", defaultIndex) { _index: Int, txt: String ->
-                    tv_hashtype.text = txt
+                    binding.tvHashtype.text = txt
                     _currHashType = _const_hashtype_list!!.getJSONObject(_index)
                 }.show()
             }
         }
 
         //  有效期
-        layout_expiry.setOnClickListener {
+        binding.layoutExpiry.setOnClickListener {
             var defaultIndex = 0
             val currValue = _currExpire!!.getInt("value")
             var idx = 0
@@ -370,18 +378,18 @@ class ActivityCreateHtlcContract : BtsppActivity() {
                 ++idx
             }
             ViewDialogNumberPicker(this, R.string.kVcHtlcPlaceholderInputExpire.xmlstring(this), _const_expire_list!!, "name", defaultIndex) { _index: Int, txt: String ->
-                tv_expiry.text = txt
+                binding.tvExpiry.text = txt
                 _currExpire = _const_expire_list!!.getJSONObject(_index)
             }.show()
         }
 
         //  默认值
-        tv_hashtype.text = _currHashType!!.getString("name")
-        tv_expiry.text = _currExpire!!.getString("name")
-        tv_preimage_length.text = _currPreimageLength.toString()
+        binding.tvHashtype.text = _currHashType!!.getString("name")
+        binding.tvExpiry.text = _currExpire!!.getString("name")
+        binding.tvPreimageLength.text = _currPreimageLength.toString()
 
         //  创建按钮
-        btn_create_htlc.setOnClickListener { gotoCreateHTLC() }
+        binding.btnCreateHtlc.setOnClickListener { gotoCreateHTLC() }
     }
 
     /**

@@ -40,8 +40,9 @@ module AndroidI18nGeneration
         # => 占位符格式化
         v.gsub!(/%(\d+)\$@/){ "%#{$1}$s" }
         # => 基本格式化
+        multiple_subs = v.count('%@') > 1
         v.gsub!(/%@/, '%s')
-        group[:values] << {k:k, v:v}
+        group[:values] << {k:k, v:v, multi: multiple_subs}
       end
     end
     list << group if group

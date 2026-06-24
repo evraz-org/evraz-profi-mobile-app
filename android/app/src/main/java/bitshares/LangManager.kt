@@ -9,6 +9,8 @@ import com.btsplusplus.fowallet.R
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*
+import java.util.Locale
+import java.util.Locale.getDefault
 
 const val kCurrentLanguageKey = "kCurrentLanguageKey"
 
@@ -83,9 +85,9 @@ class LangManager {
                 currentLanguage = "en"
                 val localeLang = Locale.getDefault().language
                 if (localeLang != null) {
-                    if (localeLang.toLowerCase().indexOf("zh") == 0) {
+                    if (localeLang.lowercase(getDefault()).indexOf("zh") == 0) {
                         currentLanguage = "zh-Hans"
-                    } else if (localeLang.toLowerCase().indexOf("ja") == 0) {
+                    } else if (localeLang.lowercase(getDefault()).indexOf("ja") == 0) {
                         currentLanguage = "ja"
                     }
                 }
@@ -124,7 +126,7 @@ class LangManager {
 
         val configuration = ctx.resources.configuration
         configuration.setLocale(locale)
-        configuration.locales = LocaleList(locale)
+        configuration.setLocales(LocaleList(locale))
         configuration.setLayoutDirection(locale)
 
         return ctx.createConfigurationContext(configuration)

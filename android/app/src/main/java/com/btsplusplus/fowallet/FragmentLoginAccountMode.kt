@@ -3,7 +3,6 @@ package com.btsplusplus.fowallet
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +10,13 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.fragment.app.Fragment
 import bitshares.*
 import com.btsplusplus.fowallet.utils.VcUtils
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
 import org.json.JSONObject
+import java.util.Locale.getDefault
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -83,8 +84,8 @@ class FragmentLoginAccountMode : Fragment() {
         }
 
         //  开始请求
-        val username = account_name.toLowerCase()
-        val mask = ViewMask(R.string.kTipsBeRequesting.xmlstring(this.activity!!), this.activity!!)
+        val username = account_name.lowercase(getDefault())
+        val mask = ViewMask(R.string.kTipsBeRequesting.xmlstring(this.requireActivity()), this.requireActivity())
         mask.show()
         ChainObjectManager.sharedChainObjectManager().queryFullAccountInfo(username).then {
             mask.dismiss()
@@ -123,7 +124,7 @@ class FragmentLoginAccountMode : Fragment() {
 
             if (_checkActivePermission) {
                 //  登录账号 - 简化钱包模式
-                val full_wallet_bin = WalletManager.sharedWalletManager().genFullWalletData(activity!!, username, jsonArrayfrom(active_private_wif, owner_private_wif, memo_private_wif), trade_password)
+                val full_wallet_bin = WalletManager.sharedWalletManager().genFullWalletData(requireActivity(), username, jsonArrayfrom(active_private_wif, owner_private_wif, memo_private_wif), trade_password)
                 assert(full_wallet_bin != null)
 
                 //  保存钱包信息
@@ -138,7 +139,7 @@ class FragmentLoginAccountMode : Fragment() {
                 btsppLogCustom("loginEvent", jsonObjectfromKVS("mode", AppCacheManager.EWalletMode.kwmPasswordWithWallet.value, "desc", "password+wallet"))
                 //  返回 - 登录成功
                 showToast(_ctx!!.resources.getString(R.string.kLoginTipsLoginOK))
-                activity!!.finish()
+                requireActivity().finish()
             } else {
                 //  【导入到已有钱包】 导入账号到钱包BIN文件中
                 val full_wallet_bin = WalletManager.sharedWalletManager().walletBinImportAccount(username, jsonArrayfrom(active_private_wif, owner_private_wif, memo_private_wif))!!
@@ -156,7 +157,7 @@ class FragmentLoginAccountMode : Fragment() {
                 if (_result_promise != null) {
                     _result_promise!!.resolve(true)
                 }
-                activity!!.finish()
+                requireActivity().finish()
             }
             return@then null
         }.catch { err ->
@@ -185,7 +186,7 @@ class FragmentLoginAccountMode : Fragment() {
             loginBitshares_AccountMode(account_name, password, trade_password)
         }
         v.findViewById<ImageView>(R.id.tip_link_trading_password).setOnClickListener {
-            VcUtils.gotoQaView(activity!!, "qa_trading_password", resources.getString(R.string.kVcTitleWhatIsTradePassowrd))
+            VcUtils.gotoQaView(requireActivity(), "qa_trading_password", resources.getString(R.string.kVcTitleWhatIsTradePassowrd))
         }
         //  导入到已有钱包：隐藏交易密码。
         if (!_checkActivePermission) {

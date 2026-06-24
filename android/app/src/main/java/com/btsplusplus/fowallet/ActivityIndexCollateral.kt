@@ -8,6 +8,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityIndexCollateralBinding
 import com.btsplusplus.fowallet.kline.TradingPair
 import com.btsplusplus.fowallet.utils.ModelUtils
 import com.btsplusplus.fowallet.utils.VcUtils
@@ -21,6 +22,7 @@ import kotlin.math.max
 
 class ActivityIndexCollateral : BtsppActivity() {
 
+    private lateinit var binding: ActivityIndexCollateralBinding
     private var _debtPair: TradingPair? = null
     private var _nMaintenanceCollateralRatio: BigDecimal? = null
     private var _nCurrMortgageRate: BigDecimal? = null
@@ -55,6 +57,7 @@ class ActivityIndexCollateral : BtsppActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setAutoLayoutContentView(R.layout.activity_index_collateral, navigationBarColor = R.color.theme01_tabBarColor)
+        binding = ActivityIndexCollateralBinding.bind(findViewById<View>(android.R.id.content).rootView)
 
         //  初始化数据
         val chainMgr = ChainObjectManager.sharedChainObjectManager()
@@ -78,28 +81,28 @@ class ActivityIndexCollateral : BtsppActivity() {
         _refreshUserData()
 
         //  帮助按钮
-        findViewById<ImageView>(R.id.tip_link_curr_feed).setOnClickListener {
+        binding.tipLinkCurrFeed.setOnClickListener {
             VcUtils.gotoQaView(this, "qa_feed_settlement", resources.getString(R.string.kDebtTipTitleFeedAndCallPrice))
         }
-        findViewById<ImageView>(R.id.tip_link_ratio).setOnClickListener {
+        binding.tipLinkRatio.setOnClickListener {
             VcUtils.gotoQaView(this, "qa_ratio", resources.getString(R.string.kDebtTipTitleWhatIsRatio))
         }
-        findViewById<ImageView>(R.id.tip_link_target_ratio).setOnClickListener {
+        binding.tipLinkTargetRatio.setOnClickListener {
             VcUtils.gotoQaView(this, "qa_target_ratio", resources.getString(R.string.kDebtTipTitleWhatIsTargetRatio))
         }
 
         //  监听事件
-        findViewById<TextView>(R.id.btn_reset_all).setOnClickListener { onResetCLicked() }
-        findViewById<TextView>(R.id.btn_select_debt_asset).setOnClickListener { onSelectDebtAssetClicked() }
-        _curve_slider_ratio = UtilsCurveSlider(findViewById<SeekBar>(R.id.slider_ratio)).init_with_range(400, 0.0, 6.0)
-        _curve_slider_target_ratio = UtilsCurveSlider(findViewById<SeekBar>(R.id.slider_target_ratio)).init_with_range(400, 0.0, 4.0)
+        binding.btnResetAll.setOnClickListener { onResetCLicked() }
+        binding.btnSelectDebtAsset.setOnClickListener { onSelectDebtAssetClicked() }
+        _curve_slider_ratio = UtilsCurveSlider(binding.sliderRatio).init_with_range(400, 0.0, 6.0)
+        _curve_slider_target_ratio = UtilsCurveSlider(binding.sliderTargetRatio).init_with_range(400, 0.0, 4.0)
         _curve_slider_ratio.on_value_changed { onSliderRatioValueChanged(it) }
         _curve_slider_target_ratio.on_value_changed { onSliderTargetRatioValueChanged(it) }
         //  初始化滑动条颜色和图标
-        findViewById<SeekBar>(R.id.slider_ratio).let { seek ->
+        binding.sliderRatio.let { seek ->
             seek.progressDrawable.setColorFilter(resources.getColor(R.color.theme01_textColorHighlight), PorterDuff.Mode.SRC_ATOP)
         }
-        findViewById<SeekBar>(R.id.slider_target_ratio).let { seek ->
+        binding.sliderTargetRatio.let { seek ->
             seek.progressDrawable.setColorFilter(resources.getColor(R.color.theme01_textColorHighlight), PorterDuff.Mode.SRC_ATOP)
         }
 

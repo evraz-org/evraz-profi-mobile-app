@@ -1,11 +1,14 @@
 package com.btsplusplus.fowallet
 
 import android.os.Bundle
+import android.view.View
 import bitshares.Utils
 import bitshares.xmlstring
-import kotlinx.android.synthetic.main.activity_about.*
+import com.btsplusplus.fowallet.databinding.ActivityAboutBinding
 
 class ActivityAbout : BtsppActivity() {
+
+    private lateinit var binding: ActivityAboutBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,10 +20,13 @@ class ActivityAbout : BtsppActivity() {
         //  draw version
         val ver = Utils.appVersionName()
         val appname = R.string.kAppName.xmlstring(this)
-        label_txt_icon_version.text = "$appname v$ver"
-        label_txt_version.text = "$appname v$ver"
+
+        binding = ActivityAboutBinding.bind(findViewById<View>(android.R.id.content).rootView)
+
+        binding.labelTxtIconVersion.text = "$appname v$ver"
+        binding.labelTxtVersion.text = "$appname v$ver"
 
         //  back
-        layout_back_from_about.setOnClickListener { finish() }
+        binding.layoutBackFromAbout.setOnClickListener { finish() }
     }
 }

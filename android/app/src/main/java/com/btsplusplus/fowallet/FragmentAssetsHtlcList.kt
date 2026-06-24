@@ -3,7 +3,6 @@ package com.btsplusplus.fowallet
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
@@ -18,6 +17,7 @@ import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.Locale.getDefault
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -211,7 +211,8 @@ class FragmentAssetsHtlcList : BtsppFragment() {
             else -> String.format(R.string.kVcHtlcListHashTypeValueUnknown.xmlstring(ctx), hash_type)
         }
 
-        val hash_value = hash_lock.getJSONArray("preimage_hash").getString(1).toUpperCase()
+        val hash_value =
+            hash_lock.getJSONArray("preimage_hash").getString(1).uppercase(getDefault())
 
         // 父级 layout
         val layout_parent = LinearLayout(ctx)

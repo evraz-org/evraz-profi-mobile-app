@@ -3,11 +3,13 @@ package com.btsplusplus.fowallet
 import android.os.Bundle
 import bitshares.*
 import com.fowallet.walletcore.bts.ChainObjectManager
-import kotlinx.android.synthetic.main.activity_otc_mc_asset_list.*
+import com.btsplusplus.fowallet.databinding.ActivityOtcMcAssetListBinding
 import org.json.JSONArray
 import org.json.JSONObject
 
 class ActivityOtcMcAssetList : BtsppActivity() {
+
+    private lateinit var binding: ActivityOtcMcAssetListBinding
 
     private lateinit var _auth_info: JSONObject
     private lateinit var _merchant_detail: JSONObject
@@ -18,6 +20,7 @@ class ActivityOtcMcAssetList : BtsppActivity() {
 
         // 设置自动布局
         setAutoLayoutContentView(R.layout.activity_otc_mc_asset_list)
+        binding = ActivityOtcMcAssetListBinding.bind(findViewById<View>(android.R.id.content).rootView)
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
@@ -27,7 +30,7 @@ class ActivityOtcMcAssetList : BtsppActivity() {
         _merchant_detail = args.getJSONObject("merchant_detail")
         _user_type = args.get("user_type") as OtcManager.EOtcUserType
 
-        layout_back_from_otc_mc_asset_list.setOnClickListener { finish() }
+        binding.layoutBackFromOtcMcAssetList.setOnClickListener { finish() }
 
         //  查询
         queryOtcAssets()
@@ -133,15 +136,15 @@ class ActivityOtcMcAssetList : BtsppActivity() {
     }
 
     private fun refreshUI(data_array: JSONArray) {
-        layout_asset_list_from_otc_mc_home.removeAllViews()
+        binding.layoutAssetListFromOtcMcHome.removeAllViews()
         if (data_array.length() == 0) {
-            layout_asset_list_from_otc_mc_home.addView(ViewUtils.createEmptyCenterLabel(this, resources.getString(R.string.kOtcMcAssetEmptyLabel)))
+            binding.layoutAssetListFromOtcMcHome.addView(ViewUtils.createEmptyCenterLabel(this, resources.getString(R.string.kOtcMcAssetEmptyLabel)))
         } else {
             data_array.forEach<JSONObject> {
                 val item = it!!
                 val view = ViewOtcMcAssetCell(this, item) { transfer_in -> gotoOtcMcAssetTransfer(transfer_in, item, data_array) }
-                layout_asset_list_from_otc_mc_home.addView(view)
-                layout_asset_list_from_otc_mc_home.addView(ViewLine(this, 0.dp, 10.dp))
+                binding.layoutAssetListFromOtcMcHome.addView(view)
+                binding.layoutAssetListFromOtcMcHome.addView(ViewLine(this, 0.dp, 10.dp))
             }
         }
     }

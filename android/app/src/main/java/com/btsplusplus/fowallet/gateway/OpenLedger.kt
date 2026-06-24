@@ -36,10 +36,10 @@ class OpenLedger : GatewayBase() {
             if (src == null || dst == null) {
                 return@forEach
             }
-            if (src.getString("blockchain").toLowerCase() == "bitshares") {
+            if (src.getString("blockchain").lowercase() == "bitshares") {
                 //  withdraw: bitshares to others
                 withdraw_hash.put(src.getString("asset"), item)
-            } else if (dst.getString("blockchain").toLowerCase() == "bitshares") {
+            } else if (dst.getString("blockchain").lowercase() == "bitshares") {
                 deposit_hash.put(dst.getString("asset"), item)
             }
         }
@@ -48,7 +48,7 @@ class OpenLedger : GatewayBase() {
         data_assets.forEach<JSONObject> { it ->
             val item = it!!
 
-            if (item.getString("blockchain").toLowerCase() != "bitshares") {
+            if (item.getString("blockchain").lowercase() != "bitshares") {
                 return@forEach
             }
 
@@ -75,11 +75,11 @@ class OpenLedger : GatewayBase() {
             val deposit_limit = deposit_item.getJSONObject("limit").getJSONObject("source")
             val withdraw_limit = withdraw_item.getJSONObject("limit").getJSONObject("source")
 
-            val symbol = asset_symbol.toUpperCase()
+            val symbol = asset_symbol.uppercase()
             val balance_item = balanceHash.optJSONObject(symbol)
                     ?: jsonObjectfromKVS("iszero", true)
 
-            val backingCoin = withdraw_item.getJSONObject("destination").getString("asset").toUpperCase()
+            val backingCoin = withdraw_item.getJSONObject("destination").getString("asset").uppercase()
 
             val appext = GatewayAssetItemData()
             appext.enableWithdraw = enableWithdraw
@@ -143,12 +143,12 @@ class OpenLedger : GatewayBase() {
                 val memo = resp_data.opt("memo") as? String
                 val depositItem = JSONObject().apply {
                     put("inputAddress", addr)
-                    put("inputCoinType", appext.backingCoinType.toLowerCase())
+                    put("inputCoinType", appext.backingCoinType.lowercase())
                     if (memo != null) {
                         put("inputMemo", memo)
                     }
                     put("outputAddress", outputAddress)
-                    put("outputCoinType", appext.coinType.toLowerCase())
+                    put("outputCoinType", appext.coinType.lowercase())
                 }
                 p.resolve(depositItem)
 

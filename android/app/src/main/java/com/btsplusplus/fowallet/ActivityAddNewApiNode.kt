@@ -1,16 +1,18 @@
 package com.btsplusplus.fowallet
 
 import android.os.Bundle
+import android.view.View
 import bitshares.BTS_NETWORK_CHAIN_ID
 import bitshares.GrapheneConnection
 import bitshares.Promise
-import kotlinx.android.synthetic.main.activity_add_new_api_node.*
+import com.btsplusplus.fowallet.databinding.ActivityAddNewApiNodeBinding
 import org.json.JSONObject
 
 class ActivityAddNewApiNode : BtsppActivity() {
 
     private lateinit var _url_hash: JSONObject
     private var _result_promise: Promise? = null
+    private lateinit var binding: ActivityAddNewApiNodeBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,24 +21,26 @@ class ActivityAddNewApiNode : BtsppActivity() {
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
+        binding = ActivityAddNewApiNodeBinding.bind(findViewById<View>(android.R.id.content).rootView)
+
         //  获取参数
         val args = btspp_args_as_JSONObject()
         _url_hash = args.getJSONObject("url_hash")
         _result_promise = args.opt("result_promise") as? Promise
 
         //  事件 - 返回
-        layout_back_from_new_api_node.setOnClickListener { finish() }
+        binding.layoutBackFromNewApiNode.setOnClickListener { finish() }
 
         //  事件 - 确定
-        btn_submit.setOnClickListener { onSubmitBtnClick() }
+        binding.btnSubmit.setOnClickListener { onSubmitBtnClick() }
     }
 
     /**
      * 提交事件
      */
     private fun onSubmitBtnClick() {
-        val name = tf_node_name.text.toString().trim()
-        val url = tf_node_url.text.toString().trim()
+        val name = binding.tfNodeName.text.toString().trim()
+        val url = binding.tfNodeUrl.text.toString().trim()
 
         if (name.isEmpty()) {
             showToast(resources.getString(R.string.kSettingNewApiSubmitTipsPleaseInputNodeName))

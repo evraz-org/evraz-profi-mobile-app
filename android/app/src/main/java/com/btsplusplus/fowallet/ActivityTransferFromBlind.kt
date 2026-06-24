@@ -6,12 +6,14 @@ import com.btsplusplus.fowallet.utils.ModelUtils
 import com.btsplusplus.fowallet.utils.StealthTransferUtils
 import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.ChainObjectManager
-import kotlinx.android.synthetic.main.activity_transfer_from_blind.*
+import com.btsplusplus.fowallet.databinding.ActivityTransferFromBlindBinding
 import org.json.JSONArray
 import org.json.JSONObject
 import java.math.BigDecimal
 
 class ActivityTransferFromBlind : BtsppActivity() {
+
+    private lateinit var binding: ActivityTransferFromBlindBinding
 
     private var _curr_blind_asset: JSONObject? = null
     private var _data_array_blind_input = JSONArray()
@@ -24,6 +26,7 @@ class ActivityTransferFromBlind : BtsppActivity() {
 
         // 设置自动布局
         setAutoLayoutContentView(R.layout.activity_transfer_from_blind)
+        binding = ActivityTransferFromBlindBinding.bind(findViewById<View>(android.R.id.content).rootView)
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
@@ -35,20 +38,20 @@ class ActivityTransferFromBlind : BtsppActivity() {
         }
 
         //  初始化UI
-        _viewBlindInputs = ViewBlindAccountsOrReceipt(this, kBlindItemTypeInput, layout_blind_receipt_list_from_transfer_from_blind, callback_remove = { _on_remove_input_clicked(it) }, callback_add = { _on_add_one_input_clicked() })
+        _viewBlindInputs = ViewBlindAccountsOrReceipt(this, kBlindItemTypeInput, binding.layoutBlindReceiptListFromTransferFromBlind, callback_remove = { _on_remove_input_clicked(it) }, callback_add = { _on_add_one_input_clicked() })
         refreshUI()
 
         //  选择目标账户箭头颜色
-        img_arrow_to_account.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
+        binding.imgArrowToAccount.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
 
         //  选择目标账户事件
-        layout_to_account.setOnClickListener { onSelectGoalAccount() }
+        binding.layoutToAccount.setOnClickListener { onSelectGoalAccount() }
 
         //  提交事件
-        btn_commit.setOnClickListener { onSubmit() }
+        binding.btnCommit.setOnClickListener { onSubmit() }
 
         //  返回事件
-        layout_back_from_transfer_from_blind.setOnClickListener { finish() }
+        binding.layoutBackFromTransferFromBlind.setOnClickListener { finish() }
     }
 
     private fun calcBlindInputTotalAmount(): BigDecimal {
@@ -123,15 +126,15 @@ class ActivityTransferFromBlind : BtsppActivity() {
 
     private fun _draw_ui_to_accounts() {
         if (_to_account != null) {
-            tv_to_account_name.text = _to_account!!.getString("name")
-            tv_to_account_id.text = _to_account!!.getString("id")
-            tv_to_account_name.setTextColor(resources.getColor(R.color.theme01_buyColor))
-            tv_to_account_id.setTextColor(resources.getColor(R.color.theme01_textColorMain))
+            binding.tvToAccountName.text = _to_account!!.getString("name")
+            binding.tvToAccountId.text = _to_account!!.getString("id")
+            binding.tvToAccountName.setTextColor(resources.getColor(R.color.theme01_buyColor))
+            binding.tvToAccountId.setTextColor(resources.getColor(R.color.theme01_textColorMain))
         } else {
-            tv_to_account_name.text = resources.getString(R.string.kVcAssetOpCellValueIssueTargetAccountDefault)
-            tv_to_account_id.text = ""
-            tv_to_account_name.setTextColor(resources.getColor(R.color.theme01_textColorGray))
-            tv_to_account_id.setTextColor(resources.getColor(R.color.theme01_textColorGray))
+            binding.tvToAccountName.text = resources.getString(R.string.kVcAssetOpCellValueIssueTargetAccountDefault)
+            binding.tvToAccountId.text = ""
+            binding.tvToAccountName.setTextColor(resources.getColor(R.color.theme01_textColorGray))
+            binding.tvToAccountId.setTextColor(resources.getColor(R.color.theme01_textColorGray))
         }
     }
 
@@ -143,17 +146,17 @@ class ActivityTransferFromBlind : BtsppActivity() {
         //  收据总金额
         val n_total_input = calcBlindInputTotalAmount()
         if (_curr_blind_asset != null) {
-            tv_total_input_value.text = String.format("%s %s", n_total_input.toPriceAmountString(), _curr_blind_asset!!.getString("symbol"))
+            binding.tvTotalInputValue.text = String.format("%s %s", n_total_input.toPriceAmountString(), _curr_blind_asset!!.getString("symbol"))
         } else {
-            tv_total_input_value.text = "--"
+            binding.tvTotalInputValue.text = "--"
         }
 
         //  广播手续费
         val n_fee = calcNetworkFee()
         if (n_fee != null) {
-            tv_network_fee_value.text = String.format("%s %s", n_fee.toPriceAmountString(), _curr_blind_asset!!.getString("symbol"))
+            binding.tvNetworkFeeValue.text = String.format("%s %s", n_fee.toPriceAmountString(), _curr_blind_asset!!.getString("symbol"))
         } else {
-            tv_network_fee_value.text = "--"
+            binding.tvNetworkFeeValue.text = "--"
         }
 
         //  实际到账
@@ -163,9 +166,9 @@ class ActivityTransferFromBlind : BtsppActivity() {
             if (n_final < n_zero) {
                 n_final = n_zero
             }
-            tv_actual_amount.text = String.format("%s %s", n_final.toPriceAmountString(), _curr_blind_asset!!.getString("symbol"))
+            binding.tvActualAmount.text = String.format("%s %s", n_final.toPriceAmountString(), _curr_blind_asset!!.getString("symbol"))
         } else {
-            tv_actual_amount.text = "--"
+            binding.tvActualAmount.text = "--"
         }
     }
 

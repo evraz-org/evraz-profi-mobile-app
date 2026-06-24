@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityAssetOpGlobalSettleBinding
 import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_asset_op_global_settle.*
 import org.json.JSONObject
 import java.math.BigDecimal
 
@@ -19,6 +19,8 @@ class ActivityAssetOpGlobalSettle : BtsppActivity() {
 
     private lateinit var _tf_price_watcher: UtilsDigitTextWatcher
 
+    private lateinit var binding: ActivityAssetOpGlobalSettleBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -27,6 +29,8 @@ class ActivityAssetOpGlobalSettle : BtsppActivity() {
 
         // 设置全屏
         setFullScreen()
+
+        binding = ActivityAssetOpGlobalSettleBinding.bind(findViewById<View>(android.R.id.content).rootView)
 
         //  获取参数
         val args = btspp_args_as_JSONObject()
@@ -40,10 +44,10 @@ class ActivityAssetOpGlobalSettle : BtsppActivity() {
         _draw_ui_prediction()
 
         //  返回按钮事件
-        layout_back_from_global_settle.setOnClickListener { finish() }
+        binding.layoutBackFromGlobalSettle.setOnClickListener { finish() }
 
         //  提交按钮事件
-        button_submit_from_global_settle.setOnClickListener { onSubmitBtnClicked() }
+        binding.buttonSubmitFromGlobalSettle.setOnClickListener { onSubmitBtnClicked() }
 
         //  输入框 TODO:7.0 如果切换资产则需要切换精度
         val tf = findViewById<EditText>(R.id.tf_price)
@@ -60,25 +64,25 @@ class ActivityAssetOpGlobalSettle : BtsppActivity() {
     }
 
     private fun _draw_ui_curr_asset() {
-        tv_curr_select_asset_symbol.text = _curr_selected_asset.getString("symbol")
+        binding.tvCurrSelectAssetSymbol.text = _curr_selected_asset.getString("symbol")
     }
 
     private fun _draw_ui_tailer_asset_symbol() {
         val back_asset = ChainObjectManager.sharedChainObjectManager().getChainObjectByID(_bitasset_data.getJSONObject("options").getString("short_backing_asset"))
-        tv_tailer_asset_symbol.text = back_asset.getString("symbol")
+        binding.tvTailerAssetSymbol.text = back_asset.getString("symbol")
     }
 
     private fun _draw_ui_prediction() {
         if (_bitasset_data.isTrue("is_prediction_market")) {
             //  预测为真 按钮点击事件
-            btn_pmas_true.setOnClickListener { onPredictionTrueButtonClicked() }
+            binding.btnPmasTrue.setOnClickListener { onPredictionTrueButtonClicked() }
 
             //  预测为假 按钮点击事件
-            btn_pmas_false.setOnClickListener { onPredictionFakeButtonClicked() }
+            binding.btnPmasFalse.setOnClickListener { onPredictionFakeButtonClicked() }
         } else {
-            tv_tailer_separator.visibility = View.GONE
-            btn_pmas_true.visibility = View.GONE
-            btn_pmas_false.visibility = View.GONE
+            binding.tvTailerSeparator.visibility = View.GONE
+            binding.btnPmasTrue.visibility = View.GONE
+            binding.btnPmasFalse.visibility = View.GONE
         }
     }
 

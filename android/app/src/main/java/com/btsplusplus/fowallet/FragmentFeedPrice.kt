@@ -3,7 +3,6 @@ package com.btsplusplus.fowallet
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -364,7 +363,7 @@ class FragmentFeedPrice : BtsppFragment() {
         _ctx = inflater.context
         val v: View = inflater.inflate(R.layout.fragment_feed_price, container, false)
         v.findViewById<ImageView>(R.id.tip_link_feedprice).setOnClickListener {
-            VcUtils.gotoQaView(activity!!, "qa_feedprice", resources.getString(R.string.kVcTitleWhatIsFeedPrice))
+            VcUtils.gotoQaView(requireActivity(), "qa_feedprice", resources.getString(R.string.kVcTitleWhatIsFeedPrice))
         }
         _currentView = v
         //  refresh UI

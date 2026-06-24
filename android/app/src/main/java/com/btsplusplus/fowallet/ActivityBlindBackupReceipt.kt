@@ -2,10 +2,13 @@ package com.btsplusplus.fowallet
 
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.view.View
 import bitshares.Utils
-import kotlinx.android.synthetic.main.activity_blind_backup_receipt.*
+import com.btsplusplus.fowallet.databinding.ActivityBlindBackupReceiptBinding
 
 class ActivityBlindBackupReceipt : BtsppActivity() {
+
+    private lateinit var binding: ActivityBlindBackupReceiptBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,22 +19,24 @@ class ActivityBlindBackupReceipt : BtsppActivity() {
         //  设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
+        binding = ActivityBlindBackupReceiptBinding.bind(findViewById<View>(android.R.id.content).rootView)
+
         //  获取参数
         val args = btspp_args_as_JSONObject()
         val blind_receipt_string = args.getString("blind_receipt_string")
 
         //  初始化UI - 二维码
-        iv_qrcode_from_blind_backup_receipt.setImageBitmap(args.get("qrbitmap") as Bitmap)
+        binding.ivQrcodeFromBlindBackupReceipt.setImageBitmap(args.get("qrbitmap") as Bitmap)
 
         //  UI - 收据信息
-        tv_blind_receipt_string.text = blind_receipt_string
+        binding.tvBlindReceiptString.text = blind_receipt_string
 
         //  复制按钮点击
-        btn_copy_blind_receipt.setOnClickListener { onCopyAddressClicked(blind_receipt_string) }
+        binding.btnCopyBlindReceipt.setOnClickListener { onCopyAddressClicked(blind_receipt_string) }
 
         //  完成点击
-        btn_navi_left_done.setOnClickListener { onDoneClicked() }
-        btn_done.setOnClickListener { onDoneClicked() }
+        binding.btnNaviLeftDone.setOnClickListener { onDoneClicked() }
+        binding.btnDone.setOnClickListener { onDoneClicked() }
     }
 
     private fun onDoneClicked() {

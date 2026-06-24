@@ -6,11 +6,13 @@ import android.view.View
 import bitshares.*
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_index_services.*
+import com.btsplusplus.fowallet.databinding.ActivityIndexServicesBinding
 import org.json.JSONArray
 import org.json.JSONObject
 
 class ActivityIndexServices : BtsppActivity() {
+
+    private lateinit var binding: ActivityIndexServicesBinding
 
     /**
      * 重载 - 返回键按下
@@ -22,6 +24,7 @@ class ActivityIndexServices : BtsppActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setAutoLayoutContentView(R.layout.activity_index_services, navigationBarColor = R.color.theme01_tabBarColor)
+        binding = ActivityIndexServicesBinding.bind(findViewById<View>(android.R.id.content).rootView)
 
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
@@ -31,9 +34,9 @@ class ActivityIndexServices : BtsppActivity() {
 
         //  设置模块可见性
         if (ChainObjectManager.sharedChainObjectManager().getMainSmartAssetList().length() > 0) {
-            layout_smart_coin.visibility = View.VISIBLE
+            binding.layoutSmartCoin.visibility = View.VISIBLE
         } else {
-            layout_smart_coin.visibility = View.GONE
+            binding.layoutSmartCoin.visibility = View.GONE
         }
 
         //  入口可见性判断
@@ -44,49 +47,49 @@ class ActivityIndexServices : BtsppActivity() {
             var hidden_layout = 0
             val cfg = OtcManager.sharedOtcManager().server_config
             if (cfg != null && cfg.getJSONObject("user").getJSONObject("entry").getInt("type") != OtcManager.EOtcEntryType.eoet_gone.value) {
-                layout_otc_user.visibility = View.VISIBLE
-                layout_otc_user.setOnClickListener { onOtcUsrEntryClicked() }
+                binding.layoutOtcUser.visibility = View.VISIBLE
+                binding.layoutOtcUser.setOnClickListener { onOtcUsrEntryClicked() }
             } else {
-                layout_otc_user.visibility = View.GONE
+                binding.layoutOtcUser.visibility = View.GONE
                 hidden_layout += 1
             }
             if (cfg != null && cfg.getJSONObject("merchant").getJSONObject("entry").getInt("type") != OtcManager.EOtcEntryType.eoet_gone.value) {
-                layout_otc_merchant.visibility = View.VISIBLE
-                layout_otc_merchant.setOnClickListener { onOtcMerchantEntryClicked() }
+                binding.layoutOtcMerchant.visibility = View.VISIBLE
+                binding.layoutOtcMerchant.setOnClickListener { onOtcMerchantEntryClicked() }
             } else {
-                layout_otc_merchant.visibility = View.GONE
+                binding.layoutOtcMerchant.visibility = View.GONE
                 hidden_layout += 1
             }
             //  直接整个OTC组不可见
             if (hidden_layout >= 2) {
-                layout_group_otc.visibility = View.GONE
+                binding.layoutGroupOtc.visibility = View.GONE
             }
         } else {
             //  直接整个OTC组不可见
-            layout_group_otc.visibility = View.GONE
+            binding.layoutGroupOtc.visibility = View.GONE
         }
 
         if (BuildConfig.kAppModuleEnableGateway) {
-            layout_recharge_and_withdraw_of_service.visibility = View.VISIBLE
+            binding.layoutRechargeAndWithdrawOfService.visibility = View.VISIBLE
         } else {
-            layout_recharge_and_withdraw_of_service.visibility = View.GONE
+            binding.layoutRechargeAndWithdrawOfService.visibility = View.GONE
         }
 
         //  设置图标颜色
         val iconcolor = resources.getColor(R.color.theme01_textColorNormal)
-        img_icon_transfer.setColorFilter(iconcolor)
-        img_icon_qrscan.setColorFilter(iconcolor)
-        img_icon_account_search.setColorFilter(iconcolor)
-        img_icon_smart_coin.setColorFilter(iconcolor)
-        img_icon_voting.setColorFilter(iconcolor)
-        img_icon_deposit_withdraw.setColorFilter(iconcolor)
-        img_icon_otc_user.setColorFilter(iconcolor)
-        img_icon_otc_merchant.setColorFilter(iconcolor)
-        img_icon_advfunction.setColorFilter(iconcolor)
-        img_icon_explorer.setColorFilter(iconcolor)
-        img_icon_game.setColorFilter(iconcolor)
+        binding.imgIconTransfer.setColorFilter(iconcolor)
+        binding.imgIconQrscan.setColorFilter(iconcolor)
+        binding.imgIconAccountSearch.setColorFilter(iconcolor)
+        binding.imgIconSmartCoin.setColorFilter(iconcolor)
+        binding.imgIconVoting.setColorFilter(iconcolor)
+        binding.imgIconDepositWithdraw.setColorFilter(iconcolor)
+        binding.imgIconOtcUser.setColorFilter(iconcolor)
+        binding.imgIconOtcMerchant.setColorFilter(iconcolor)
+        binding.imgIconAdvfunction.setColorFilter(iconcolor)
+        binding.imgIconExplorer.setColorFilter(iconcolor)
+        binding.imgIconGame.setColorFilter(iconcolor)
 
-        layout_account_query_from_services.setOnClickListener {
+        binding.layoutAccountQueryFromServices.setOnClickListener {
             TempManager.sharedTempManager().set_query_account_callback { last_activity, it ->
                 last_activity.goTo(ActivityIndexServices::class.java, true, back = true)
                 viewUserAssets(it.getString("name"))
@@ -95,12 +98,12 @@ class ActivityIndexServices : BtsppActivity() {
         }
 
         if (ChainObjectManager.sharedChainObjectManager().getMainSmartAssetList().length() > 0) {
-            layout_smart_coin.setOnClickListener {
+            binding.layoutSmartCoin.setOnClickListener {
                 goTo(ActivityAssetInfos::class.java, true)
             }
         }
 
-        layout_transfer_from_services.setOnClickListener {
+        binding.layoutTransferFromServices.setOnClickListener {
             guardWalletExist {
                 val mask = ViewMask(R.string.kTipsBeRequesting.xmlstring(this), this)
                 mask.show()
@@ -119,11 +122,11 @@ class ActivityIndexServices : BtsppActivity() {
             }
         }
 
-        layout_voting_from_services.setOnClickListener {
+        binding.layoutVotingFromServices.setOnClickListener {
             guardWalletExist { goTo(ActivityVoting::class.java, true) }
         }
 
-        layout_saoyisao_from_services.setOnClickListener {
+        binding.layoutSaoyisaoFromServices.setOnClickListener {
             this.guardPermissions(Manifest.permission.CAMERA).then {
                 when (it as Int) {
                     EBtsppPermissionResult.GRANTED.value -> {
@@ -141,16 +144,16 @@ class ActivityIndexServices : BtsppActivity() {
         }
 
         if (BuildConfig.kAppModuleEnableGateway) {
-            layout_recharge_and_withdraw_of_service.setOnClickListener {
+            binding.layoutRechargeAndWithdrawOfService.setOnClickListener {
                 guardWalletExist { goTo(ActivityDepositAndWithdraw::class.java, true) }
             }
         }
 
-        layout_advanced_feature_of_service.setOnClickListener {
+        binding.layoutAdvancedFeatureOfService.setOnClickListener {
             goTo(ActivityAdvancedFeature::class.java, true)
         }
 
-        layout_bts_explorer.setOnClickListener {
+        binding.layoutBtsExplorer.setOnClickListener {
             //  TODO:插件配置url
             openURL("https://bts.ai?lang=${resources.getString(R.string.btsaiLangKey)}")
         }

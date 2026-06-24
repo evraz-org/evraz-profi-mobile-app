@@ -1,6 +1,5 @@
 package com.btsplusplus.fowallet
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
@@ -9,12 +8,14 @@ import bitshares.*
 import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_transfer.*
+import com.btsplusplus.fowallet.databinding.ActivityTransferBinding
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.math.pow
 
 class ActivityTransfer : BtsppActivity() {
+
+    private lateinit var binding: ActivityTransferBinding
 
     private var _full_account_data: JSONObject? = null
     private var _default_asset: JSONObject? = null
@@ -31,6 +32,7 @@ class ActivityTransfer : BtsppActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setAutoLayoutContentView(R.layout.activity_transfer)
+        binding = ActivityTransferBinding.bind(findViewById<View>(android.R.id.content).rootView)
         setFullScreen()
 
         //  获取参数
@@ -40,12 +42,12 @@ class ActivityTransfer : BtsppActivity() {
         _default_to = args.optJSONObject("default_to")
 
         //  事件
-        layout_back_from_transfer.setOnClickListener { finish() }
+        binding.layoutBackFromTransfer.setOnClickListener { finish() }
 
         //  没有默认收款人：则对收款人字段添加点击事件。
         if (_default_to == null) {
-            cell_to_account_tailer_arrow.visibility = View.VISIBLE
-            cell_to_account.setOnClickListener {
+            binding.cellToAccountTailerArrow.visibility = View.VISIBLE
+            binding.cellToAccount.setOnClickListener {
                 TempManager.sharedTempManager().set_query_account_callback { last_activity, it ->
                     last_activity.goTo(ActivityTransfer::class.java, true, back = true)
                     _transfer_args!!.put("to", it)
@@ -57,7 +59,7 @@ class ActivityTransfer : BtsppActivity() {
             cell_to_account_tailer_arrow.visibility = View.GONE
         }
 
-        cell_transfer_asset.setOnClickListener {
+        binding.cellTransferAsset.setOnClickListener {
             val list = mutableListOf<String>()
             for (asset in _asset_list!!) {
                 list.add(asset!!.getString("symbol"))
@@ -73,7 +75,7 @@ class ActivityTransfer : BtsppActivity() {
         }
 
         //  事件 - 全部按钮
-        btn_transfer_all.setOnClickListener {
+        binding.btnTransferAll.setOnClickListener {
             val tf = findViewById<EditText>(R.id.tf_amount)
             tf.setText(_s_available)
             tf.setSelection(tf.text.toString().length)
@@ -81,12 +83,12 @@ class ActivityTransfer : BtsppActivity() {
         }
 
         //  事件 - 发送
-        btn_send.setOnClickListener {
+        binding.btnSend.setOnClickListener {
             onSendButtonClicked()
         }
 
         //  事件 - 高级
-        btn_more_actions.setOnClickListener { onMoreActionClicked() }
+        binding.btnMoreActions.setOnClickListener { onMoreActionClicked() }
 
         //  初始化相关参数
         genTransferDefaultArgs(null)
@@ -94,7 +96,7 @@ class ActivityTransfer : BtsppActivity() {
 
         //  初始化事件
         _tf_amount_watcher = UtilsDigitTextWatcher().set_tf(findViewById<EditText>(R.id.tf_amount)).set_precision(_transfer_args!!.getJSONObject("asset").getInt("precision"))
-        tf_amount.addTextChangedListener(_tf_amount_watcher!!)
+        binding.tfAmount.addTextChangedListener(_tf_amount_watcher!!)
         _tf_amount_watcher!!.on_value_changed(::onAmountChanged)
     }
 
@@ -133,7 +135,7 @@ class ActivityTransfer : BtsppActivity() {
             return
         }
 
-        val str_amount = findViewById<EditText>(R.id.tf_amount).text.toString()
+        val str_amount = binding.tfAmount.text.toString()
         if (str_amount == "") {
             showToast(resources.getString(R.string.kVcTransferSubmitTipPleaseInputAmount))
             return
@@ -151,7 +153,7 @@ class ActivityTransfer : BtsppActivity() {
         }
 
         //  获取备注(memo)信息
-        val str = findViewById<EditText>(R.id.tf_memo).text.toString()
+        val str = binding.tfMemo.text.toString()
         var str_memo: String? = null
         if (str != "") {
             str_memo = str

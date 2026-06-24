@@ -1,18 +1,19 @@
 package com.btsplusplus.fowallet
 
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
-import android.support.v4.view.ViewPager
+import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.animation.OvershootInterpolator
-import android.widget.Button
+import androidx.viewpager.widget.ViewPager
 import bitshares.Promise
-import kotlinx.android.synthetic.main.activity_login.*
+import com.btsplusplus.fowallet.databinding.ActivityLoginBinding
+import com.google.android.material.tabs.TabLayout
 import org.json.JSONObject
 import java.lang.reflect.Field
 
 class ActivityLogin : BtsppActivity() {
+
+    private lateinit var binding: ActivityLoginBinding
 
     private val fragmens: ArrayList<Fragment> = ArrayList()
     private var tablayout: TabLayout? = null
@@ -23,6 +24,7 @@ class ActivityLogin : BtsppActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setAutoLayoutContentView(R.layout.activity_login)
+        binding = ActivityLoginBinding.bind(findViewById<View>(android.R.id.content).rootView)
 
         //  读取参数
         val args = _btspp_params as? JSONObject
@@ -34,23 +36,23 @@ class ActivityLogin : BtsppActivity() {
         setFullScreen()
 
         //  事件 - 返回按钮
-        layout_back_from_login.setOnClickListener { onBackClicked(false) }
+        binding.layoutBackFromLogin.setOnClickListener { onBackClicked(false) }
 
         //  初始化界面（部分界面在某些模式下不可见）
         if (_checkActivePermission) {
             //  test network didnt show 'register'
-            button_register.setOnClickListener {
+            binding.buttonRegister.setOnClickListener {
                 goTo(ActivityRegisterEntry::class.java, true)
             }
         } else {
             //  导入到已有钱包时：钱包模式移除，注册按钮隐藏。
-            findViewById<android.support.design.widget.TabLayout>(R.id.tablayout_of_login).removeTabAt(3)
-            findViewById<Button>(R.id.button_register).visibility = View.INVISIBLE
+            findViewById<TabLayout>(R.id.tablayout_of_login).removeTabAt(3)
+            binding.buttonRegister.visibility = View.INVISIBLE
         }
 
         // 设置 tablelayout 和 view_pager
-        tablayout = tablayout_of_login
-        view_pager = view_pager_of_login
+        tablayout = binding.tablayoutOfLogin
+        view_pager = binding.viewPagerOfLogin
 
         // 添加 fargments
         setFragments()

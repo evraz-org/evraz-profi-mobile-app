@@ -11,13 +11,15 @@ import bitshares.*
 import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_process_proposal.*
+import com.btsplusplus.fowallet.databinding.ActivityProcessProposalBinding
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.math.max
 import kotlin.math.min
 
 class ActivityProposal : BtsppActivity() {
+
+    private lateinit var binding: ActivityProcessProposalBinding
 
     private var _allDataArray = mutableListOf<JSONObject>()     //  所有提案
     private var _safeDataArray = mutableListOf<JSONObject>()    //  安全的提案列表（经过了安全等级筛选的）
@@ -27,13 +29,14 @@ class ActivityProposal : BtsppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_process_proposal)
+        binding = ActivityProcessProposalBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         //  设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
         //  返回按钮
-        layout_back_from_process_proposal.setOnClickListener { finish() }
+        binding.layoutBackFromProcessProposal.setOnClickListener { finish() }
 
         //  查询提案
         queryAllProposals()

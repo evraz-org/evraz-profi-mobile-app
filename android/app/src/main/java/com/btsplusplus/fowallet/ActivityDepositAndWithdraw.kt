@@ -12,7 +12,7 @@ import com.btsplusplus.fowallet.gateway.RuDEX
 import com.btsplusplus.fowallet.utils.VcUtils
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_deposit_and_withdraw.*
+import com.btsplusplus.fowallet.databinding.ActivityDepositAndWithdrawBinding
 import org.json.JSONArray
 import org.json.JSONObject
 import java.math.BigInteger
@@ -26,15 +26,18 @@ class ActivityDepositAndWithdraw : BtsppActivity() {
     private var _balanceDataHash = JSONObject()
     private var _balanceDataNameHash = JSONObject()
 
+    private lateinit var binding: ActivityDepositAndWithdrawBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_deposit_and_withdraw)
+        binding = ActivityDepositAndWithdrawBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
         //  返回按钮
-        layout_back_from_page_of_recharge_and_withdraw.setOnClickListener { finish() }
+        binding.layoutBackFromPageOfRechargeAndWithdraw.setOnClickListener { finish() }
 
         //  当前账号信息
         assert(WalletManager.sharedWalletManager().isWalletExist())
@@ -126,13 +129,13 @@ class ActivityDepositAndWithdraw : BtsppActivity() {
         }
 
         //  gateway assets faq button
-        tip_link_gateway_assets.setOnClickListener { onGatewayAssetsFAQClicked() }
+        binding.tipLinkGatewayAssets.setOnClickListener { onGatewayAssetsFAQClicked() }
 
         //  current gateway
-        layout_current_gateway.setOnClickListener { onCurrentGatewayClicked() }
+        binding.layoutCurrentGateway.setOnClickListener { onCurrentGatewayClicked() }
 
         //  初始化UI
-        gateway_assets_list_count_of_recharge_and_withdraw.text = String.format(resources.getString(R.string.kVcDWHelpGatewayAssets, "0"))
+        binding.gatewayAssetsListCountOfRechargeAndWithdraw.text = String.format(resources.getString(R.string.kVcDWHelpGatewayAssets, "0"))
         refreshGatewayInfoUI()
 
         //  请求
@@ -257,7 +260,7 @@ class ActivityDepositAndWithdraw : BtsppActivity() {
         _balanceDataHash.keys().forEach { asset_id ->
             val obj = chainMgr.getChainObjectByID(asset_id)
             val item = _balanceDataHash.getJSONObject(asset_id)
-            val asset_symbol = obj.getString("symbol").toUpperCase()
+            val asset_symbol = obj.getString("symbol").uppercase()
             _balanceDataNameHash.put(asset_symbol, item)
         }
     }
@@ -288,10 +291,10 @@ class ActivityDepositAndWithdraw : BtsppActivity() {
 
     private fun refreshGatewayInfoUI() {
         //  gateway name
-        gateway_name_of_recharge_and_withdraw.text = _currGateway.getString("name")
+        binding.gatewayNameOfRechargeAndWithdraw.text = _currGateway.getString("name")
 
         //  help rows
-        layout_help_of_recharge_and_withdraw.removeAllViews()
+        binding.layoutHelpOfRechargeAndWithdraw.removeAllViews()
         _currGateway.getJSONArray("helps").forEach<JSONObject> {
             val layout_params = LinearLayout.LayoutParams(LLAYOUT_MATCH, LLAYOUT_WARP)
             layout_params.setMargins(0, 10.dp, 0, 0)
@@ -327,16 +330,16 @@ class ActivityDepositAndWithdraw : BtsppActivity() {
                 }
             }
 
-            layout_help_of_recharge_and_withdraw.addView(layout)
+            binding.layoutHelpOfRechargeAndWithdraw.addView(layout)
         }
     }
 
     private fun refreshGatewayAssetsUI() {
         //  gateway assets title view
-        gateway_assets_list_count_of_recharge_and_withdraw.text = String.format(resources.getString(R.string.kVcDWHelpGatewayAssets, _data_array.size.toString()))
+        binding.gatewayAssetsListCountOfRechargeAndWithdraw.text = String.format(resources.getString(R.string.kVcDWHelpGatewayAssets, _data_array.size.toString()))
 
         //  draw assets list
-        val layout_parent = layout_gateway_list_of_recharge_and_withdraw
+        val layout_parent = binding.layoutGatewayListOfRechargeAndWithdraw
         layout_parent.removeAllViews()
         if (_data_array.size > 0) {
             for (item in _data_array) {

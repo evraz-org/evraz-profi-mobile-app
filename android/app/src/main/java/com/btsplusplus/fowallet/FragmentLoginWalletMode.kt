@@ -3,7 +3,6 @@ package com.btsplusplus.fowallet
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -11,22 +10,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import bitshares.*
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
 import com.yanzhenjie.andserver.AndServer
 import com.yanzhenjie.andserver.RequestHandler
 import com.yanzhenjie.andserver.Server
+import com.yanzhenjie.andserver.framework.handler.RequestHandler
+import com.yanzhenjie.andserver.http.HttpContext
+import com.yanzhenjie.andserver.http.HttpRequest
+import com.yanzhenjie.andserver.http.HttpResponse
 import com.yanzhenjie.andserver.upload.HttpFileUpload
 import com.yanzhenjie.andserver.upload.HttpUploadContext
 import com.yanzhenjie.andserver.util.HttpRequestParser
 import com.yanzhenjie.andserver.website.AssetsWebsite
-import org.apache.commons.fileupload.disk.DiskFileItemFactory
-import org.apache.httpcore.HttpEntityEnclosingRequest
-import org.apache.httpcore.HttpRequest
-import org.apache.httpcore.HttpResponse
-import org.apache.httpcore.entity.StringEntity
-import org.apache.httpcore.protocol.HttpContext
+import org.apache.commons.fileupload2.jakarta.disk.DiskFileItemFactory
+import org.apache.http.HttpEntityEnclosingRequest
+import org.apache.http.HttpRequest
+import org.apache.http.HttpResponse
+import org.apache.http.entity.StringEntity
+import org.apache.http.protocol.HttpContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -185,9 +189,11 @@ class FragmentLoginWalletMode : Fragment() {
      * 上传文件
      */
     internal inner class UploadHandler : RequestHandler {
-        override fun handle(request: HttpRequest, response: HttpResponse, context: HttpContext) {
+        override fun handle(request: HttpRequest, response: HttpResponse, ctx: HttpContext) {
             try {
-                if (!HttpRequestParser.isMultipartContentRequest(request)) {
+                val contentType = request.getHeader("Content-Type")
+                val isMultipart = contentType?.lowercase()?.startsWith("multipart/") == true
+                if (!isMultipart) {
                     on_response(403, _ctx!!.resources.getString(R.string.registerLoginPageInvalidRequesting), response)
                 }
                 processFileUpload(request)
@@ -200,17 +206,17 @@ class FragmentLoginWalletMode : Fragment() {
         }
 
         private fun on_response(responseCode: Int, message: String, response: HttpResponse) {
-            response.setStatusCode(responseCode)
+            response.status = responseCode
             response.entity = StringEntity(message, "utf-8")
         }
 
         private fun processFileUpload(request: HttpRequest) {
             println(_importdir)
-            val factory = DiskFileItemFactory(1024 * 1024, File(_importdir))
+            val factory = DiskFileItemFactory()
             val fileUpload = HttpFileUpload(factory)
 
-            val context = HttpUploadContext(request as HttpEntityEnclosingRequest)
-            val fileItems = fileUpload.parseRequest(context)
+            val uploadContext = HttpUploadContext(request as HttpEntityEnclosingRequest)
+            val fileItems = fileUpload.parseRequest(uploadContext)
 
             var upload_ok: Boolean = false
             for (fileItem in fileItems) {
