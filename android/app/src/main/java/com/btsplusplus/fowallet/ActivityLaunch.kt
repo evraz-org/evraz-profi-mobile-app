@@ -8,7 +8,7 @@ import android.view.View
 import bitshares.*
 import bitshares.serializer.T_Base
 import com.btsplusplus.fowallet.utils.VcUtils
-import com.flurry.android.FlurryAgent
+//import com.flurry.android.FlurryAgent
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
 import org.json.JSONObject
@@ -41,7 +41,7 @@ class ActivityLaunch : BtsppActivity() {
         super.onCreate(savedInstanceState)
 
         //  初始化Flurry
-        FlurryAgent.Builder().withLogEnabled(true).build(this, "H45RRHMWCPMKZNNKR5SR")
+        //FlurryAgent.Builder().withLogEnabled(true).build(this, "H45RRHMWCPMKZNNKR5SR")
 
         //  初始化启动界面
         setFullScreen()
@@ -60,7 +60,7 @@ class ActivityLaunch : BtsppActivity() {
         //  统计设备信息
         val accountName = WalletManager.sharedWalletManager().getWalletAccountName()
         if (accountName != null && accountName != "") {
-            FlurryAgent.setUserId(accountName)
+            //FlurryAgent.setUserId(accountName)
         }
 
         //  初始化配置

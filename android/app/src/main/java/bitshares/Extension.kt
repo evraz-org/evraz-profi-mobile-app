@@ -7,7 +7,7 @@ import android.util.TypedValue
 import android.widget.EditText
 import android.widget.LinearLayout
 import com.btsplusplus.fowallet.NativeInterface
-import com.flurry.android.FlurryAgent
+//import com.flurry.android.FlurryAgent
 import org.json.JSONArray
 import org.json.JSONObject
 import java.math.BigDecimal
@@ -315,9 +315,9 @@ fun btsppLogCustom(event_name: String, args: JSONObject? = null) {
             args.keys().forEach { key ->
                 event_args[key] = args.get(key).toString()
             }
-            FlurryAgent.logEvent(event_name, event_args)
+            //FlurryAgent.logEvent(event_name, event_args)
         } else {
-            FlurryAgent.logEvent(event_name)
+            //FlurryAgent.logEvent(event_name)
         }
     } catch (e: Exception) {
         //  ...
@@ -329,7 +329,7 @@ fun btsppLogCustom(event_name: String, args: JSONObject? = null) {
  */
 fun btsppLogTrack(str: String) {
     try {
-        FlurryAgent.logBreadcrumb(str)
+        //FlurryAgent.logBreadcrumb(str)
     } catch (e: Exception) {
         //  ...
     }

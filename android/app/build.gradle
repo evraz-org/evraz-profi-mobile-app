@@ -95,5 +95,5 @@ dependencies {
     implementation files('libs/armeabi-v7a.jar')
     implementation files('libs/x86.jar')
     //  for flurry
-    implementation 'com.flurry.android:analytics:11.6.0@aar'
+    //implementation 'com.flurry.android:analytics:11.6.0@aar'
 }
