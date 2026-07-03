@@ -736,11 +736,17 @@ class FragmentTradeBuyOrSell : BtsppFragment() {
 
         //  登录 or 买入 or 卖出
         val _confirmation_btn_of_buy = _view.findViewById<Button>(R.id.btn_submit_core)
+        val _btn_borrow = _view.findViewById<Button>(R.id.btn_borrow)
         if (WalletManager.sharedWalletManager().isWalletExist()) {
             if (_isbuy) {
                 _confirmation_btn_of_buy.text = String.format("%s%s", resources.getString(R.string.kBtnBuy), quote_symbol)
+                _btn_borrow.visibility = View.VISIBLE
+                _btn_borrow.setOnClickListener {
+                    activity?.goTo(ActivityCollateral::class.java, true, args = jsonArrayfrom(_tradingPair))
+                }
             } else {
                 _confirmation_btn_of_buy.text = String.format("%s%s", resources.getString(R.string.kBtnSell), quote_symbol)
+                _btn_borrow.visibility = View.GONE
             }
         } else {
             _confirmation_btn_of_buy.text = _ctx.resources.getString(R.string.kNormalCellBtnLogin)

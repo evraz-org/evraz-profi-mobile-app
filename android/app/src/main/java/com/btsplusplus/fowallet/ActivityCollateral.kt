@@ -19,7 +19,7 @@ import org.json.JSONObject
 import java.math.BigDecimal
 import kotlin.math.max
 
-class ActivityIndexCollateral : BtsppActivity() {
+class ActivityCollateral : BtsppActivity() {
 
     private var _debtPair: TradingPair? = null
     private var _nMaintenanceCollateralRatio: BigDecimal? = null
@@ -39,13 +39,6 @@ class ActivityIndexCollateral : BtsppActivity() {
     lateinit var _curve_slider_ratio: UtilsCurveSlider
     lateinit var _curve_slider_target_ratio: UtilsCurveSlider
 
-    /**
-     * 重载 - 返回键按下
-     */
-    override fun onBackPressed() {
-        goHome()
-    }
-
     override fun onResume() {
         super.onResume()
         //  刷新UI
@@ -54,25 +47,19 @@ class ActivityIndexCollateral : BtsppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setAutoLayoutContentView(R.layout.activity_index_collateral, navigationBarColor = R.color.theme01_tabBarColor)
+        setAutoLayoutContentView(R.layout.activity_collateral, navigationBarColor = R.color.theme01_tabBarColor)
 
         //  初始化数据
         val chainMgr = ChainObjectManager.sharedChainObjectManager()
         val parameters = chainMgr.getDefaultParameters()
         _nMaintenanceCollateralRatio = BigDecimal.valueOf(parameters.getDouble("mcr_default"))
         _nCurrMortgageRate = BigDecimal.valueOf(parameters.getDouble("collateral_ratio_default"))
-        //  初始化默认操作债仓
-        val debt_asset_list = chainMgr.getMainSmartAssetList()
-        assert(debt_asset_list.length() > 0)
-        val currDebtAsset = chainMgr.getAssetBySymbol(debt_asset_list.getString(0))
-        val collateralAsset = chainMgr.getChainObjectByID(BTS_NETWORK_CORE_ASSET_ID)
-        _debtPair = TradingPair().initWithBaseAsset(currDebtAsset, collateralAsset)
+
+        val params = btspp_args_as_JSONArray()
+        _debtPair = params.get(0) as TradingPair
 
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
-
-        // 设置底部导航栏样式
-        //setBottomNavigationStyle(1)
 
         //  刷新数据
         _refreshUserData()
@@ -133,6 +120,8 @@ class ActivityIndexCollateral : BtsppActivity() {
 
         //  登录、调整债仓
         findViewById<Button>(R.id.btn_submit_core).setOnClickListener { onSubmitCoreClicked() }
+
+        findViewById<View>(R.id.layout_back_from_borrow).setOnClickListener { finish() }
     }
 
     /**
@@ -544,7 +533,7 @@ class ActivityIndexCollateral : BtsppActivity() {
             if (select_item.isTrue("is_custom")) {
                 //  自定义搜索借贷资产
                 TempManager.sharedTempManager().set_query_account_callback { last_activity, asset_info ->
-                    last_activity.goTo(ActivityIndexCollateral::class.java, true, back = true)
+                    last_activity.goTo(ActivityCollateral::class.java, true, back = true)
                     processSelectNewDebtAsset(asset_info)
                 }
                 goTo(ActivityAccountQueryBase::class.java, true, args = JSONObject().apply {
