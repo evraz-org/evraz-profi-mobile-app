@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ActivityTransfer"
+    tools:context=".ActivityIndexTransfer"
     android:background="@color/theme01.appBackColor">
 
 
@@ -20,27 +20,6 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:orientation="horizontal">
-
-
-            <LinearLayout
-                android:id="@+id/layout_back_from_transfer"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:orientation="horizontal">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/ic_btn_back"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/kBtnBack"
-                    style="@style/kNavigationBarTextStyle"
-                    android:gravity="center_vertical"
-                    />
-            </LinearLayout>
-
 
             <TextView
                 android:id="@+id/title"
@@ -279,6 +258,10 @@
 
     </LinearLayout>
 
-
+    <include
+        layout="@layout/bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>

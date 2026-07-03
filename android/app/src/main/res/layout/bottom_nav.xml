@@ -24,6 +24,7 @@
                 android:layout_height="28dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="0dp"
+                android:tint="@color/theme01.textColorGray"
                 app:srcCompat="@drawable/ic_bottom_my" />
 
             <TextView
@@ -49,6 +50,7 @@
                 android:layout_height="28dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="0dp"
+                android:tint="@color/theme01.textColorGray"
                 app:srcCompat="@drawable/ic_bottom_markets" />
 
             <TextView
@@ -58,6 +60,32 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="28dp"
                 android:text="@string/kTabBarNameMarkets"
+                android:textColor="@color/theme01.textColorGray"
+                android:textSize="10dp" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/bottom_nav_transfer_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/bottom_nav_image_view_transfer"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="0dp"
+                android:tint="@color/theme01.textColorGray"
+                app:srcCompat="@drawable/icon_transfer" />
+
+            <TextView
+                android:id="@+id/bottom_nav_text_view_transfer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="28dp"
+                android:text="@string/kServicesCellLabelTransfer"
                 android:textColor="@color/theme01.textColorGray"
                 android:textSize="10dp" />
         </FrameLayout>
@@ -74,6 +102,7 @@
                 android:layout_height="28dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="0dp"
+                android:tint="@color/theme01.textColorGray"
                 app:srcCompat="@drawable/icon_depositwithdraw" />
 
             <TextView
@@ -99,6 +128,7 @@
                 android:layout_height="28dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="0dp"
+                android:tint="@color/theme01.textColorGray"
                 app:srcCompat="@drawable/ic_bottom_service" />
 
             <TextView

@@ -1,6 +1,5 @@
 package com.btsplusplus.fowallet
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
@@ -9,12 +8,12 @@ import bitshares.*
 import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_transfer.*
+import kotlinx.android.synthetic.main.activity_index_transfer.*
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.math.pow
 
-class ActivityTransfer : BtsppActivity() {
+class ActivityIndexTransfer : BtsppActivity() {
 
     private var _full_account_data: JSONObject? = null
     private var _default_asset: JSONObject? = null
@@ -30,8 +29,9 @@ class ActivityTransfer : BtsppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setAutoLayoutContentView(R.layout.activity_transfer)
+        setAutoLayoutContentView(R.layout.activity_index_transfer)
         setFullScreen()
+        setBottomNavigationStyle(2)
 
         //  获取参数
         val args = btspp_args_as_JSONObject()
@@ -39,15 +39,12 @@ class ActivityTransfer : BtsppActivity() {
         _default_asset = args.optJSONObject("default_asset")
         _default_to = args.optJSONObject("default_to")
 
-        //  事件
-        layout_back_from_transfer.setOnClickListener { finish() }
-
         //  没有默认收款人：则对收款人字段添加点击事件。
         if (_default_to == null) {
             cell_to_account_tailer_arrow.visibility = View.VISIBLE
             cell_to_account.setOnClickListener {
                 TempManager.sharedTempManager().set_query_account_callback { last_activity, it ->
-                    last_activity.goTo(ActivityTransfer::class.java, true, back = true)
+                    last_activity.goTo(ActivityIndexTransfer::class.java, true, back = true)
                     _transfer_args!!.put("to", it)
                     refreshUI()
                 }

@@ -50,10 +50,14 @@ fun AppCompatActivity.setBottomNavigationStyle(position: Int) {
             bottom_nav_image_view_markets.setColorFilter(color)
         }
         2 -> {
+            bottom_nav_text_view_transfer.setTextColor(color)
+            bottom_nav_image_view_transfer.setColorFilter(color)
+        }
+        3 -> {
             bottom_nav_text_view_gateways.setTextColor(color)
             bottom_nav_image_view_gateways.setColorFilter(color)
         }
-        3 -> {
+        4 -> {
             bottom_nav_text_view_services.setTextColor(color)
             bottom_nav_image_view_services.setColorFilter(color)
         }
@@ -71,7 +75,7 @@ fun AppCompatActivity.setBottomNavigationStyle(position: Int) {
     } else {
         bottom_nav_markets_frame.visibility = View.GONE
     }
-    if (BuildConfig.kAppModuleEnableTabDebt) {
+    if (BuildConfig.kAppModuleEnableGateway) {
         bottom_nav_markets_frame.visibility = View.VISIBLE
         bottom_nav_gateways_frame.setOnClickListener {
             val top = BtsppApp.getInstance().getTopActivity()
@@ -82,6 +86,28 @@ fun AppCompatActivity.setBottomNavigationStyle(position: Int) {
         }
     } else {
         bottom_nav_gateways_frame.visibility = View.GONE
+    }
+    bottom_nav_transfer_frame.setOnClickListener {
+        val top = BtsppApp.getInstance().getTopActivity()
+        if (top == null || top !is ActivityIndexTransfer) {
+            guardWalletExist {
+                val mask = ViewMask(R.string.kTipsBeRequesting.xmlstring(this), this)
+                mask.show()
+                val p1 = get_full_account_data_and_asset_hash(WalletManager.sharedWalletManager().getWalletAccountName()!!)
+                val p2 = ChainObjectManager.sharedChainObjectManager().queryFeeAssetListDynamicInfo()
+                Promise.all(p1, p2).then {
+                    mask.dismiss()
+                    val data_array = it as JSONArray
+                    val full_userdata = data_array.getJSONObject(0)
+                    goTo(ActivityIndexTransfer::class.java, args = jsonObjectfromKVS("full_account_data", full_userdata))
+                    BtsppApp.getInstance().finishAllActivity()
+                    return@then null
+                }.catch {
+                    mask.dismiss()
+                    showToast(resources.getString(R.string.tip_network_error))
+                }
+            }
+        }
     }
     bottom_nav_services_frame.setOnClickListener {
         val top = BtsppApp.getInstance().getTopActivity()
@@ -105,11 +131,13 @@ fun AppCompatActivity.clearBottomAllColor() {
     bottom_nav_text_view_markets.setTextColor(default_color)
     bottom_nav_text_view_gateways.setTextColor(default_color)
     bottom_nav_text_view_services.setTextColor(default_color)
+    bottom_nav_text_view_transfer.setTextColor(default_color)
     bottom_nav_text_view_my.setTextColor(default_color)
     //  图片
     bottom_nav_image_view_markets.setColorFilter(default_color)
     bottom_nav_image_view_gateways.setColorFilter(default_color)
     bottom_nav_image_view_services.setColorFilter(default_color)
+    bottom_nav_image_view_transfer.setColorFilter(default_color)
     bottom_nav_image_view_my.setColorFilter(default_color)
 }
 

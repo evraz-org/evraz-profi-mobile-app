@@ -33,7 +33,7 @@ class ActivityIndexDepositAndWithdraw : BtsppActivity() {
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
-        setBottomNavigationStyle(2)
+        setBottomNavigationStyle(3)
 
         //  当前账号信息
         assert(WalletManager.sharedWalletManager().isWalletExist())

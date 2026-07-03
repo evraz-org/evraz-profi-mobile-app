@@ -52,7 +52,7 @@ class ActivityScanAccountName : BtsppActivity() {
                 mask.dismiss()
                 val data_array = it as JSONArray
                 val full_userdata = data_array.getJSONObject(0)
-                goTo(ActivityTransfer::class.java, true, args = jsonObjectfromKVS("full_account_data", full_userdata, "default_to", default_to))
+                goTo(ActivityIndexTransfer::class.java, true, args = jsonObjectfromKVS("full_account_data", full_userdata, "default_to", default_to))
                 return@then null
             }.catch {
                 mask.dismiss()

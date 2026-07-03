@@ -33,6 +33,7 @@ class BtsppApp : Application() {
                 if (last_class == ActivityIndexMarkets::class ||
                         last_class == ActivityIndexDepositAndWithdraw::class ||
                         last_class == ActivityIndexServices::class ||
+                        last_class == ActivityIndexTransfer::class ||
                         last_class == ActivityIndexMy::class) {
                     //  已经达到最外层界面：终止
                     break

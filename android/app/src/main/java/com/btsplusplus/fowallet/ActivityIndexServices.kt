@@ -27,7 +27,7 @@ class ActivityIndexServices : BtsppActivity() {
         setFullScreen()
 
         // 设置底部导航栏样式
-        setBottomNavigationStyle(3)
+        setBottomNavigationStyle(4)
 
         //  设置模块可见性
         if (ChainObjectManager.sharedChainObjectManager().getMainSmartAssetList().length() > 0) {
@@ -68,7 +68,6 @@ class ActivityIndexServices : BtsppActivity() {
 
         //  设置图标颜色
         val iconcolor = resources.getColor(R.color.theme01_textColorNormal)
-        img_icon_transfer.setColorFilter(iconcolor)
         img_icon_qrscan.setColorFilter(iconcolor)
         img_icon_account_search.setColorFilter(iconcolor)
         img_icon_smart_coin.setColorFilter(iconcolor)
@@ -90,25 +89,6 @@ class ActivityIndexServices : BtsppActivity() {
         if (ChainObjectManager.sharedChainObjectManager().getMainSmartAssetList().length() > 0) {
             layout_smart_coin.setOnClickListener {
                 goTo(ActivityAssetInfos::class.java, true)
-            }
-        }
-
-        layout_transfer_from_services.setOnClickListener {
-            guardWalletExist {
-                val mask = ViewMask(R.string.kTipsBeRequesting.xmlstring(this), this)
-                mask.show()
-                val p1 = get_full_account_data_and_asset_hash(WalletManager.sharedWalletManager().getWalletAccountName()!!)
-                val p2 = ChainObjectManager.sharedChainObjectManager().queryFeeAssetListDynamicInfo()
-                Promise.all(p1, p2).then {
-                    mask.dismiss()
-                    val data_array = it as JSONArray
-                    val full_userdata = data_array.getJSONObject(0)
-                    goTo(ActivityTransfer::class.java, true, args = jsonObjectfromKVS("full_account_data", full_userdata))
-                    return@then null
-                }.catch {
-                    mask.dismiss()
-                    showToast(resources.getString(R.string.tip_network_error))
-                }
             }
         }
 
