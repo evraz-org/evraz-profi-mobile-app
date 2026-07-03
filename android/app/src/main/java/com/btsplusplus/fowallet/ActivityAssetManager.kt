@@ -293,6 +293,8 @@ class ActivityAssetManager : BtsppActivity() {
                         }
                     }
                 }
+
+                else -> {}
             }
         }
 

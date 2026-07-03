@@ -4,17 +4,20 @@ import android.content.Context
 import android.os.Bundle
 import android.widget.TextView
 import bitshares.*
+import com.btsplusplus.fowallet.http.HttpConfig
 import com.yanzhenjie.andserver.AndServer
 import com.yanzhenjie.andserver.Server
-import com.yanzhenjie.andserver.SimpleRequestHandler
-import com.yanzhenjie.andserver.view.View
-import com.yanzhenjie.andserver.website.AssetsWebsite
+import com.yanzhenjie.andserver.annotation.Config
+import com.yanzhenjie.andserver.framework.body.FileBody
+import com.yanzhenjie.andserver.framework.config.WebConfig
+import com.yanzhenjie.andserver.framework.handler.RequestHandler
+import com.yanzhenjie.andserver.framework.view.BodyView
+import com.yanzhenjie.andserver.framework.view.View
+import com.yanzhenjie.andserver.framework.website.AssetsWebsite
+import com.yanzhenjie.andserver.http.HttpRequest
+import com.yanzhenjie.andserver.http.HttpResponse
 import kotlinx.android.synthetic.main.activity_wallet_backup.*
-import org.apache.httpcore.HttpRequest
-import org.apache.httpcore.HttpResponse
-import org.apache.httpcore.entity.FileEntity
 import java.io.File
-import java.lang.Exception
 import java.net.InetAddress
 import java.text.SimpleDateFormat
 import java.util.*
@@ -69,18 +72,6 @@ class ActivityWalletBackup : BtsppActivity() {
         return OrgUtils.write_file(_fullpath, wallet_bin)
     }
 
-    /**
-     * 下载文件
-     */
-    internal inner class DownloadHandler : SimpleRequestHandler() {
-        override fun handle(request: HttpRequest?, response: HttpResponse?): View {
-            val httpEntity = FileEntity(File(_fullpath))
-            val view = com.yanzhenjie.andserver.view.View(200, httpEntity)
-            view.addHeader("Content-Disposition", "attachment;filename=${_filename}")
-            return view
-        }
-    }
-
     private fun startInitWebserver(context: Context) {
         if (_webserver != null) {
             return
@@ -93,15 +84,16 @@ class ActivityWalletBackup : BtsppActivity() {
         //  REMARK：不能绑定到80端口，会出现无权限错误。
         val port = 9999
         val address = InetAddress.getByName(ipv4)
-        val website = AssetsWebsite(context.assets, "www/${R.string.webserverDownloadPage.xmlstring(context)}")
-        _webserver = AndServer.serverBuilder().port(port).inetAddress(address!!).website(website).registerHandler("/download", DownloadHandler()).listener(object : Server.ServerListener {
+        HttpConfig.website = AssetsWebsite(context, "/www/${R.string.webserverDownloadPage.xmlstring(context)}")
+        
+        _webserver = AndServer.webServer(context).port(port).inetAddress(address).listener(object : Server.ServerListener {
             override fun onStarted() {
                 findViewById<TextView>(R.id.label_txt_address_or_error).text = "${ipv4}:${port}"
             }
 
-            override fun onError(e: Exception) {
+            override fun onException(e: Exception) {
                 btsppLogCustom("webserver_download_init_error", jsonObjectfromKVS("message", e.message
-                        ?: "unknown"))
+                    ?: "unknown"))
                 findViewById<TextView>(R.id.label_txt_address_or_error).text = R.string.registerLoginWebServerErrorInit.xmlstring(context)
             }
 

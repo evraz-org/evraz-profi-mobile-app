@@ -1,9 +1,13 @@
 package com.btsplusplus.fowallet
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.LocalBroadcastManager
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -12,25 +16,18 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import bitshares.*
+import com.btsplusplus.fowallet.http.HttpConfig
+import com.btsplusplus.fowallet.http.WalletUploadController
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
 import com.yanzhenjie.andserver.AndServer
-import com.yanzhenjie.andserver.RequestHandler
 import com.yanzhenjie.andserver.Server
-import com.yanzhenjie.andserver.upload.HttpFileUpload
-import com.yanzhenjie.andserver.upload.HttpUploadContext
-import com.yanzhenjie.andserver.util.HttpRequestParser
-import com.yanzhenjie.andserver.website.AssetsWebsite
-import org.apache.commons.fileupload.disk.DiskFileItemFactory
-import org.apache.httpcore.HttpEntityEnclosingRequest
-import org.apache.httpcore.HttpRequest
-import org.apache.httpcore.HttpResponse
-import org.apache.httpcore.entity.StringEntity
-import org.apache.httpcore.protocol.HttpContext
+import com.yanzhenjie.andserver.annotation.Config
+import com.yanzhenjie.andserver.framework.config.WebConfig
+import com.yanzhenjie.andserver.framework.website.AssetsWebsite
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
-import java.lang.Exception
 import java.net.InetAddress
 
 // TODO: Rename parameter arguments, choose names that match
@@ -61,6 +58,15 @@ class FragmentLoginWalletMode : Fragment() {
     private var _dataArray = mutableListOf<JSONObject>()
     private var _inBackground: Boolean = true
 
+    private val _broadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(
+            context: Context?,
+            intent: Intent?
+        ) {
+            refreshRecvFileList()
+        }
+    }
+
     override fun onDestroy() {
         _webserver?.shutdown()
         super.onDestroy()
@@ -68,6 +74,7 @@ class FragmentLoginWalletMode : Fragment() {
 
     override fun onPause() {
         _inBackground = true
+        LocalBroadcastManager.getInstance(BtsppApp.getInstance()).unregisterReceiver(_broadcastReceiver)
         super.onPause()
     }
 
@@ -77,6 +84,9 @@ class FragmentLoginWalletMode : Fragment() {
         if (_ctx != null) {
             _refreshFileListUI(_ctx!!)
         }
+
+        LocalBroadcastManager.getInstance(BtsppApp.getInstance()).registerReceiver(_broadcastReceiver, IntentFilter(
+            WalletUploadController.ACTION))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -181,65 +191,6 @@ class FragmentLoginWalletMode : Fragment() {
         return _view
     }
 
-    /**
-     * 上传文件
-     */
-    internal inner class UploadHandler : RequestHandler {
-        override fun handle(request: HttpRequest, response: HttpResponse, context: HttpContext) {
-            try {
-                if (!HttpRequestParser.isMultipartContentRequest(request)) {
-                    on_response(403, _ctx!!.resources.getString(R.string.registerLoginPageInvalidRequesting), response)
-                }
-                processFileUpload(request)
-                on_response(200, _ctx!!.resources.getString(R.string.registerLoginPageUploadSuccessPleaseContinueForPhone), response)
-            } catch (e: Exception) {
-                btsppLogCustom("webserver_upload_error", jsonObjectfromKVS("message", e.message
-                        ?: "unknown"))
-                on_response(500, _ctx!!.resources.getString(R.string.registerLoginPageServerInternalError), response)
-            }
-        }
-
-        private fun on_response(responseCode: Int, message: String, response: HttpResponse) {
-            response.setStatusCode(responseCode)
-            response.entity = StringEntity(message, "utf-8")
-        }
-
-        private fun processFileUpload(request: HttpRequest) {
-            println(_importdir)
-            val factory = DiskFileItemFactory(1024 * 1024, File(_importdir))
-            val fileUpload = HttpFileUpload(factory)
-
-            val context = HttpUploadContext(request as HttpEntityEnclosingRequest)
-            val fileItems = fileUpload.parseRequest(context)
-
-            var upload_ok: Boolean = false
-            for (fileItem in fileItems) {
-                if (!fileItem.isFormField) {
-                    val name = fileItem.name
-                    // val size = fileItem.size
-                    val uploadedFile = File(_importdir, name)
-
-                    val uploadFileDir = File(_importdir)
-                    if (!uploadFileDir.exists()) {
-                        uploadFileDir.mkdirs()
-                    }
-                    try {
-                        fileItem.write(uploadedFile)
-                    } catch (e: Exception) {
-                        println(e.message.toString())
-                    }
-                    upload_ok = true
-                }
-            }
-            //  刷新
-            if (upload_ok) {
-                delay_main {
-                    refreshRecvFileList()
-                }
-            }
-        }
-    }
-
     private fun startInitWebserver(context: Context) {
         if (_webserver != null) {
             if (_address != null) {
@@ -255,16 +206,16 @@ class FragmentLoginWalletMode : Fragment() {
         //  REMARK：不能绑定到80端口，会出现无权限错误。
         val port = 9999
         val address = InetAddress.getByName(ipv4)
-        val website = AssetsWebsite(context.assets, "www/${R.string.webserverUploadPage.xmlstring(context)}")
-        _webserver = AndServer.serverBuilder().port(port).inetAddress(address!!).website(website).registerHandler("/upload", UploadHandler()).listener(object : Server.ServerListener {
+        HttpConfig.website = AssetsWebsite(context, "/www/${R.string.webserverUploadPage.xmlstring(context)}")
+        _webserver = AndServer.webServer(context).port(port).inetAddress(address).listener(object : Server.ServerListener {
             override fun onStarted() {
                 _address = "${ipv4}:${port}"
                 _view!!.findViewById<TextView>(R.id.text_ip_of_back_wallet).text = _address!!
             }
 
-            override fun onError(e: Exception) {
+            override fun onException(e: Exception) {
                 btsppLogCustom("webserver_upload_init_error", jsonObjectfromKVS("message", e.message
-                        ?: "unknown"))
+                    ?: "unknown"))
                 _address = _ctx!!.resources.getString(R.string.registerLoginWebServerErrorInit)
                 _view!!.findViewById<TextView>(R.id.text_ip_of_back_wallet).text = _address!!
             }

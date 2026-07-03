@@ -148,7 +148,7 @@
     <string name="kVcDWTipsNetworkConfirmWithN">Your  deposit will be deposited after %s confirmations from the network.\n</string>
     <string name="kVcDWTipsFindCustomService">If you have any questions, please contact the gateway customer service.</string>
     <string name="kVcDWErrTipsRequestDepositAddrFailed">Request deposits address is abnormal, please contact the gateway customer service.</string>
-    <string name="kVcDWErrTipsRequestDepositAddrFailed2">Request deposits address is abnormal, the field \"%s\" verification failed, please contact the gateway customer service.</string>
+     <string name="kVcDWErrTipsRequestDepositAddrFailed2">Request deposits address is abnormal, the field \"%s\" verification failed, please contact the gateway customer service.</string>
     <string name="kVcDWErrTipsRequestWithdrawAddrFailed">Request withdraw address is abnormal, please contact the gateway customer service.</string>
     <string name="kVcDWHelpTitleSupport">Support</string>
     <string name="kVcDWHelpTitleQQ">QQ</string>
@@ -249,7 +249,7 @@
     <string name="kVcPermissionAddOnePlaceholderWeight">Weight value (1-65535)</string>
     <string name="kVcPermissionAddOneDoneTipsInvalidAuthority">Please enter a valid account or public key.</string>
     <string name="kVcPermissionAddOneDoneTipsInvalidWeight">Please enter a valid weight value. Range 1 - 65535.</string>
-    <string name="kVcPermissionAddOneDontTipsCantAddSelf">Can't add your own account.</string>
+    <string name="kVcPermissionAddOneDontTipsCantAddSelf">Can\'t add your own account.</string>
     <!-- 修改密码 -->
     <string name="kEditPasswordBtnEntry">Change password</string>
     <string name="kEditPasswordCellTitleYourNewPassword">Your new password</string>
@@ -556,7 +556,7 @@
     <string name="kVcAssetOpCreateSubmitAskTipsForCostConfirm">Creating %s assets is expected to cost %s, continue?</string>
     <string name="kVcAssetOpCreateSubmitTipsInvalidAssetPrefixNameNone">You need to create the prefix asset %2$s before creating the %1$s asset.</string>
     <string name="kVcAssetOpCreateSubmitTipsInvalidAssetPrefixNameNoPermission">You do not have permission to create assets prefixed with %s.</string>
-    <string name="kVcAssetOpCreateSubmitTipsInvalidBackBackAssetType">Backing asset %s 's backing asset %s cannot be a smart coin.</string>
+    <string name="kVcAssetOpCreateSubmitTipsInvalidBackBackAssetType">Backing asset %s \\\'s backing asset %s cannot be a smart coin.</string>
     <string name="kVcAssetOpCreateSubmitTipsInvalidBackAssetForCommittee">The backing asset of the smart coin created by committee must be %s or backing by %s.</string>
     <string name="kVcAssetOpCreateAssetSubmitTipsOK">Asset creation succeeded.</string>
     <string name="kVcAssetOpUpdateAssetSubmitTipsOK">Update asset succeeded.</string>
@@ -854,10 +854,10 @@
     <string name="kVcStTipAllowMaximumChildAccount">You can only create up to %s sub-accounts.。</string>
     <string name="kVcStTipErrMissMainAccountPrivateKey">The private key of the master account does not exist, please import again.</string>
     <string name="kVcStTipCreateChildBlindAccountSuccess">Sub-account creation was successful.</string>
-    <string name="kVcStCellSubAccount1st">%s's 1st sub-account</string>
-    <string name="kVcStCellSubAccount2nd">%s's %snd sub-account</string>
-    <string name="kVcStCellSubAccount3rd">%s's %srd sub-account</string>
-    <string name="kVcStCellSubAccountnth">%s's %sth sub-account</string>
+    <string name="kVcStCellSubAccount1st">%s\'s 1st sub-account</string>
+    <string name="kVcStCellSubAccount2nd">%s\'s %snd sub-account</string>
+    <string name="kVcStCellSubAccount3rd">%s\'s %srd sub-account</string>
+    <string name="kVcStCellSubAccountnth">%s\'s %sth sub-account</string>
     <string name="kVcStCellTitleReceiptName">%s. Receipt #%s</string>
     <string name="kVcStCellTitleReceiptAddr">Address</string>
     <string name="kVcStCellTitleReceiptAddrWithAliasName">Address(%s)</string>
@@ -905,9 +905,9 @@
     <string name="kVcHtlcTipsInputValidPreimageHash">Please enter a valid preimage hash value.</string>
     <string name="kVcHtlcTipsExpireIsTooShort">Near the expiration date of Contract A, there is a security risk and Contract B cannot be created. Please contact the other party to extend the contract expiry.</string>
     <string name="kVcHtlcMessageCreateFromPreimage">Please confirm that the \"Preimage\" has been backed up. If the preimage is lost, it only can be automatically unlocked after the contract expires. Do you want to continue creating contracts?</string>
-    <string name="kVcHtlcMessageCreateFromHtlcObject">It is recommended that \"Expiry\" must be \"less than\" the expiry of the other party's contract for more than 2 days, otherwise it may cause asset loss. Do you want to continue creating contracts?</string>
+    <string name="kVcHtlcMessageCreateFromHtlcObject">It is recommended that \"Expiry\" must be \"less than\" the expiry of the other party\'s contract for more than 2 days, otherwise it may cause asset loss. Do you want to continue creating contracts?</string>
     <string name="kVcHtlcMessageCreateFromHashHavePreimage">Proactively create a contract, please back up the \"preimage\". If the preimage is lost, it only can be automatically unlocked after the contract expires. Do you want to continue creating contracts?</string>
-    <string name="kVcHtlcMessageCreateFromHashNoPreimage">Passive deployment contract please carefully confirm that the other party has deployed the same contract and carefully check the various parameters. \n\n※ Note ※\n1. the preimage hash and the preimage length must match the other party perfectly. \n2. It is recommended that \"Expiry\" must be \"less than\" the expiry of the other party's contract for more than 2 days, otherwise it may cause asset loss. Do you want to continue creating contracts?</string>
+    <string name="kVcHtlcMessageCreateFromHashNoPreimage">Passive deployment contract please carefully confirm that the other party has deployed the same contract and carefully check the various parameters. \n\n※ Note ※\n1. the preimage hash and the preimage length must match the other party perfectly. \n2. It is recommended that \"Expiry\" must be \"less than\" the expiry of the other party\'s contract for more than 2 days, otherwise it may cause asset loss. Do you want to continue creating contracts?</string>
     <string name="kVcHtlcMessageTipsTitle">Risk Warning</string>
     <string name="kVcHtlcSubmitTipsFullOK">The HTLC was created successfully, view the HTLC details on the \"My Balance\".</string>
     <string name="kVcHtlcSubmitTipsOK">The HTLC was created successfully, but the refresh interface failed. You can view the HTLC details on the \"My Balance\".</string>
