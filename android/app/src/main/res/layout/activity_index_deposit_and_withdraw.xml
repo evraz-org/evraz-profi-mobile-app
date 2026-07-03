@@ -1,56 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.btsplusplus.fowallet.ActivityDepositAndWithdraw"
-    android:background="@color/theme01.appBackColor">
-
+    android:background="@color/theme01.appBackColor"
+    tools:context="com.btsplusplus.fowallet.ActivityIndexDepositAndWithdraw">
 
 
     <LinearLayout
+        android:id="@+id/frame1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="25dp"
         android:orientation="vertical">
-
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:orientation="horizontal">
 
-
-            <LinearLayout
-                android:id="@+id/layout_back_from_page_of_recharge_and_withdraw"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:orientation="horizontal">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/ic_btn_back"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/kBtnBack"
-                    style="@style/kNavigationBarTextStyle"
-                    android:gravity="center_vertical"
-                    />
-            </LinearLayout>
-
-
             <TextView
                 android:id="@+id/title"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:gravity="center"
-                android:layout_gravity="center_vertical"
+                android:layout_gravity="center|center_vertical"
                 android:text="@string/kVcTitleDepositWithdraw"
                 style="@style/kNavigationBarTextStyle" />
-
 
         </FrameLayout>
 
@@ -59,30 +38,30 @@
             android:layout_width="match_parent"
             android:layout_height="34dp"
             android:layout_marginTop="20dp"
+            android:orientation="horizontal"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:orientation="horizontal">
+            android:paddingRight="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
-                android:gravity="center_vertical"
-                android:textSize="16dp"
                 android:layout_weight="9"
+                android:gravity="center_vertical"
+                android:text="@string/kVcDWCellLabelCurrGateway"
                 android:textColor="@color/theme01.textColorMain"
-                android:text="@string/kVcDWCellLabelCurrGateway"/>
+                android:textSize="16dp" />
 
             <TextView
                 android:id="@+id/gateway_name_of_recharge_and_withdraw"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
-                android:gravity="center_vertical|right"
-                android:textSize="16dp"
                 android:layout_weight="9"
+                android:gravity="center_vertical|right"
+                android:text=""
                 android:textColor="@color/theme01.textColorHighlight"
-                android:text=""/>
+                android:textSize="16dp" />
 
             <ImageView
                 android:layout_width="20dp"
@@ -101,15 +80,15 @@
             android:orientation="vertical">
 
         </LinearLayout>
-        
+
         <!-- 网关资产(%s) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
             android:layout_marginTop="10dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
 
             <TextView
                 android:id="@+id/gateway_assets_list_count_of_recharge_and_withdraw"
@@ -118,21 +97,22 @@
                 android:gravity="center_vertical"
                 android:text=""
                 android:textColor="@color/theme01.textColorHighlight"
-                android:textStyle="bold"
-                android:textSize="16dp"/>
+                android:textSize="16dp"
+                android:textStyle="bold" />
 
             <LinearLayout
-                android:gravity="center_vertical|right"
-                android:layout_gravity="right"
                 android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
                 android:layout_weight="1"
-                android:layout_height="match_parent">
+                android:gravity="center_vertical|right">
+
                 <ImageView
                     android:id="@+id/tip_link_gateway_assets"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:tint="@color/theme01.textColorHighlight"
-                    android:src="@drawable/icon_tip" />
+                    android:src="@drawable/icon_tip"
+                    android:tint="@color/theme01.textColorHighlight" />
             </LinearLayout>
 
         </LinearLayout>
@@ -144,19 +124,25 @@
 
             <LinearLayout
                 android:id="@+id/layout_gateway_list_of_recharge_and_withdraw"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:paddingBottom="32dp"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent">
-            </LinearLayout>
+                android:paddingBottom="32dp"></LinearLayout>
 
         </ScrollView>
 
 
     </LinearLayout>
 
+    <include
+        android:id="@+id/bottom_nav"
+        layout="@layout/bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        app:layout_anchor="@+id/frame1"
+        app:layout_anchorGravity="bottom|center"/>
 
 
-</android.support.constraint.ConstraintLayout>
+</android.support.design.widget.CoordinatorLayout>

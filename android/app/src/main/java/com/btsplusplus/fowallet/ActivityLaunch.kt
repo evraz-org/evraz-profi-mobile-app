@@ -115,12 +115,6 @@ class ActivityLaunch : BtsppActivity() {
      */
     private fun _enterToMain() {
         var homeClass: Class<*> = ActivityIndexMarkets::class.java
-        if (!BuildConfig.kAppModuleEnableTabMarket) {
-            homeClass = ActivityIndexCollateral::class.java
-        }
-        if (!BuildConfig.kAppModuleEnableTabDebt) {
-            homeClass = ActivityIndexServices::class.java
-        }
         val intent = Intent()
         intent.setClass(this, homeClass)
         startActivity(intent)

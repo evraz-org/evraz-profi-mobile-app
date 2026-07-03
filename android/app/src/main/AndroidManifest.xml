@@ -187,7 +187,7 @@
         <!-- android:screenOrientation="portrait" -->
         <!-- android:theme="@style/AppTheme.NoActionBar" /> -->
         <activity
-            android:name=".ActivityDepositAndWithdraw"
+            android:name=".ActivityIndexDepositAndWithdraw"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

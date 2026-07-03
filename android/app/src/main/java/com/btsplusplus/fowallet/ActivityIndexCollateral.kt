@@ -72,7 +72,7 @@ class ActivityIndexCollateral : BtsppActivity() {
         setFullScreen()
 
         // 设置底部导航栏样式
-        setBottomNavigationStyle(1)
+        //setBottomNavigationStyle(1)
 
         //  刷新数据
         _refreshUserData()

@@ -70,7 +70,7 @@ class ActivityIndexMarkets : BtsppActivity() {
         setFullScreen()
 
         // 设置底部导航栏样式
-        setBottomNavigationStyle(0)
+        setBottomNavigationStyle(1)
     }
 
     /**

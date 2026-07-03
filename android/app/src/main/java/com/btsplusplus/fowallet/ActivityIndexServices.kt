@@ -27,7 +27,7 @@ class ActivityIndexServices : BtsppActivity() {
         setFullScreen()
 
         // 设置底部导航栏样式
-        setBottomNavigationStyle(2)
+        setBottomNavigationStyle(3)
 
         //  设置模块可见性
         if (ChainObjectManager.sharedChainObjectManager().getMainSmartAssetList().length() > 0) {
@@ -66,12 +66,6 @@ class ActivityIndexServices : BtsppActivity() {
             layout_group_otc.visibility = View.GONE
         }
 
-        if (BuildConfig.kAppModuleEnableGateway) {
-            layout_recharge_and_withdraw_of_service.visibility = View.VISIBLE
-        } else {
-            layout_recharge_and_withdraw_of_service.visibility = View.GONE
-        }
-
         //  设置图标颜色
         val iconcolor = resources.getColor(R.color.theme01_textColorNormal)
         img_icon_transfer.setColorFilter(iconcolor)
@@ -79,7 +73,6 @@ class ActivityIndexServices : BtsppActivity() {
         img_icon_account_search.setColorFilter(iconcolor)
         img_icon_smart_coin.setColorFilter(iconcolor)
         img_icon_voting.setColorFilter(iconcolor)
-        img_icon_deposit_withdraw.setColorFilter(iconcolor)
         img_icon_otc_user.setColorFilter(iconcolor)
         img_icon_otc_merchant.setColorFilter(iconcolor)
         img_icon_advfunction.setColorFilter(iconcolor)
@@ -137,12 +130,6 @@ class ActivityIndexServices : BtsppActivity() {
                     }
                 }
                 return@then null
-            }
-        }
-
-        if (BuildConfig.kAppModuleEnableGateway) {
-            layout_recharge_and_withdraw_of_service.setOnClickListener {
-                guardWalletExist { goTo(ActivityDepositAndWithdraw::class.java, true) }
             }
         }
 

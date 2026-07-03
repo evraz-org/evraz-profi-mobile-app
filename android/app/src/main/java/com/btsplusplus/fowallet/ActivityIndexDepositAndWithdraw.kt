@@ -12,12 +12,12 @@ import com.btsplusplus.fowallet.gateway.RuDEX
 import com.btsplusplus.fowallet.utils.VcUtils
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_deposit_and_withdraw.*
+import kotlinx.android.synthetic.main.activity_index_deposit_and_withdraw.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.math.BigInteger
 
-class ActivityDepositAndWithdraw : BtsppActivity() {
+class ActivityIndexDepositAndWithdraw : BtsppActivity() {
 
     private lateinit var _gatewayArray: JSONArray
     private lateinit var _currGateway: JSONObject
@@ -28,13 +28,12 @@ class ActivityDepositAndWithdraw : BtsppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_deposit_and_withdraw)
+        setAutoLayoutContentView(R.layout.activity_index_deposit_and_withdraw, navigationBarColor = R.color.theme01_tabBarColor)
 
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
-        //  返回按钮
-        layout_back_from_page_of_recharge_and_withdraw.setOnClickListener { finish() }
+        setBottomNavigationStyle(2)
 
         //  当前账号信息
         assert(WalletManager.sharedWalletManager().isWalletExist())

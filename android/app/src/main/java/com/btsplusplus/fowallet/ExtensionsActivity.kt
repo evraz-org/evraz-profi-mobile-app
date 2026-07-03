@@ -42,20 +42,20 @@ fun AppCompatActivity.setBottomNavigationStyle(position: Int) {
     val color: Int = resources.getColor(R.color.theme01_textColorMain)
     when (position) {
         0 -> {
+            bottom_nav_text_view_my.setTextColor(color)
+            bottom_nav_image_view_my.setColorFilter(color)
+        }
+        1 -> {
             bottom_nav_text_view_markets.setTextColor(color)
             bottom_nav_image_view_markets.setColorFilter(color)
         }
-        1 -> {
-            bottom_nav_text_view_diya.setTextColor(color)
-            bottom_nav_image_view_diya.setColorFilter(color)
-        }
         2 -> {
-            bottom_nav_text_view_services.setTextColor(color)
-            bottom_nav_image_view_services.setColorFilter(color)
+            bottom_nav_text_view_gateways.setTextColor(color)
+            bottom_nav_image_view_gateways.setColorFilter(color)
         }
         3 -> {
-            bottom_nav_text_view_my.setTextColor(color)
-            bottom_nav_image_view_my.setColorFilter(color)
+            bottom_nav_text_view_services.setTextColor(color)
+            bottom_nav_image_view_services.setColorFilter(color)
         }
     }
     //  TODO:7.0 每次点击都重新生成一个，后面考虑用 singleTop，结合 onNewIntent重用。
@@ -73,15 +73,15 @@ fun AppCompatActivity.setBottomNavigationStyle(position: Int) {
     }
     if (BuildConfig.kAppModuleEnableTabDebt) {
         bottom_nav_markets_frame.visibility = View.VISIBLE
-        bottom_nav_diya_frame.setOnClickListener {
+        bottom_nav_gateways_frame.setOnClickListener {
             val top = BtsppApp.getInstance().getTopActivity()
-            if (top == null || top !is ActivityIndexCollateral) {
-                goTo(ActivityIndexCollateral::class.java)
+            if (top == null || top !is ActivityIndexDepositAndWithdraw) {
+                goTo(ActivityIndexDepositAndWithdraw::class.java)
                 BtsppApp.getInstance().finishAllActivity()
             }
         }
     } else {
-        bottom_nav_diya_frame.visibility = View.GONE
+        bottom_nav_gateways_frame.visibility = View.GONE
     }
     bottom_nav_services_frame.setOnClickListener {
         val top = BtsppApp.getInstance().getTopActivity()
@@ -103,12 +103,12 @@ fun AppCompatActivity.clearBottomAllColor() {
     val default_color: Int = resources.getColor(R.color.theme01_textColorGray)
     //  文字
     bottom_nav_text_view_markets.setTextColor(default_color)
-    bottom_nav_text_view_diya.setTextColor(default_color)
+    bottom_nav_text_view_gateways.setTextColor(default_color)
     bottom_nav_text_view_services.setTextColor(default_color)
     bottom_nav_text_view_my.setTextColor(default_color)
     //  图片
     bottom_nav_image_view_markets.setColorFilter(default_color)
-    bottom_nav_image_view_diya.setColorFilter(default_color)
+    bottom_nav_image_view_gateways.setColorFilter(default_color)
     bottom_nav_image_view_services.setColorFilter(default_color)
     bottom_nav_image_view_my.setColorFilter(default_color)
 }

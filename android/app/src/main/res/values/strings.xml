@@ -2,9 +2,9 @@
 <resources>
     <!-- 首页行情 -->
     <string name="kTabBarNameMarkets">Markets</string>
-    <string name="kTabBarNameCollateral">Margin</string>
+    <string name="kTabBarNameCollateral">Borrow</string>
     <string name="kTabBarNameServices">Services</string>
-    <string name="kTabBarNameMy">My</string>
+    <string name="kTabBarNameMy">Account</string>
     <string name="kLable24HVol">24HVol</string>
     <string name="kLabelMarketFavorites">Favorites</string>
     <string name="kLabelGroupNameMain">Main</string>
@@ -69,7 +69,7 @@
     <string name="kServicesCellLabelFeedPrice">Feed price details</string>
     <string name="kServicesCellLabelOtcUser">OTC</string>
     <string name="kServicesCellLabelOtcMerchant">Merchant</string>
-    <string name="kServicesCellLabelDepositWithdraw">Deposit &amp; Withdraw</string>
+    <string name="kServicesCellLabelDepositWithdraw">Gateways</string>
     <string name="kServicesCellLabelAdvFunction">Advanced Features</string>
     <string name="kServicesCellLabelBtsExplorer">Explorer</string>
     <!-- 扫一扫相关字符串 -->
@@ -1074,7 +1074,7 @@
     <string name="kVcTitleVestingBalance">Vesting balance</string>
     <string name="kVcTitleProposalAddApprove">Add proposal approval</string>
     <string name="kVcTitleProposalRemoveApprove">Remove proposal approval</string>
-    <string name="kVcTitleDepositWithdraw">Deposit &amp; Withdraw</string>
+    <string name="kVcTitleDepositWithdraw">Gateways</string>
     <string name="kVcTitleDepositAdvFunction">Advanced Features</string>
     <string name="kVcTitleDeposit">%s deposits</string>
     <string name="kVcTitleWithdraw">%s withdrawls</string>
