@@ -128,7 +128,7 @@
             android:id="@+id/tablayout_of_main_buy_and_sell"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="#141e32"
+            android:background="#000000"
             app:tabTextAppearance="@style/KPageTabTextStyle"
             app:tabIndicatorColor="#ff0000"
             app:tabRippleColor="#aaaaaa"

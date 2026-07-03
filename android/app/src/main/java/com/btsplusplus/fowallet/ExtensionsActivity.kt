@@ -39,7 +39,7 @@ fun AppCompatActivity.setFullScreen() {
 }
 
 fun AppCompatActivity.setBottomNavigationStyle(position: Int) {
-    val color: Int = resources.getColor(R.color.theme01_textColorHighlight)
+    val color: Int = resources.getColor(R.color.theme01_textColorMain)
     when (position) {
         0 -> {
             bottom_nav_text_view_markets.setTextColor(color)

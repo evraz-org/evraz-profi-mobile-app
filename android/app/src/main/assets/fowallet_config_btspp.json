@@ -6,7 +6,7 @@
       "themeNameLangKey": "kThemeNameBlue",
       "themeStatusBarWhite": true,
       "colors": {
-        "appBackColor": "131f30",
+        "appBackColor": "000000",
         "contentBackColor": "333333",
         "bottomLineColor": "1a273a",
         "buyColor": "03c087",
@@ -21,7 +21,7 @@
         "ma5Color": "f6dc93",
         "ma10Color": "61d1c0",
         "ma30Color": "cb92fe",
-        "navigationBarBackColor": "131f30",
+        "navigationBarBackColor": "000000",
         "navigationBarTextColor": "ffffff",
         "tabBarColor": "172941",
         "blockButtonBackColor": "607D8B",
