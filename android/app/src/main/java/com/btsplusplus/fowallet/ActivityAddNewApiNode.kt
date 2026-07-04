@@ -4,19 +4,20 @@ import android.os.Bundle
 import bitshares.BTS_NETWORK_CHAIN_ID
 import bitshares.GrapheneConnection
 import bitshares.Promise
-import kotlinx.android.synthetic.main.activity_add_new_api_node.*
+import com.btsplusplus.fowallet.databinding.ActivityAddNewApiNodeBinding
 import org.json.JSONObject
 
 class ActivityAddNewApiNode : BtsppActivity() {
 
     private lateinit var _url_hash: JSONObject
     private var _result_promise: Promise? = null
+    private lateinit var _binding: ActivityAddNewApiNodeBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // 设置自动布局
-        setAutoLayoutContentView(R.layout.activity_add_new_api_node)
-        // 设置全屏(隐藏状态栏和虚拟导航栏)
+
+        _binding = ActivityAddNewApiNodeBinding.inflate(layoutInflater)
+        setAutoLayoutContentView(_binding.root)
         setFullScreen()
 
         //  获取参数
@@ -25,18 +26,18 @@ class ActivityAddNewApiNode : BtsppActivity() {
         _result_promise = args.opt("result_promise") as? Promise
 
         //  事件 - 返回
-        layout_back_from_new_api_node.setOnClickListener { finish() }
+        _binding.layoutBackFromNewApiNode.setOnClickListener { finish() }
 
         //  事件 - 确定
-        btn_submit.setOnClickListener { onSubmitBtnClick() }
+        _binding.btnSubmit.setOnClickListener { onSubmitBtnClick() }
     }
 
     /**
      * 提交事件
      */
     private fun onSubmitBtnClick() {
-        val name = tf_node_name.text.toString().trim()
-        val url = tf_node_url.text.toString().trim()
+        val name = _binding.tfNodeName.text.toString().trim()
+        val url = _binding.tfNodeUrl.text.toString().trim()
 
         if (name.isEmpty()) {
             showToast(resources.getString(R.string.kSettingNewApiSubmitTipsPleaseInputNodeName))
@@ -65,7 +66,7 @@ class ActivityAddNewApiNode : BtsppActivity() {
             val node_status = it as JSONObject
             if (node_status.optBoolean("connected")) {
                 //  TODO: 以后也许考虑添加非mainnet等api节点。
-                val chain_id = node_status.getJSONObject("chain_properties").optString("chain_id", null)
+                val chain_id = node_status.getJSONObject("chain_properties").optString("chain_id", "")
                 if (chain_id != null && chain_id == BTS_NETWORK_CHAIN_ID) {
                     showToast(resources.getString(R.string.kSettingNewApiSubmitTipsOK))
                     //  返回上一个界面并刷新

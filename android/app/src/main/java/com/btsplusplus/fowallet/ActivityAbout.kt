@@ -1,26 +1,33 @@
 package com.btsplusplus.fowallet
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import bitshares.Utils
 import bitshares.xmlstring
-import kotlinx.android.synthetic.main.activity_about.*
+import com.btsplusplus.fowallet.databinding.ActivityAboutBinding
+import com.btsplusplus.fowallet.databinding.ActivityLoginBinding
 
 class ActivityAbout : BtsppActivity() {
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setAutoLayoutContentView(R.layout.activity_about)
+
+        val binding = ActivityAboutBinding.inflate(layoutInflater)
+        val view = binding.root
+        setAutoLayoutContentView(view)
 
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
+
         //  draw version
         val ver = Utils.appVersionName()
         val appname = R.string.kAppName.xmlstring(this)
-        label_txt_icon_version.text = "$appname v$ver"
-        label_txt_version.text = "$appname v$ver"
+        binding.labelTxtIconVersion.text = "$appname v$ver"
+        binding.labelTxtVersion.text = "$appname v$ver"
 
         //  back
-        layout_back_from_about.setOnClickListener { finish() }
+        binding.layoutBackFromAbout.setOnClickListener { finish() }
     }
 }

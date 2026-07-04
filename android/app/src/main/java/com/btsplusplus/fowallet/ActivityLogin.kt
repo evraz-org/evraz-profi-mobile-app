@@ -4,33 +4,35 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import bitshares.Promise
-import kotlinx.android.synthetic.main.activity_login.*
+import com.btsplusplus.fowallet.databinding.ActivityLoginBinding
 import org.json.JSONObject
 
 class ActivityLogin : BtsppActivity() {
 
     private var _checkActivePermission = true
-    private var _result_promise: Promise? = null
+    private var _resultPromise: Promise? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setAutoLayoutContentView(R.layout.activity_login)
+
+        val binding = ActivityLoginBinding.inflate(layoutInflater)
+        setAutoLayoutContentView(binding.root)
 
         //  读取参数
         val args = _btspp_params as? JSONObject
         if (args != null) {
             _checkActivePermission = args.getBoolean("checkActivePermission")
-            _result_promise = args.get("result_promise") as Promise
+            _resultPromise = args.get("result_promise") as Promise
         }
 
         setFullScreen()
 
         //  事件 - 返回按钮
-        layout_back_from_login.setOnClickListener { onBackClicked(false) }
+        binding.layoutBackFromLogin.setOnClickListener { onBackClicked(false) }
 
         //  初始化界面（部分界面在某些模式下不可见）
         if (_checkActivePermission) {
-            button_register.setOnClickListener {
+            binding.buttonRegister.setOnClickListener {
                 goTo(ActivityRegisterEntry::class.java, true)
             }
         } else {
@@ -38,7 +40,7 @@ class ActivityLogin : BtsppActivity() {
         }
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, FragmentLoginAccountMode().initWithCheckActivePermission(_checkActivePermission, _result_promise))
+            .replace(R.id.fragment_container, FragmentLoginAccountMode().initWithCheckActivePermission(_checkActivePermission, _resultPromise))
             .commit()
     }
 
@@ -46,7 +48,7 @@ class ActivityLogin : BtsppActivity() {
      * 事件 - 返回按钮或系统返回键点击。
      */
     override fun onBackClicked(result: Any?) {
-        _result_promise?.resolve(result)
+        _resultPromise?.resolve(result)
         finish()
     }
 

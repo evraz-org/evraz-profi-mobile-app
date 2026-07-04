@@ -2,26 +2,27 @@ package com.btsplusplus.fowallet
 
 import android.os.Bundle
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityAssetManagerBinding
 import com.btsplusplus.fowallet.utils.ModelUtils
 import com.btsplusplus.fowallet.utils.VcUtils
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_asset_manager.*
 import org.json.JSONArray
 import org.json.JSONObject
 
 class ActivityAssetManager : BtsppActivity() {
 
+    private lateinit var _binding: ActivityAssetManagerBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //  设置自动布局
-        setAutoLayoutContentView(R.layout.activity_asset_manager)
-        //  设置全屏(隐藏状态栏和虚拟导航栏)
+        _binding = ActivityAssetManagerBinding.inflate(layoutInflater)
+        setAutoLayoutContentView(_binding.root)
         setFullScreen()
 
         //  事件 - 创建资产
-        button_add_from_assets_manager.setOnClickListener {
+        _binding.buttonAddFromAssetsManager.setOnClickListener {
             val result_promise = Promise()
             goTo(ActivityAssetCreateOrEdit::class.java, true, args = JSONObject().apply {
                 put("kTitle", resources.getString(R.string.kVcTitleAssetOpCreate))
@@ -36,7 +37,7 @@ class ActivityAssetManager : BtsppActivity() {
         }
 
         //  事件 - 返回
-        layout_back_from_assets_manager.setOnClickListener { finish() }
+        _binding.layoutBackFromAssetsManager.setOnClickListener { finish() }
 
         //  查询
         queryMyIssuedAssets()
@@ -84,7 +85,7 @@ class ActivityAssetManager : BtsppActivity() {
     }
 
     private fun drawUI(data_array: JSONArray) {
-        lay_cell_container.let { layout ->
+        _binding.layCellContainer.let { layout ->
             layout.removeAllViews()
             if (data_array.length() > 0) {
                 data_array.forEach<JSONObject> {
@@ -161,16 +162,24 @@ class ActivityAssetManager : BtsppActivity() {
                     val options = asset.getJSONObject("options")
                     val ids_hash = JSONObject()
                     for (oid in options.getJSONArray("whitelist_authorities").forin<String>()) {
-                        ids_hash.put(oid, true)
+                        if (oid != null) {
+                            ids_hash.put(oid, true)
+                        }
                     }
                     for (oid in options.getJSONArray("blacklist_authorities").forin<String>()) {
-                        ids_hash.put(oid, true)
+                        if (oid != null) {
+                            ids_hash.put(oid, true)
+                        }
                     }
                     for (oid in options.getJSONArray("whitelist_markets").forin<String>()) {
-                        ids_hash.put(oid, true)
+                        if (oid != null) {
+                            ids_hash.put(oid, true)
+                        }
                     }
                     for (oid in options.getJSONArray("blacklist_markets").forin<String>()) {
-                        ids_hash.put(oid, true)
+                        if (oid != null) {
+                            ids_hash.put(oid, true)
+                        }
                     }
                     VcUtils.simpleRequest(this, chainMgr.queryAllGrapheneObjects(ids_hash.keys().toJSONArray())) {
                         val result_promise = Promise()
@@ -193,7 +202,7 @@ class ActivityAssetManager : BtsppActivity() {
                         return@show
                     }
                     //  查询背书资产名称依赖
-                    VcUtils.guardGrapheneObjectDependence(this, bitasset_data!!.getJSONObject("options").getString("short_backing_asset")) {
+                    VcUtils.guardGrapheneObjectDependence(this, bitasset_data.getJSONObject("options").getString("short_backing_asset")) {
                         val result_promise = Promise()
                         goTo(ActivityAssetCreateOrEdit::class.java, true, args = JSONObject().apply {
                             put("kEditAsset", asset)

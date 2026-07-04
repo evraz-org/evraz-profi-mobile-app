@@ -644,6 +644,13 @@ fun AppCompatActivity.setAutoLayoutContentView(layoutResID: Int, navigationBarCo
     btsppLogCustom("setAutoLayoutContentView", jsonObjectfromKVS("activity", this::class.java.name))
 }
 
+fun AppCompatActivity.setAutoLayoutContentView(view: View, navigationBarColor: Int? = null) {
+    setContentView(view)
+    adjustWindowSizeForNavigationBar(navigationBarColor)
+    //  [统计]
+    btsppLogCustom("setAutoLayoutContentView", jsonObjectfromKVS("activity", this::class.java.name))
+}
+
 /**
  * 适配虚拟机导航栏
  */

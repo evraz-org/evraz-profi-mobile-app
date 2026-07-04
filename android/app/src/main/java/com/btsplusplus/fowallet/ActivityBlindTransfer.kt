@@ -1,14 +1,15 @@
 package com.btsplusplus.fowallet
 
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityBlindTransferBinding
 import com.btsplusplus.fowallet.utils.ModelUtils
 import com.btsplusplus.fowallet.utils.StealthTransferUtils
 import com.btsplusplus.fowallet.utils.kAppBlindReceiptBlockNum
 import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_blind_transfer.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.math.BigDecimal
@@ -23,11 +24,15 @@ class ActivityBlindTransfer : BtsppActivity() {
     private lateinit var _viewBlindInputs: ViewBlindAccountsOrReceipt
     private lateinit var _viewBlindOutputs: ViewBlindAccountsOrReceipt
 
+    private lateinit var _binding: ActivityBlindTransferBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        _binding = ActivityBlindTransferBinding.inflate(layoutInflater)
+
         // 设置自动布局
-        setAutoLayoutContentView(R.layout.activity_blind_transfer)
+        setAutoLayoutContentView(_binding.root)
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
@@ -39,15 +44,15 @@ class ActivityBlindTransfer : BtsppActivity() {
         }
 
         //  初始化UI
-        _viewBlindInputs = ViewBlindAccountsOrReceipt(this, kBlindItemTypeInput, layout_blind_receipt_list_from_blind_transfer, callback_remove = { _on_remove_input_clicked(it) }, callback_add = { _on_add_one_input_clicked() })
-        _viewBlindOutputs = ViewBlindAccountsOrReceipt(this, kBlindItemTypeOutput, layout_blind_account_list_from_blind_transfer, callback_remove = { _on_remove_output_clicked(it) }, callback_add = { _on_add_one_output_clicked() })
+        _viewBlindInputs = ViewBlindAccountsOrReceipt(this, kBlindItemTypeInput, _binding.layoutBlindReceiptListFromBlindTransfer, callback_remove = { _on_remove_input_clicked(it) }, callback_add = { _on_add_one_input_clicked() })
+        _viewBlindOutputs = ViewBlindAccountsOrReceipt(this, kBlindItemTypeOutput, _binding.layoutBlindAccountListFromBlindTransfer, callback_remove = { _on_remove_output_clicked(it) }, callback_add = { _on_add_one_output_clicked() })
         refreshUI()
 
         //  提交事件
-        btn_commit.setOnClickListener { onSubmit() }
+        _binding.btnCommit.setOnClickListener { onSubmit() }
 
         //  返回事件
-        layout_back_from_blind_transfer.setOnClickListener { finish() }
+        _binding.layoutBackFromBlindTransfer.setOnClickListener { finish() }
     }
 
     private fun calcBlindInputTotalAmount(): BigDecimal {
@@ -267,34 +272,34 @@ class ActivityBlindTransfer : BtsppActivity() {
         }
 
         //  收据总金额
-        tv_total_input_value.let { tv ->
+        _binding.tvTotalInputValue.let { tv ->
             if (_curr_blind_asset != null) {
                 val base_str = String.format("%s %s", n_total_input!!.toPriceAmountString(), _curr_blind_asset!!.getString("symbol"))
                 if (n_fee != null && n_total_input < n_total_output!!.add(n_fee)) {
                     tv.text = String.format("%s(%s)", base_str, resources.getString(R.string.kVcTradeTipAmountNotEnough))
-                    tv.setTextColor(resources.getColor(R.color.theme01_tintColor))
+                    tv.setTextColor(ContextCompat.getColor(applicationContext,R.color.theme01_tintColor))
                 } else {
                     tv.text = base_str
-                    tv.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
+                    tv.setTextColor(ContextCompat.getColor(applicationContext,R.color.theme01_textColorNormal))
                 }
             } else {
                 tv.text = "--"
-                tv.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
+                tv.setTextColor(ContextCompat.getColor(applicationContext,R.color.theme01_textColorNormal))
             }
         }
 
         //  输出总金额
         if (_curr_blind_asset != null) {
-            tv_total_output_value.text = String.format("%s %s", n_total_output!!.toPriceAmountString(), _curr_blind_asset!!.getString("symbol"))
+            _binding.tvTotalOutputValue.text = String.format("%s %s", n_total_output!!.toPriceAmountString(), _curr_blind_asset!!.getString("symbol"))
         } else {
-            tv_total_output_value.text = "--"
+            _binding.tvTotalOutputValue.text = "--"
         }
 
         //  广播手续费
         if (n_fee != null) {
-            tv_network_fee_value.text = String.format("%s %s", n_fee.toPriceAmountString(), _curr_blind_asset!!.getString("symbol"))
+            _binding.tvNetworkFeeValue.text = String.format("%s %s", n_fee.toPriceAmountString(), _curr_blind_asset!!.getString("symbol"))
         } else {
-            tv_network_fee_value.text = "--"
+            _binding.tvNetworkFeeValue.text = "--"
         }
     }
 

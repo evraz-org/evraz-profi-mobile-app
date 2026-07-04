@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.widget.EditText
 import android.widget.TextView
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityAssetOpIssueBinding
 import com.btsplusplus.fowallet.utils.VcUtils
 import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_asset_op_issue.*
 import org.json.JSONObject
 import java.math.BigDecimal
 
@@ -27,11 +27,14 @@ class ActivityAssetOpissue : BtsppActivity() {
     private lateinit var _n_balance: BigDecimal
     private lateinit var _tf_amount_watcher: UtilsDigitTextWatcher
 
+    private lateinit var _binding: ActivityAssetOpIssueBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        _binding = ActivityAssetOpIssueBinding.inflate(layoutInflater)
         //  设置自动布局
-        setAutoLayoutContentView(R.layout.activity_asset_op_issue)
+        setAutoLayoutContentView(_binding.root)
         //  设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
@@ -58,17 +61,17 @@ class ActivityAssetOpissue : BtsppActivity() {
         drawUI_balance(false)
 
         //  事件 - 选择目标账号
-        img_arrow_target_account.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
-        layout_target_account.setOnClickListener { onTargetAccountClicked() }
+        _binding.imgArrowTargetAccount.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
+        _binding.layoutTargetAccount.setOnClickListener { onTargetAccountClicked() }
 
         //  事件 - 全部
-        btn_tf_tailer_all.setOnClickListener { onSelectAllClicked() }
+        _binding.btnTfTailerAll.setOnClickListener { onSelectAllClicked() }
 
         //  事件 - 发行
-        btn_submit.setOnClickListener { onSubmitClicked() }
+        _binding.btnSubmit.setOnClickListener { onSubmitClicked() }
 
         //  事件 - 返回
-        layout_back_from_assets_opissue.setOnClickListener { finish() }
+        _binding.layoutBackFromAssetsOpissue.setOnClickListener { finish() }
 
         //  输入框
         val tf = findViewById<EditText>(R.id.tf_amount)
@@ -78,24 +81,24 @@ class ActivityAssetOpissue : BtsppActivity() {
     }
 
     private fun drawUI_currAsset() {
-        tv_tf_tailer_asset_symbol.text = _asset.getString("symbol")
+        _binding.tvTfTailerAssetSymbol.text = _asset.getString("symbol")
     }
 
     private fun drawUI_supply() {
         val symbol = _asset.getString("symbol")
-        tv_max_supply.text = "${OrgUtils.formatFloatValue(_n_max_supply.toDouble(), _precision, has_comma = true)} $symbol"
-        tv_cur_supply.text = "${OrgUtils.formatFloatValue(_n_cur_supply.toDouble(), _precision, has_comma = true)} $symbol"
+        _binding.tvMaxSupply.text = "${OrgUtils.formatFloatValue(_n_max_supply.toDouble(), _precision, has_comma = true)} $symbol"
+        _binding.tvCurSupply.text = "${OrgUtils.formatFloatValue(_n_cur_supply.toDouble(), _precision, has_comma = true)} $symbol"
     }
 
     private fun drawUI_targetAccount() {
         if (_to_account != null) {
-            tv_target_account_main.setTextColor(resources.getColor(R.color.theme01_buyColor))
-            tv_target_account_main.text = _to_account!!.getString("name")
-            tv_target_account_detail.text = _to_account!!.getString("id")
+            _binding.tvTargetAccountMain.setTextColor(resources.getColor(R.color.theme01_buyColor))
+            _binding.tvTargetAccountMain.text = _to_account!!.getString("name")
+            _binding.tvTargetAccountDetail.text = _to_account!!.getString("id")
         } else {
-            tv_target_account_main.setTextColor(resources.getColor(R.color.theme01_textColorGray))
-            tv_target_account_main.text = resources.getString(R.string.kVcAssetOpCellValueIssueTargetAccountDefault)
-            tv_target_account_detail.text = ""
+            _binding.tvTargetAccountMain.setTextColor(resources.getColor(R.color.theme01_textColorGray))
+            _binding.tvTargetAccountMain.text = resources.getString(R.string.kVcAssetOpCellValueIssueTargetAccountDefault)
+            _binding.tvTargetAccountDetail.text = ""
         }
 //        }
     }
@@ -103,11 +106,11 @@ class ActivityAssetOpissue : BtsppActivity() {
     private fun drawUI_balance(not_enough: Boolean) {
         val symbol = _asset.getString("symbol")
         if (not_enough) {
-            tv_curr_balance.text = "${resources.getString(R.string.kOtcMcAssetCellAvailable)} ${_n_balance.toPlainString()} $symbol(${resources.getString(R.string.kOtcMcAssetTransferBalanceNotEnough)})"
-            tv_curr_balance.setTextColor(resources.getColor(R.color.theme01_tintColor))
+            _binding.tvCurrBalance.text = "${resources.getString(R.string.kOtcMcAssetCellAvailable)} ${_n_balance.toPlainString()} $symbol(${resources.getString(R.string.kOtcMcAssetTransferBalanceNotEnough)})"
+            _binding.tvCurrBalance.setTextColor(resources.getColor(R.color.theme01_tintColor))
         } else {
-            tv_curr_balance.text = "${resources.getString(R.string.kOtcMcAssetCellAvailable)} ${_n_balance.toPlainString()} $symbol"
-            tv_curr_balance.setTextColor(resources.getColor(R.color.theme01_textColorMain))
+            _binding.tvCurrBalance.text = "${resources.getString(R.string.kOtcMcAssetCellAvailable)} ${_n_balance.toPlainString()} $symbol"
+            _binding.tvCurrBalance.setTextColor(resources.getColor(R.color.theme01_textColorMain))
         }
     }
 

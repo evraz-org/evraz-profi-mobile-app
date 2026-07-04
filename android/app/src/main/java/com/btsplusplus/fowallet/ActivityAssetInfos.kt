@@ -6,9 +6,9 @@ import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.view.animation.OvershootInterpolator
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityAssetInfosBinding
 import com.btsplusplus.fowallet.kline.TradingPair
 import com.fowallet.walletcore.bts.ChainObjectManager
-import kotlinx.android.synthetic.main.activity_asset_infos.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.reflect.Field
@@ -24,7 +24,8 @@ class ActivityAssetInfos : BtsppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setAutoLayoutContentView(R.layout.activity_asset_infos)
+        val binding = ActivityAssetInfosBinding.inflate(layoutInflater)
+        setAutoLayoutContentView(binding.root)
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
@@ -49,14 +50,14 @@ class ActivityAssetInfos : BtsppActivity() {
         }
 
         //  事件 - 切换资产
-        btn_select_assets.setOnClickListener { onSelectAssetClicked() }
+        binding.btnSelectAssets.setOnClickListener { onSelectAssetClicked() }
 
         //  事件 - 返回
-        layout_back_from_diya_ranking.setOnClickListener { finish() }
+        binding.layoutBackFromDiyaRanking.setOnClickListener { finish() }
 
         // 设置 tablelayout 和 view_pager
-        tablayout = tablayout_of_diya_ranking
-        view_pager = view_pager_of_diya_ranking
+        tablayout = binding.tablayoutOfDiyaRanking
+        view_pager = binding.viewPagerOfDiyaRanking
 
         // 添加 fargments
         setFragments()

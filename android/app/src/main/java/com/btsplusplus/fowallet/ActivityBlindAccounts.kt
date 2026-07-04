@@ -1,14 +1,15 @@
 package com.btsplusplus.fowallet
 
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityBlindAccountsBinding
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_blind_accounts.*
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -22,11 +23,14 @@ class ActivityBlindAccounts : BtsppActivity() {
 
     private var _result_promise: Promise? = null
 
+    private lateinit var _binding: ActivityBlindAccountsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        _binding = ActivityBlindAccountsBinding.inflate(layoutInflater)
         // 设置自动布局
-        setAutoLayoutContentView(R.layout.activity_blind_accounts)
+        setAutoLayoutContentView(_binding.root)
 
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
@@ -41,13 +45,13 @@ class ActivityBlindAccounts : BtsppActivity() {
 
         //  右上角按钮（地址管理模式才存在、选择模式不存在。）
         if (isSelectMode()) {
-            button_add_from_blind_accounts.visibility = View.INVISIBLE
+            _binding.buttonAddFromBlindAccounts.visibility = View.INVISIBLE
         } else {
-            button_add_from_blind_accounts.setOnClickListener { onAddAccountClicked() }
+            _binding.buttonAddFromBlindAccounts.setOnClickListener { onAddAccountClicked() }
         }
 
         //  返回事件
-        layout_back_from_blind_accounts.setOnClickListener { finish() }
+        _binding.layoutBackFromBlindAccounts.setOnClickListener { finish() }
     }
 
     private fun isSelectMode(): Boolean {
@@ -101,11 +105,11 @@ class ActivityBlindAccounts : BtsppActivity() {
             layoutParams = LinearLayout.LayoutParams(LLAYOUT_WARP, LLAYOUT_WARP)
             if (is_main_account) {
                 text = blind_account.optString("alias_name")
-                setTextColor(resources.getColor(R.color.theme01_textColorMain))
+                setTextColor(ContextCompat.getColor(applicationContext,R.color.theme01_textColorMain))
                 setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16.0f)
             } else {
                 text = ViewUtils.genBlindAccountDisplayName(self, blind_account.getString("public_key"))
-                setTextColor(resources.getColor(R.color.theme01_textColorNormal))
+                setTextColor(ContextCompat.getColor(applicationContext,R.color.theme01_textColorNormal))
                 setTextSize(TypedValue.COMPLEX_UNIT_DIP, 13.0f)
             }
         }
@@ -117,7 +121,7 @@ class ActivityBlindAccounts : BtsppActivity() {
             }
             text = blind_account.getString("public_key")
             setTextSize(TypedValue.COMPLEX_UNIT_DIP, 13.0f)
-            setTextColor(resources.getColor(R.color.theme01_textColorNormal))
+            setTextColor(ContextCompat.getColor(applicationContext,R.color.theme01_textColorNormal))
             setSingleLine(true)
             maxLines = 1
             ellipsize = TextUtils.TruncateAt.MIDDLE
@@ -311,7 +315,7 @@ class ActivityBlindAccounts : BtsppActivity() {
     }
 
     private fun refreshUI() {
-        val container = layout_account_list_of_blind_accounts
+        val container =  _binding.layoutAccountListOfBlindAccounts
         container.removeAllViews()
 
         val data_array = loadBlindAccounts()

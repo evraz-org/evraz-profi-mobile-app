@@ -7,7 +7,7 @@ import bitshares.OrgUtils
 import bitshares.Promise
 import bitshares.Utils
 import bitshares.toPriceAmountString
-import kotlinx.android.synthetic.main.activity_blind_output_add_one.*
+import com.btsplusplus.fowallet.databinding.ActivityBlindOutputAddOneBinding
 import org.json.JSONObject
 import java.math.BigDecimal
 
@@ -15,11 +15,15 @@ class ActivityBlindOutputAddOne : BtsppActivity() {
 
     private var _tf_amount_watcher: UtilsDigitTextWatcher? = null
 
+    private lateinit var _binding: ActivityBlindOutputAddOneBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        _binding = ActivityBlindOutputAddOneBinding.inflate(layoutInflater)
+
         // 设置自动布局
-        setAutoLayoutContentView(R.layout.activity_blind_output_add_one)
+        setAutoLayoutContentView(_binding.root)
 
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
@@ -32,19 +36,19 @@ class ActivityBlindOutputAddOne : BtsppActivity() {
 
         //  初始化UI
         if (n_max_balance != null) {
-            tv_available_balance.text = String.format("%s %s %s",
+            _binding.tvAvailableBalance.text = String.format("%s %s %s",
                     resources.getString(R.string.kOtcMcAssetCellAvailable),
                     n_max_balance.toPriceAmountString(),
                     asset.getString("symbol"))
-            tv_tailer_btn_all.setOnClickListener { onTailerAllButtonClicked(n_max_balance) }
+            _binding.tvTailerBtnAll.setOnClickListener { onTailerAllButtonClicked(n_max_balance) }
         } else {
-            tv_available_balance.visibility = View.INVISIBLE
-            tv_tailer_separator.visibility = View.GONE
-            tv_tailer_btn_all.visibility = View.GONE
+            _binding.tvAvailableBalance.visibility = View.INVISIBLE
+            _binding.tvTailerSeparator.visibility = View.GONE
+            _binding.tvTailerBtnAll.visibility = View.GONE
         }
 
         //  UI - 输出资产名称
-        tv_tailer_asset_symbol.text = asset.getString("symbol")
+        _binding.tvTailerAssetSymbol.text = asset.getString("symbol")
 
         //  事件 - 输入框文字变更精度控制
         val tf = findViewById<EditText>(R.id.tf_amount)
@@ -53,13 +57,13 @@ class ActivityBlindOutputAddOne : BtsppActivity() {
         _tf_amount_watcher!!.on_value_changed(::onAmountChanged)
 
         //  我的账户点击事件
-        btn_my_accounts.setOnClickListener { onMyAccountClicked() }
+        _binding.btnMyAccounts.setOnClickListener { onMyAccountClicked() }
 
         //  提交事件
-        btn_done.setOnClickListener { onSubmit(result_promise) }
+        _binding.btnDone.setOnClickListener { onSubmit(result_promise) }
 
         //  返回事件
-        layout_back_from_blind_output_add_one.setOnClickListener { finish() }
+        _binding.layoutBackFromBlindOutputAddOne.setOnClickListener { finish() }
     }
 
     private fun onAmountChanged(str_amount: String) {
@@ -92,13 +96,13 @@ class ActivityBlindOutputAddOne : BtsppActivity() {
     }
 
     private fun onSubmit(result_promise: Promise?) {
-        val str_authority = tf_public_key.text.toString().trim()
+        val str_authority = _binding.tfPublicKey.text.toString().trim()
         if (str_authority.isEmpty() || !OrgUtils.isValidBitsharesPublicKey(str_authority)) {
             showToast(resources.getString(R.string.kVcStTipPleaseInputValidBlindAccountAddr))
             return
         }
 
-        val n_amount = Utils.auxGetStringDecimalNumberValue(tf_amount.text.toString().trim())
+        val n_amount = Utils.auxGetStringDecimalNumberValue(_binding.tfAmount.text.toString().trim())
         if (n_amount <= BigDecimal.ZERO) {
             showToast(resources.getString(R.string.kVcStTipPleaseInputOutputAmountValue))
             return

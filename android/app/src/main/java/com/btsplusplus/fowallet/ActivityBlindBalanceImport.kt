@@ -4,6 +4,7 @@ import android.Manifest
 import android.os.Bundle
 import bitshares.*
 import bitshares.serializer.T_stealth_confirmation_memo_data
+import com.btsplusplus.fowallet.databinding.ActivityBlindBalanceImportBinding
 import com.btsplusplus.fowallet.utils.StealthTransferUtils
 import com.btsplusplus.fowallet.utils.VcUtils
 import com.btsplusplus.fowallet.utils.kAppBlindReceiptBlockNum
@@ -11,7 +12,6 @@ import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
 import com.fowallet.walletcore.bts.kBlindReceiptVerifyResultOK
-import kotlinx.android.synthetic.main.activity_blind_balance_import.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.math.BigDecimal
@@ -20,11 +20,15 @@ import java.nio.ByteOrder
 
 class ActivityBlindBalanceImport : BtsppActivity() {
 
+    private lateinit var _binding: ActivityBlindBalanceImportBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        _binding = ActivityBlindBalanceImportBinding.inflate(layoutInflater)
+
         // 设置自动布局
-        setAutoLayoutContentView(R.layout.activity_blind_balance_import)
+        setAutoLayoutContentView(_binding.root)
 
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
@@ -35,19 +39,19 @@ class ActivityBlindBalanceImport : BtsppActivity() {
         val result_promise = args.opt("result_promise") as? Promise
 
         //  初始化UI - 输入框
-        val tf = tf_blind_receipt_text_raw
+        val tf = _binding.tfBlindReceiptTextRaw
         if (receipt != null) {
             tf.setText(receipt)
         }
 
         //  事件 - 扫描
-        btn_scan_qrcode.setOnClickListener { onScanQrCodeButtonClicked() }
+        _binding.btnScanQrcode.setOnClickListener { onScanQrCodeButtonClicked() }
 
         //  提交事件
-        btn_import_submit.setOnClickListener { onSubmit(result_promise, tf.text.toString().trim()) }
+        _binding.btnImportSubmit.setOnClickListener { onSubmit(result_promise, tf.text.toString().trim()) }
 
         //  返回事件
-        layout_back_from_blind_balance_import.setOnClickListener { finish() }
+        _binding.layoutBackFromBlindBalanceImport.setOnClickListener { finish() }
     }
 
     /**
@@ -63,7 +67,7 @@ class ActivityBlindBalanceImport : BtsppActivity() {
                     })
                     result_promise.then {
                         (it as? String)?.let { result ->
-                            tf_blind_receipt_text_raw.setText(result)
+                            _binding.tfBlindReceiptTextRaw.setText(result)
                         }
                     }
                 }
