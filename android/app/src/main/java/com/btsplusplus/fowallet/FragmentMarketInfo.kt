@@ -173,7 +173,7 @@ class FragmentMarketInfo : BtsppFragment() {
                 val group = group_list.getJSONObject(i)
 
                 //  分组名称
-                val flmain = FrameLayout(_context).apply {
+                val flmain = FrameLayout(_context!!).apply {
                     layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, toDp(32f))
                 }
                 val tvmain = TextView(_context).apply {

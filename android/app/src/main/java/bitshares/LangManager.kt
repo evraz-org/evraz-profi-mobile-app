@@ -124,7 +124,7 @@ class LangManager {
 
         val configuration = ctx.resources.configuration
         configuration.setLocale(locale)
-        configuration.locales = LocaleList(locale)
+        configuration.setLocales(LocaleList(locale))
         configuration.setLayoutDirection(locale)
 
         return ctx.createConfigurationContext(configuration)

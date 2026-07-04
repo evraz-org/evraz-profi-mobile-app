@@ -689,7 +689,7 @@ class Utils {
         fun copyToClipboard(ctx: Context, str: String): Boolean {
             val mgr = ctx.getSystemService(CLIPBOARD_SERVICE) as? ClipboardManager
             if (mgr != null) {
-                mgr.primaryClip = ClipData.newPlainText("text", str)
+                mgr.setPrimaryClip(ClipData.newPlainText("text", str))
                 return true
             }
             return false

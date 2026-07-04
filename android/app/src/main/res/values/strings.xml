@@ -1678,7 +1678,7 @@
     <string name="kLangKeyJa">日本語 / Japanese</string>
     <string name="skip">Skip</string>
     <string name="kNormalErrorInvalidArgs">Invalid parameter.</string>
-    <string name="kAppName">Bitshares</string>
+    <string name="kAppName" translatable="false">EVRAZ</string>
     <string name="kAccount">Account</string>
     <string name="kAboutMainDesc">\nBitshares Mobile App is a decentralized exchange (DEX) product based on Bitshares graphene technology, developed from the product experience and developed with native technology comparable to the first-class centralized exchange. \n\nContact us\nWeChat: bts-pp\nE-mail: contact@btsplusplus.com\nTelegram: https://t.me/btsplusplus\nWebsite: https://btspp.io\n</string>
     <string name="kAboutChannelAppStore">(AppStore Version &amp; Channel %s)</string>

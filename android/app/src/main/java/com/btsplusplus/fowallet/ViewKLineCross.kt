@@ -2,6 +2,7 @@ package com.btsplusplus.fowallet
 
 import android.content.Context
 import android.graphics.*
+import android.support.v4.content.ContextCompat
 import android.util.Size
 import android.util.SizeF
 import android.view.MotionEvent
@@ -91,7 +92,7 @@ class ViewKLineCross : ViewBase {
         val paint = Paint()
         paint.strokeWidth = 1.0f.dp
         paint.style = Paint.Style.STROKE
-        paint.color = resources.getColor(R.color.theme01_textColorMain)
+        paint.color = ContextCompat.getColor(_ctx, R.color.theme01_textColorMain)
         canvas.drawPath(path, paint)
 
         //  分时图和蜡烛图十字叉详情显示不同数据。
@@ -165,11 +166,11 @@ class ViewKLineCross : ViewBase {
         val x2 = x1 + fDetailWidth
         val y2 = y1 + fDetailHeight
         //  背景
-        paint.color = resources.getColor(R.color.theme01_appBackColor)
+        paint.color = ContextCompat.getColor(_ctx, R.color.theme01_appBackColor)
         paint.style = Paint.Style.FILL
         canvas.drawRect(x1, y1, x2, y2, paint)
         //  边框
-        paint.color = resources.getColor(R.color.theme01_textColorNormal)
+        paint.color = ContextCompat.getColor(_ctx, R.color.theme01_textColorNormal)
         paint.style = Paint.Style.STROKE
         canvas.drawRect(x1, y1, x2, y2, paint)
 
@@ -180,10 +181,10 @@ class ViewKLineCross : ViewBase {
             if (lineIndex == 5 || lineIndex == 6) {
                 if (model.isRise) {
                     str = "+${value}"
-                    txtColor = resources.getColor(R.color.theme01_buyColor)
+                    txtColor = ContextCompat.getColor(_ctx, R.color.theme01_buyColor)
                 } else {
                     str = value
-                    txtColor = resources.getColor(R.color.theme01_sellColor)
+                    txtColor = ContextCompat.getColor(_ctx, R.color.theme01_sellColor)
                 }
                 //  涨跌幅增加百分号显示。
                 if (lineIndex == 6) {
@@ -191,7 +192,7 @@ class ViewKLineCross : ViewBase {
                 }
             } else {
                 str = value
-                txtColor = resources.getColor(R.color.theme01_textColorMain)
+                txtColor = ContextCompat.getColor(_ctx, R.color.theme01_textColorMain)
             }
             val txt_paint = getTextPaintWithString(str, txtColor, _fontname, _fontsize)
             val x1 = fDetailX + 4f.dp
@@ -203,7 +204,7 @@ class ViewKLineCross : ViewBase {
 
         //  3.3、详情 Title
         for ((lineIndex: Int, str: String) in title_ary.withIndex()) {
-            val txt_paint = getTextPaintWithString(str, resources.getColor(R.color.theme01_textColorMain), _fontname, _fontsize)
+            val txt_paint = getTextPaintWithString(str, ContextCompat.getColor(_ctx, R.color.theme01_textColorMain), _fontname, _fontsize)
             val x1 = fDetailX + 4f.dp
             val y1 = fDetailY + fDetailLineHeight * lineIndex + 4f.dp
             txt_paint.textAlign = Paint.Align.LEFT
@@ -221,15 +222,15 @@ class ViewKLineCross : ViewBase {
         val _paint = Paint()
         _paint.strokeWidth = 1.0f.dp
         //  背景
-        _paint.color = resources.getColor(R.color.theme01_appBackColor)
+        _paint.color = ContextCompat.getColor(_ctx, R.color.theme01_appBackColor)
         _paint.style = Paint.Style.FILL
         canvas.drawRect(bottomRectX, bottomRectY, bottomRectX + bottomRectW, bottomRectY + bottomRectH, _paint)
         //  边框
-        _paint.color = resources.getColor(R.color.theme01_textColorNormal)
+        _paint.color = ContextCompat.getColor(_ctx, R.color.theme01_textColorNormal)
         _paint.style = Paint.Style.STROKE
         canvas.drawRect(bottomRectX, bottomRectY, bottomRectX + bottomRectW, bottomRectY + bottomRectH, _paint)
         //  日期文本
-        val bottom_date_txt_paint: Paint = getTextPaintWithString(date_str, resources.getColor(R.color.theme01_textColorMain), _fontname, _fontsize)
+        val bottom_date_txt_paint: Paint = getTextPaintWithString(date_str, ContextCompat.getColor(_ctx, R.color.theme01_textColorMain), _fontname, _fontsize)
         bottom_date_txt_paint.textAlign = Paint.Align.CENTER
         canvas.drawText(date_str, bottomRectX + bottomRectW / 2.0f, bottomRectY + 4f.dp + date_str_size.height, bottom_date_txt_paint)
 
@@ -249,15 +250,15 @@ class ViewKLineCross : ViewBase {
             fHorTailerX = 1.0f
         }
         //  背景
-        _paint.color = resources.getColor(R.color.theme01_appBackColor)
+        _paint.color = ContextCompat.getColor(_ctx, R.color.theme01_appBackColor)
         _paint.style = Paint.Style.FILL
         canvas.drawRect(fHorTailerX, fHorTailerY, fHorTailerX + fHorTailerW, fHorTailerY + fHorTailerH, _paint)
         //  边框
-        _paint.color = resources.getColor(R.color.theme01_textColorMain)
+        _paint.color = ContextCompat.getColor(_ctx, R.color.theme01_textColorMain)
         _paint.style = Paint.Style.STROKE
         canvas.drawRect(fHorTailerX, fHorTailerY, fHorTailerX + fHorTailerW, fHorTailerY + fHorTailerH, _paint)
         //  文字
-        val tailer_txt_paint: Paint = getTextPaintWithString(tailer_str, resources.getColor(R.color.theme01_textColorMain), _fontname, _fontsize)
+        val tailer_txt_paint: Paint = getTextPaintWithString(tailer_str, ContextCompat.getColor(_ctx, R.color.theme01_textColorMain), _fontname, _fontsize)
         tailer_txt_paint.textAlign = Paint.Align.CENTER
         canvas.drawText(tailer_str, fHorTailerX + fHorTailerW / 2.0f, fHorTailerY + 4f.dp + tailer_str_size.height, tailer_txt_paint)
     }
@@ -295,7 +296,7 @@ class ViewKLineCross : ViewBase {
         if (_kline!!.isDrawTimeLine()) {
             if (_model.ma60 != null) {
                 //  同MA5颜色
-                fMaOffsetX += 8.0f.dp + drawOneMaValue(canvas, "MA60", _model.ma60!!, fMaOffsetX, 4f.dp, resources.getColor(R.color.theme01_ma5Color))
+                fMaOffsetX += 8.0f.dp + drawOneMaValue(canvas, "MA60", _model.ma60!!, fMaOffsetX, 4f.dp, ContextCompat.getColor(_ctx, R.color.theme01_ma5Color))
             }
         } else {
             val main_values = SettingManager.sharedSettingManager().getKLineIndexInfos()
@@ -317,25 +318,25 @@ class ViewKLineCross : ViewBase {
                 else -> {}
             }
             if (_model.main_index01 != null) {
-                fMaOffsetX += 8.0f.dp + drawOneMaValue(canvas, str_array!![0], _model.main_index01!!, fMaOffsetX, 4f.dp, resources.getColor(R.color.theme01_ma5Color))
+                fMaOffsetX += 8.0f.dp + drawOneMaValue(canvas, str_array!![0], _model.main_index01!!, fMaOffsetX, 4f.dp, ContextCompat.getColor(_ctx, R.color.theme01_ma5Color))
             }
             if (_model.main_index02 != null) {
-                fMaOffsetX += 8.0f.dp + drawOneMaValue(canvas, str_array!![1], _model.main_index02!!, fMaOffsetX, 4f.dp, resources.getColor(R.color.theme01_ma10Color))
+                fMaOffsetX += 8.0f.dp + drawOneMaValue(canvas, str_array!![1], _model.main_index02!!, fMaOffsetX, 4f.dp, ContextCompat.getColor(_ctx, R.color.theme01_ma10Color))
             }
             if (_model.main_index03 != null) {
-                fMaOffsetX += 8.0f.dp + drawOneMaValue(canvas, str_array!![2], _model.main_index03!!, fMaOffsetX, 4f.dp, resources.getColor(R.color.theme01_ma30Color))
+                fMaOffsetX += 8.0f.dp + drawOneMaValue(canvas, str_array!![2], _model.main_index03!!, fMaOffsetX, 4f.dp, ContextCompat.getColor(_ctx, R.color.theme01_ma30Color))
             }
         }
 
         //  副图区域 分时和K线一致。
         fMaOffsetX = 4.0f.dp
         val fSecondOffsetY: Float = _kline!!.fMainMAHeight.plus(_kline!!.fMainGraphHeight)
-        fMaOffsetX += 8.0f.dp + drawOneMaValue(canvas, "VOL", _model.n24Vol!!, fMaOffsetX, fSecondOffsetY, resources.getColor(R.color.theme01_textColorMain))
+        fMaOffsetX += 8.0f.dp + drawOneMaValue(canvas, "VOL", _model.n24Vol!!, fMaOffsetX, fSecondOffsetY, ContextCompat.getColor(_ctx, R.color.theme01_textColorMain))
         if (_model.vol_ma5 != null) {
-            fMaOffsetX += 8.0f.dp + drawOneMaValue(canvas, "MA5", _model.vol_ma5!!, fMaOffsetX, fSecondOffsetY, resources.getColor(R.color.theme01_ma5Color))
+            fMaOffsetX += 8.0f.dp + drawOneMaValue(canvas, "MA5", _model.vol_ma5!!, fMaOffsetX, fSecondOffsetY, ContextCompat.getColor(_ctx, R.color.theme01_ma5Color))
         }
         if (_model.vol_ma10 != null) {
-            fMaOffsetX += 8.0f.dp + drawOneMaValue(canvas, "MA10", _model.vol_ma10!!, fMaOffsetX, fSecondOffsetY, resources.getColor(R.color.theme01_ma10Color))
+            fMaOffsetX += 8.0f.dp + drawOneMaValue(canvas, "MA10", _model.vol_ma10!!, fMaOffsetX, fSecondOffsetY, ContextCompat.getColor(_ctx, R.color.theme01_ma10Color))
         }
 
         //  描绘其它高级指标属性
@@ -357,13 +358,13 @@ class ViewKLineCross : ViewBase {
         var fMaOffsetX = 4.0f.dp
 
         if (m.adv_index01 != null) {
-            fMaOffsetX += 8.0f.dp + drawOneMaValue(canvas, "MACD(${macd_value.getInt("s")},${macd_value.getInt("l")},${macd_value.getInt("m")})", m.adv_index01!!, fMaOffsetX, fVolumeGraphBottomY, resources.getColor(R.color.theme01_ma5Color))
+            fMaOffsetX += 8.0f.dp + drawOneMaValue(canvas, "MACD(${macd_value.getInt("s")},${macd_value.getInt("l")},${macd_value.getInt("m")})", m.adv_index01!!, fMaOffsetX, fVolumeGraphBottomY, ContextCompat.getColor(_ctx, R.color.theme01_ma5Color))
         }
         if (m.adv_index02 != null) {
-            fMaOffsetX += 8.0f.dp + drawOneMaValue(canvas, "DIFF", m.adv_index02!!, fMaOffsetX, fVolumeGraphBottomY, resources.getColor(R.color.theme01_ma10Color))
+            fMaOffsetX += 8.0f.dp + drawOneMaValue(canvas, "DIFF", m.adv_index02!!, fMaOffsetX, fVolumeGraphBottomY, ContextCompat.getColor(_ctx, R.color.theme01_ma10Color))
         }
         if (m.adv_index03 != null) {
-            fMaOffsetX += 8.0f.dp + drawOneMaValue(canvas, "DEA", m.adv_index03!!, fMaOffsetX, fVolumeGraphBottomY, resources.getColor(R.color.theme01_ma30Color))
+            fMaOffsetX += 8.0f.dp + drawOneMaValue(canvas, "DEA", m.adv_index03!!, fMaOffsetX, fVolumeGraphBottomY, ContextCompat.getColor(_ctx, R.color.theme01_ma30Color))
         }
     }
 

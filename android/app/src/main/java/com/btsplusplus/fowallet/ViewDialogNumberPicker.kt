@@ -141,7 +141,7 @@ class ViewDialogNumberPicker : Dialog {
         picker.layoutParams = LinearLayout.LayoutParams(LLAYOUT_MATCH, LLAYOUT_WARP)
 
         //  更改分割线颜色和高度（利用反射修改属性）
-        picker.javaClass.superclass.declaredFields.forEach {
+        picker.javaClass.superclass!!.declaredFields.forEach {
             if (it.name == "mSelectionDivider") {
                 it.isAccessible = true
                 try {
