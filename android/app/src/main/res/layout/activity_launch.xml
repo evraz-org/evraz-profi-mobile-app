@@ -36,6 +36,8 @@
         android:id="@+id/bottomBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
         android:orientation="horizontal"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -44,23 +46,31 @@
 
         <Button
             android:id="@+id/btnSignIn"
-            style="?android:attr/buttonBarButtonStyle"
+            style="@style/EvrazTextViewButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/kSignIn" />
 
+        <Space
+            android:layout_width="5dp"
+            android:layout_height="match_parent" />
+
         <Button
             android:id="@+id/btnSignUp"
-            style="?android:attr/buttonBarButtonStyle"
+            style="@style/EvrazTextViewButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/kSignUp" />
 
+        <Space
+            android:layout_width="5dp"
+            android:layout_height="match_parent" />
+
         <Button
             android:id="@+id/btnSkip"
-            style="?android:attr/buttonBarButtonStyle"
+            style="@style/EvrazTextViewButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

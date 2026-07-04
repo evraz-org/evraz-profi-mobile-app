@@ -65,19 +65,22 @@
     <color name="theme01.mainButtonBackColor">#e76d42</color>
     <color name="theme01.mainButtonTextColor">#ffffff</color>
 
+    <color name="beige_color">#f6efcc</color>
+    <color name="gray_color">#424242</color>
+    <color name="light_gray_color">#938e8e</color>
 
-<!-- 
-    navigationBarBackColor: '131f30', # => done! 同 appBackColor
-    navigationBarTextColor: 'ffffff', # => done! 同 textColorMain
-    blockButtonBackColor: '607D8B',
-    blockButtonTextColor: WHITE_COLOR,
-    frameButtonBorderColor: '607D8B',
-    frameButtonTextColor: '607D8B',
-    iconColor: 'fe6c5a',
-    textColor01: '212121',
-    textColor02: '727272',
-    noticeColor: 'fe6c5a',
-    ticketColor: '8d9caa' -->
+    <!--
+        navigationBarBackColor: '131f30', # => done! 同 appBackColor
+        navigationBarTextColor: 'ffffff', # => done! 同 textColorMain
+        blockButtonBackColor: '607D8B',
+        blockButtonTextColor: WHITE_COLOR,
+        frameButtonBorderColor: '607D8B',
+        frameButtonTextColor: '607D8B',
+        iconColor: 'fe6c5a',
+        textColor01: '212121',
+        textColor02: '727272',
+        noticeColor: 'fe6c5a',
+        ticketColor: '8d9caa' -->
 
     <!--珍珠白-->
 

@@ -68,7 +68,7 @@ class ActivityLaunch : BtsppActivity() {
         }
 
         findViewById<Button>(R.id.btnSignUp).setOnClickListener {
-
+            goTo(SignUpInfoActivity::class.java, true)
         }
 
         findViewById<Button>(R.id.btnSkip).setOnClickListener {

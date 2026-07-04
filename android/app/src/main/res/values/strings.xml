@@ -1792,4 +1792,6 @@
     <string name="kSignIn">Sign in</string>
     <string name="kSignUp">Sign up</string>
     <string name="kSkip">Skip</string>
+    <string name="app_description">Current mobile application allows to register through Account Model. Account Model enable to manage the account from anywhere, using only password and without loading .bin file.\n\n\nKeys for Account will be received with using your password. They won\'t be saved in browser or central server, that\'s why it is necessary  to make sure that you\'ve recognized the password.\n\n\nPlease enter desired account name. This name will be registered openly in blockchain and be the identifier for any of your transactions.\n\n\nThe name should include more than 6 characters with dash, numbers and u.c.</string>
+    <string name="continue_registration">To continue the registration</string>
 </resources>
