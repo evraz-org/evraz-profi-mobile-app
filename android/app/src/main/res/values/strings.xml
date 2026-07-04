@@ -1789,4 +1789,7 @@
     <string name="myAssetsPageUnknowOperationContent">Unknown operation content</string>
     <string name="kWalletMemuTipsPleaseSelectCellAction">Please select the action to perform</string>
     <string name="kWalletMenuTipsPleaseSelectImportType">Please select the type of account to import</string>
+    <string name="kSignIn">Sign in</string>
+    <string name="kSignUp">Sign up</string>
+    <string name="kSkip">Skip</string>
 </resources>

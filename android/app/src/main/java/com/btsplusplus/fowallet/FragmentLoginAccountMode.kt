@@ -1,5 +1,6 @@
 package com.btsplusplus.fowallet
 
+import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -138,6 +139,7 @@ class FragmentLoginAccountMode : Fragment() {
                 btsppLogCustom("loginEvent", jsonObjectfromKVS("mode", AppCacheManager.EWalletMode.kwmPasswordWithWallet.value, "desc", "password+wallet"))
                 //  返回 - 登录成功
                 showToast(_ctx!!.resources.getString(R.string.kLoginTipsLoginOK))
+                activity!!.setResult(Activity.RESULT_OK)
                 activity!!.finish()
             } else {
                 //  【导入到已有钱包】 导入账号到钱包BIN文件中
@@ -156,6 +158,7 @@ class FragmentLoginAccountMode : Fragment() {
                 if (_result_promise != null) {
                     _result_promise!!.resolve(true)
                 }
+                activity!!.setResult(Activity.RESULT_OK)
                 activity!!.finish()
             }
             return@then null

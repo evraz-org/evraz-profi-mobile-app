@@ -5,10 +5,10 @@ import android.graphics.Color.TRANSPARENT
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
+import android.widget.Button
 import bitshares.*
 import bitshares.serializer.T_Base
 import com.btsplusplus.fowallet.utils.VcUtils
-//import com.flurry.android.FlurryAgent
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
 import org.json.JSONObject
@@ -17,6 +17,7 @@ import java.util.*
 class ActivityLaunch : BtsppActivity() {
 
     companion object {
+        val LOGIN_CODE = 20
         /**
          *  (public) 检测APP更新数据。
          */
@@ -40,8 +41,7 @@ class ActivityLaunch : BtsppActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //  初始化Flurry
-        //FlurryAgent.Builder().withLogEnabled(true).build(this, "H45RRHMWCPMKZNNKR5SR")
+        setAutoLayoutContentView(R.layout.activity_launch)
 
         //  初始化启动界面
         setFullScreen()
@@ -57,20 +57,37 @@ class ActivityLaunch : BtsppActivity() {
         OrgUtils.initDir(this.applicationContext)
         AppCacheManager.sharedAppCacheManager().initload()
 
-        //  统计设备信息
-        val accountName = WalletManager.sharedWalletManager().getWalletAccountName()
-        if (accountName != null && accountName != "") {
-            //FlurryAgent.setUserId(accountName)
-        }
-
         //  初始化配置
         initCustomConfig()
 
         //  启动日志
         btsppLogCustom("event_app_start", jsonObjectfromKVS("ver", Utils.appVersionName()))
 
-        //  初始化完毕后启动。
+        findViewById<Button>(R.id.btnSignIn).setOnClickListener {
+            goTo(ActivityLogin::class.java, true, request_code = LOGIN_CODE)
+        }
+
+        findViewById<Button>(R.id.btnSignUp).setOnClickListener {
+
+        }
+
+        findViewById<Button>(R.id.btnSkip).setOnClickListener {
+            var homeClass: Class<*> = ActivityIndexMarkets::class.java
+            val intent = Intent()
+            intent.setClass(this, homeClass)
+            startActivity(intent)
+        }
+
+        findViewById<View>(R.id.bottomBar).visibility = View.GONE
+        findViewById<View>(R.id.loadingIndicator).visibility = View.VISIBLE
+
         startInit(true)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if ((requestCode == LOGIN_CODE) && (resultCode == RESULT_OK)) {
+            _enterToMain()
+        }
     }
 
     /**
@@ -114,10 +131,16 @@ class ActivityLaunch : BtsppActivity() {
      * 进入主界面
      */
     private fun _enterToMain() {
-        var homeClass: Class<*> = ActivityIndexMarkets::class.java
-        val intent = Intent()
-        intent.setClass(this, homeClass)
-        startActivity(intent)
+        findViewById<View>(R.id.loadingIndicator).visibility = View.GONE
+        if (WalletManager.sharedWalletManager().isWalletExist()) {
+            var homeClass: Class<*> = ActivityIndexMy::class.java
+            val intent = Intent()
+            intent.setClass(this, homeClass)
+            startActivity(intent)
+        }
+        else {
+            findViewById<View>(R.id.bottomBar).visibility = View.VISIBLE
+        }
     }
 
     /**
