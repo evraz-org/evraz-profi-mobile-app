@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,98 +10,61 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="15dp"
-        android:padding="10dp"
-        android:orientation="vertical">
-
+        android:orientation="vertical"
+        android:padding="10dp">
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:orientation="horizontal">
 
-
             <LinearLayout
                 android:id="@+id/layout_back_from_login"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:orientation="horizontal">
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/ic_btn_back"/>
+                    android:src="@drawable/ic_btn_back" />
+
                 <TextView
+                    style="@style/kNavigationBarTextStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="@string/kBtnBack"
-                    style="@style/kNavigationBarTextStyle"
                     android:gravity="center_vertical"
-                    />
+                    android:text="@string/kBtnBack" />
             </LinearLayout>
-
 
             <TextView
                 android:id="@+id/title"
+                style="@style/kNavigationBarTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:gravity="center"
                 android:layout_gravity="center_vertical"
-                android:text="@string/kNormalCellBtnLogin"
-                style="@style/kNavigationBarTextStyle" />
+                android:gravity="center"
+                android:text="@string/kNormalCellBtnLogin" />
 
             <Button
                 android:id="@+id/button_register"
+                style="@style/kNavigationBarTextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                style="@style/kNavigationBarTextStyle"
+                android:layout_marginRight="10dp"
                 android:background="#00000000"
                 android:text="@string/kLoginBtnRegister"
-                android:textAllCaps="false"
-                android:layout_marginRight="10dp"  />
-
-
+                android:textAllCaps="false" />
         </FrameLayout>
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tablayout_of_login"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            app:tabTextAppearance="@style/KPageTabTextStyle"
-            app:tabIndicatorColor="#ff0000"
-            app:tabRippleColor="#aaaaaa"
-            app:tabTextColor="#ffffff">
-
-            <android.support.design.widget.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/kLoginPageModePassword" />
-
-            <android.support.design.widget.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/kLoginPageModeBrainKey" />
-
-            <android.support.design.widget.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/kLoginPageModePrivateKey" />
-
-            <android.support.design.widget.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/kLoginPageModeWallet" />
-
-        </android.support.design.widget.TabLayout>
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/view_pager_of_login"
+        <FrameLayout
+            android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingBottom="48dp">
-
-        </android.support.v4.view.ViewPager>
-
+        </FrameLayout>
 
     </LinearLayout>
 
