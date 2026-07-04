@@ -78,9 +78,9 @@ abstract class BtsppActivity : AppCompatActivity() {
         super.attachBaseContext(LangManager.sharedLangManager().onAttach(newBase!!))
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         //  保存参数
-        outState?.putInt(ARG_PARAM_ID, _btspp_param_id)
+        outState.putInt(ARG_PARAM_ID, _btspp_param_id)
         super.onSaveInstanceState(outState)
         //  [统计]
         btsppLogCustom("onBtsppParamsSave", jsonObjectfromKVS("activity", this::class.java.name))

@@ -2,6 +2,7 @@ package com.btsplusplus.fowallet
 
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.os.Message
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
@@ -55,12 +56,10 @@ class ActivityTradeMain : BtsppActivity() {
         assert(_tradingPair._bCoreMarketInited)
         //  REMARK：在初始化的时候判断帐号信息
         _haveAccountOnInit = WalletManager.sharedWalletManager().isWalletExist()
-        _notify_handler = object : Handler() {
-            override fun handleMessage(msg: Message?) {
+        _notify_handler = object : Handler(Looper.myLooper()!!) {
+            override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
-                if (msg != null) {
-                    onSubMarketNotifyNewData(msg)
-                }
+                onSubMarketNotifyNewData(msg)
             }
         }
 

@@ -1,7 +1,9 @@
 package com.btsplusplus.fowallet
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.os.Message
 import android.support.design.widget.TabLayout
 import android.view.MotionEvent
@@ -75,12 +77,10 @@ class ActivityKLine : BtsppActivity() {
         //  Custom initialization
         _tradingPair = TradingPair().initWithBaseAsset(base, quote)
         _dataArrayHistory = JSONArray()
-        _notify_handler = object : Handler() {
-            override fun handleMessage(msg: Message?) {
+        _notify_handler = object : Handler(Looper.myLooper()!!) {
+            override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
-                if (msg != null) {
-                    onSubMarketNotifyNewData(msg)
-                }
+                onSubMarketNotifyNewData(msg)
             }
         }
 
