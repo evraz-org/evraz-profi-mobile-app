@@ -80,8 +80,10 @@ fun AppCompatActivity.setBottomNavigationStyle(position: Int) {
         bottom_nav_gateways_frame.setOnClickListener {
             val top = BtsppApp.getInstance().getTopActivity()
             if (top == null || top !is ActivityIndexDepositAndWithdraw) {
-                goTo(ActivityIndexDepositAndWithdraw::class.java)
-                BtsppApp.getInstance().finishAllActivity()
+                guardWalletExist {
+                    goTo(ActivityIndexDepositAndWithdraw::class.java)
+                    BtsppApp.getInstance().finishAllActivity()
+                }
             }
         }
     } else {
