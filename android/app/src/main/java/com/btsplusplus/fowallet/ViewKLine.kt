@@ -1348,7 +1348,7 @@ class ViewKLine : ViewBase {
 
         // 设置手势事件代理
         m_event_delegate = GestureDetector(_context, KlineEventDelegate())
-        m_scale_event_delegate = ScaleGestureDetector(_context, KlineScaleEventDelegate())
+        m_scale_event_delegate = ScaleGestureDetector(_context!!, KlineScaleEventDelegate())
 
         // 缩放手势
         _currCandleTotalWidth = kBTS_KLINE_CANDLE_WIDTH + kBTS_KLINE_SHADOW_WIDTH
@@ -1526,7 +1526,7 @@ class ViewKLine : ViewBase {
         /**
          * 点击事件
          */
-        override fun onDown(e: MotionEvent?): Boolean {
+        override fun onDown(e: MotionEvent): Boolean {
             //  设置标记
             long_press_down = true
             //  REMARK：必须返回 true，不然后续的长按和拖拽不会触发。
@@ -1536,7 +1536,7 @@ class ViewKLine : ViewBase {
         /**
          * 拖拽手势触发
          */
-        override fun onScroll(firstDownEvent: MotionEvent, lastMoveEvent: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+        override fun onScroll(firstDownEvent: MotionEvent?, lastMoveEvent: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
             //  缩放中不处理该手势
             if (_scale_gesture) {
                 return false
@@ -1545,9 +1545,11 @@ class ViewKLine : ViewBase {
             parent.requestDisallowInterceptTouchEvent(true)
             //  设置标记（并记录第一次 down 时的坐标）
             pan_gesture = true
-            _startTouch = PointF(firstDownEvent.x, firstDownEvent.y)
-            //  处理移动
-            _moveViewWithX(lastMoveEvent.x - _startTouch.x)
+             if (firstDownEvent != null) {
+                    _startTouch = PointF(firstDownEvent.x, firstDownEvent.y)
+                    //  处理移动
+                    _moveViewWithX(lastMoveEvent.x - _startTouch.x)
+             }
             return true
         }
 
