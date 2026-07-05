@@ -4,13 +4,13 @@ import android.Manifest
 import android.os.Bundle
 import android.view.View
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityIndexServicesBinding
 import com.fowallet.walletcore.bts.ChainObjectManager
-import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_index_services.*
-import org.json.JSONArray
 import org.json.JSONObject
 
 class ActivityIndexServices : BtsppActivity() {
+
+    private lateinit var _binding: ActivityIndexServicesBinding
 
     /**
      * 重载 - 返回键按下
@@ -21,7 +21,9 @@ class ActivityIndexServices : BtsppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setAutoLayoutContentView(R.layout.activity_index_services, navigationBarColor = R.color.theme01_tabBarColor)
+
+        _binding = ActivityIndexServicesBinding.inflate(layoutInflater)
+        setAutoLayoutContentView(_binding.root, navigationBarColor = R.color.theme01_tabBarColor)
 
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
@@ -31,9 +33,9 @@ class ActivityIndexServices : BtsppActivity() {
 
         //  设置模块可见性
         if (ChainObjectManager.sharedChainObjectManager().getMainSmartAssetList().length() > 0) {
-            layout_smart_coin.visibility = View.VISIBLE
+            _binding.layoutSmartCoin.visibility = View.VISIBLE
         } else {
-            layout_smart_coin.visibility = View.GONE
+            _binding.layoutSmartCoin.visibility = View.GONE
         }
 
         //  入口可见性判断
@@ -44,41 +46,41 @@ class ActivityIndexServices : BtsppActivity() {
             var hidden_layout = 0
             val cfg = OtcManager.sharedOtcManager().server_config
             if (cfg != null && cfg.getJSONObject("user").getJSONObject("entry").getInt("type") != OtcManager.EOtcEntryType.eoet_gone.value) {
-                layout_otc_user.visibility = View.VISIBLE
-                layout_otc_user.setOnClickListener { onOtcUsrEntryClicked() }
+                _binding.layoutOtcUser.visibility = View.VISIBLE
+                _binding.layoutOtcUser.setOnClickListener { onOtcUsrEntryClicked() }
             } else {
-                layout_otc_user.visibility = View.GONE
+                _binding.layoutOtcUser.visibility = View.GONE
                 hidden_layout += 1
             }
             if (cfg != null && cfg.getJSONObject("merchant").getJSONObject("entry").getInt("type") != OtcManager.EOtcEntryType.eoet_gone.value) {
-                layout_otc_merchant.visibility = View.VISIBLE
-                layout_otc_merchant.setOnClickListener { onOtcMerchantEntryClicked() }
+                _binding.layoutOtcMerchant.visibility = View.VISIBLE
+                _binding.layoutOtcMerchant.setOnClickListener { onOtcMerchantEntryClicked() }
             } else {
-                layout_otc_merchant.visibility = View.GONE
+                _binding.layoutOtcMerchant.visibility = View.GONE
                 hidden_layout += 1
             }
             //  直接整个OTC组不可见
             if (hidden_layout >= 2) {
-                layout_group_otc.visibility = View.GONE
+                _binding.layoutGroupOtc.visibility = View.GONE
             }
         } else {
             //  直接整个OTC组不可见
-            layout_group_otc.visibility = View.GONE
+            _binding.layoutGroupOtc.visibility = View.GONE
         }
 
         //  设置图标颜色
         val iconcolor = resources.getColor(R.color.theme01_textColorNormal)
-        img_icon_qrscan.setColorFilter(iconcolor)
-        img_icon_account_search.setColorFilter(iconcolor)
-        img_icon_smart_coin.setColorFilter(iconcolor)
-        img_icon_voting.setColorFilter(iconcolor)
-        img_icon_otc_user.setColorFilter(iconcolor)
-        img_icon_otc_merchant.setColorFilter(iconcolor)
-        img_icon_advfunction.setColorFilter(iconcolor)
-        img_icon_explorer.setColorFilter(iconcolor)
-        img_icon_game.setColorFilter(iconcolor)
+        _binding.imgIconQrscan.setColorFilter(iconcolor)
+        _binding.imgIconAccountSearch.setColorFilter(iconcolor)
+        _binding.imgIconSmartCoin.setColorFilter(iconcolor)
+        _binding.imgIconVoting.setColorFilter(iconcolor)
+        _binding.imgIconOtcUser.setColorFilter(iconcolor)
+        _binding.imgIconOtcMerchant.setColorFilter(iconcolor)
+        _binding.imgIconAdvfunction.setColorFilter(iconcolor)
+        _binding.imgIconExplorer.setColorFilter(iconcolor)
+        _binding.imgIconGame.setColorFilter(iconcolor)
 
-        layout_account_query_from_services.setOnClickListener {
+        _binding.layoutAccountQueryFromServices.setOnClickListener {
             TempManager.sharedTempManager().set_query_account_callback { last_activity, it ->
                 last_activity.goTo(ActivityIndexServices::class.java, true, back = true)
                 viewUserAssets(it.getString("name"))
@@ -87,16 +89,16 @@ class ActivityIndexServices : BtsppActivity() {
         }
 
         if (ChainObjectManager.sharedChainObjectManager().getMainSmartAssetList().length() > 0) {
-            layout_smart_coin.setOnClickListener {
+            _binding.layoutSmartCoin.setOnClickListener {
                 goTo(ActivityAssetInfos::class.java, true)
             }
         }
 
-        layout_voting_from_services.setOnClickListener {
+        _binding.layoutVotingFromServices.setOnClickListener {
             guardWalletExist { goTo(ActivityVoting::class.java, true) }
         }
 
-        layout_saoyisao_from_services.setOnClickListener {
+        _binding.layoutSaoyisaoFromServices.setOnClickListener {
             this.guardPermissions(Manifest.permission.CAMERA).then {
                 when (it as Int) {
                     EBtsppPermissionResult.GRANTED.value -> {
@@ -113,11 +115,11 @@ class ActivityIndexServices : BtsppActivity() {
             }
         }
 
-        layout_advanced_feature_of_service.setOnClickListener {
+        _binding.layoutAdvancedFeatureOfService.setOnClickListener {
             goTo(ActivityAdvancedFeature::class.java, true)
         }
 
-        layout_bts_explorer.setOnClickListener {
+        _binding.layoutBtsExplorer.setOnClickListener {
             //  TODO:插件配置url
             openURL("https://bts.ai?lang=${resources.getString(R.string.btsaiLangKey)}")
         }

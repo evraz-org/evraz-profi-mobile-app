@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import bitshares.*
-import kotlinx.android.synthetic.main.activity_kline_quota_setting.*
+import com.btsplusplus.fowallet.databinding.ActivityKlineQuotaSettingBinding
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -17,6 +17,8 @@ class ActivityKLineIndexSetting : BtsppActivity() {
     private lateinit var _main_index_type_array: JSONArray
     private lateinit var _sub_index_type_array: JSONArray
 
+    private lateinit var _binding: ActivityKlineQuotaSettingBinding
+
     override fun onBackClicked(result: Any?) {
         _result_promise.resolve(false)
         super.onBackClicked(result)
@@ -24,7 +26,9 @@ class ActivityKLineIndexSetting : BtsppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_kline_quota_setting)
+
+        _binding = ActivityKlineQuotaSettingBinding.inflate(layoutInflater)
+        setContentView(_binding.root)
 
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
@@ -47,18 +51,18 @@ class ActivityKLineIndexSetting : BtsppActivity() {
         //  refresh ui
         refreshIndexAll()
 
-        layout_back_from_kline_quota_setting.setOnClickListener { onBackClicked(false) }
-        layout_main.setOnClickListener { onMainViewClick() }
-        layout_sub.setOnClickListener { onSubViewClick() }
-        button_commit.setOnClickListener { onCommitClicked() }
+        _binding.layoutBackFromKlineQuotaSetting.setOnClickListener { onBackClicked(false) }
+        _binding.layoutMain.setOnClickListener { onMainViewClick() }
+        _binding.layoutSub.setOnClickListener { onSubViewClick() }
+        _binding.buttonCommit.setOnClickListener { onCommitClicked() }
 
         //  index binding events
-        layout_main_index01.setOnClickListener { onMainIndexClicked(0) }
-        layout_main_index02.setOnClickListener { onMainIndexClicked(1) }
-        layout_main_index03.setOnClickListener { onMainIndexClicked(2) }
-        layout_sub_index01.setOnClickListener { onSubIndexClicked(0) }
-        layout_sub_index02.setOnClickListener { onSubIndexClicked(1) }
-        layout_sub_index03.setOnClickListener { onSubIndexClicked(2) }
+        _binding.layoutMainIndex01.setOnClickListener { onMainIndexClicked(0) }
+        _binding.layoutMainIndex02.setOnClickListener { onMainIndexClicked(1) }
+        _binding.layoutMainIndex03.setOnClickListener { onMainIndexClicked(2) }
+        _binding.layoutSubIndex01.setOnClickListener { onSubIndexClicked(0) }
+        _binding.layoutSubIndex02.setOnClickListener { onSubIndexClicked(1) }
+        _binding.layoutSubIndex03.setOnClickListener { onSubIndexClicked(2) }
     }
 
     private fun onCommitClicked() {
@@ -115,9 +119,9 @@ class ActivityKLineIndexSetting : BtsppActivity() {
             val value = it as Int
             _configValueHash.getJSONArray("ma_value").put(row, value)
             when (row) {
-                0 -> refreshIndexValueLabel(main_index01_value, value)
-                1 -> refreshIndexValueLabel(main_index02_value, value)
-                2 -> refreshIndexValueLabel(main_index03_value, value)
+                0 -> refreshIndexValueLabel(_binding.mainIndex01Value, value)
+                1 -> refreshIndexValueLabel(_binding.mainIndex02Value, value)
+                2 -> refreshIndexValueLabel(_binding.mainIndex03Value, value)
             }
             return@then null
         }
@@ -128,9 +132,9 @@ class ActivityKLineIndexSetting : BtsppActivity() {
             val value = it as Int
             _configValueHash.getJSONArray("ema_value").put(row, value)
             when (row) {
-                0 -> refreshIndexValueLabel(main_index01_value, value)
-                1 -> refreshIndexValueLabel(main_index02_value, value)
-                2 -> refreshIndexValueLabel(main_index03_value, value)
+                0 -> refreshIndexValueLabel(_binding.mainIndex01Value, value)
+                1 -> refreshIndexValueLabel(_binding.mainIndex02Value, value)
+                2 -> refreshIndexValueLabel(_binding.mainIndex03Value, value)
             }
             return@then null
         }
@@ -156,8 +160,8 @@ class ActivityKLineIndexSetting : BtsppActivity() {
             val value = it as Int
             _configValueHash.getJSONObject("boll_value").put(key, value)
             when (row) {
-                0 -> main_index01_value.text = value.toString()
-                1 -> main_index02_value.text = value.toString()
+                0 -> _binding.mainIndex01Value.text = value.toString()
+                1 -> _binding.mainIndex02Value.text = value.toString()
             }
             return@then null
         }
@@ -179,15 +183,15 @@ class ActivityKLineIndexSetting : BtsppActivity() {
             when (row) {
                 0 -> {
                     _configValueHash.getJSONObject("macd_value").put(key, value)
-                    sub_index01_value.text = value.toString()
+                    _binding.subIndex01Value.text = value.toString()
                 }
                 1 -> {
                     _configValueHash.getJSONObject("macd_value").put(key, value)
-                    sub_index02_value.text = value.toString()
+                    _binding.subIndex02Value.text = value.toString()
                 }
                 2 -> {
                     _configValueHash.getJSONObject("macd_value").put(key, value)
-                    sub_index03_value.text = value.toString()
+                    _binding.subIndex03Value.text = value.toString()
                 }
             }
             return@then null
@@ -208,58 +212,58 @@ class ActivityKLineIndexSetting : BtsppActivity() {
     }
 
     private fun refreshMainIndexAll() {
-        layout_main_index01.visibility = View.GONE
-        layout_main_index02.visibility = View.GONE
-        layout_main_index03.visibility = View.GONE
+        _binding.layoutMainIndex01.visibility = View.GONE
+        _binding.layoutMainIndex02.visibility = View.GONE
+        _binding.layoutMainIndex03.visibility = View.GONE
 
         val value_type = _configValueHash.optString("kMain")
         if (value_type == "") {
-            layout_main_index_all.visibility = View.GONE
-            layout_main_value.text = resources.getString(R.string.kKlineIndexCellHide)
+            _binding.layoutMainIndexAll.visibility = View.GONE
+            _binding.layoutMainValue.text = resources.getString(R.string.kKlineIndexCellHide)
         } else {
-            layout_main_index_all.visibility = View.VISIBLE
-            layout_main_value.text = value_type.toUpperCase()
+            _binding.layoutMainIndexAll.visibility = View.VISIBLE
+            _binding.layoutMainValue.text = value_type.toUpperCase()
             if (value_type == "ma") {
                 val value_values = _configValueHash.getJSONArray("${value_type}_value")
                 assert(value_values.length() == 3)
-                layout_main_index01.visibility = View.VISIBLE
-                layout_main_index02.visibility = View.VISIBLE
-                layout_main_index03.visibility = View.VISIBLE
-                main_index01_name.text = "MA1"
-                main_index02_name.text = "MA2"
-                main_index03_name.text = "MA3"
-                main_index01_name.setTextColor(resources.getColor(R.color.theme01_ma5Color))
-                main_index02_name.setTextColor(resources.getColor(R.color.theme01_ma10Color))
-                main_index03_name.setTextColor(resources.getColor(R.color.theme01_ma30Color))
-                refreshIndexValueLabel(main_index01_value, value_values.getInt(0))
-                refreshIndexValueLabel(main_index02_value, value_values.getInt(1))
-                refreshIndexValueLabel(main_index03_value, value_values.getInt(2))
+                _binding.layoutMainIndex01.visibility = View.VISIBLE
+                _binding.layoutMainIndex02.visibility = View.VISIBLE
+                _binding.layoutMainIndex03.visibility = View.VISIBLE
+                _binding.mainIndex01Name.text = "MA1"
+                _binding.mainIndex02Name.text = "MA2"
+                _binding.mainIndex03Name.text = "MA3"
+                _binding.mainIndex01Name.setTextColor(resources.getColor(R.color.theme01_ma5Color))
+                _binding.mainIndex02Name.setTextColor(resources.getColor(R.color.theme01_ma10Color))
+                _binding.mainIndex03Name.setTextColor(resources.getColor(R.color.theme01_ma30Color))
+                refreshIndexValueLabel(_binding.mainIndex01Value, value_values.getInt(0))
+                refreshIndexValueLabel(_binding.mainIndex02Value, value_values.getInt(1))
+                refreshIndexValueLabel(_binding.mainIndex03Value, value_values.getInt(2))
             } else if (value_type == "ema") {
                 val value_values = _configValueHash.getJSONArray("${value_type}_value")
                 assert(value_values.length() == 3)
-                layout_main_index01.visibility = View.VISIBLE
-                layout_main_index02.visibility = View.VISIBLE
-                layout_main_index03.visibility = View.VISIBLE
-                main_index01_name.text = "EMA1"
-                main_index02_name.text = "EMA2"
-                main_index03_name.text = "EMA3"
-                main_index01_name.setTextColor(resources.getColor(R.color.theme01_ma5Color))
-                main_index02_name.setTextColor(resources.getColor(R.color.theme01_ma10Color))
-                main_index03_name.setTextColor(resources.getColor(R.color.theme01_ma30Color))
-                refreshIndexValueLabel(main_index01_value, value_values.getInt(0))
-                refreshIndexValueLabel(main_index02_value, value_values.getInt(1))
-                refreshIndexValueLabel(main_index03_value, value_values.getInt(2))
+                _binding.layoutMainIndex01.visibility = View.VISIBLE
+                _binding.layoutMainIndex02.visibility = View.VISIBLE
+                _binding.layoutMainIndex03.visibility = View.VISIBLE
+                _binding.mainIndex01Name.text = "EMA1"
+                _binding.mainIndex02Name.text = "EMA2"
+                _binding.mainIndex03Name.text = "EMA3"
+                _binding.mainIndex01Name.setTextColor(resources.getColor(R.color.theme01_ma5Color))
+                _binding.mainIndex02Name.setTextColor(resources.getColor(R.color.theme01_ma10Color))
+                _binding.mainIndex02Name.setTextColor(resources.getColor(R.color.theme01_ma30Color))
+                refreshIndexValueLabel(_binding.mainIndex01Value, value_values.getInt(0))
+                refreshIndexValueLabel(_binding.mainIndex02Value, value_values.getInt(1))
+                refreshIndexValueLabel(_binding.mainIndex03Value, value_values.getInt(2))
             } else if (value_type == "boll") {
                 val value_values = _configValueHash.getJSONObject("${value_type}_value")
                 assert(value_values.length() == 2)
-                layout_main_index01.visibility = View.VISIBLE
-                layout_main_index02.visibility = View.VISIBLE
-                main_index01_name.text = resources.getString(R.string.kKlineIndexCellBollN)
-                main_index02_name.text = resources.getString(R.string.kKlineIndexCellBollP)
-                main_index01_name.setTextColor(resources.getColor(R.color.theme01_textColorMain))
-                main_index02_name.setTextColor(resources.getColor(R.color.theme01_textColorMain))
-                main_index01_value.text = value_values.getInt("n").toString()
-                main_index02_value.text = value_values.getInt("p").toString()
+                _binding.layoutMainIndex01.visibility = View.VISIBLE
+                _binding.layoutMainIndex02.visibility = View.VISIBLE
+                _binding.mainIndex01Name.text = resources.getString(R.string.kKlineIndexCellBollN)
+                _binding.mainIndex02Name.text = resources.getString(R.string.kKlineIndexCellBollP)
+                _binding.mainIndex01Name.setTextColor(resources.getColor(R.color.theme01_textColorMain))
+                _binding.mainIndex02Name.setTextColor(resources.getColor(R.color.theme01_textColorMain))
+                _binding.mainIndex01Value.text = value_values.getInt("n").toString()
+                _binding.mainIndex02Value.text = value_values.getInt("p").toString()
             } else {
                 assert(false)
             }
@@ -267,29 +271,29 @@ class ActivityKLineIndexSetting : BtsppActivity() {
     }
 
     private fun refreshSubIndexAll() {
-        layout_sub_index01.visibility = View.GONE
-        layout_sub_index02.visibility = View.GONE
-        layout_sub_index03.visibility = View.GONE
+        _binding.layoutSubIndex01.visibility = View.GONE
+        _binding.layoutSubIndex02.visibility = View.GONE
+        _binding.layoutSubIndex03.visibility = View.GONE
 
         val value_type = _configValueHash.optString("kSub")
         if (value_type == "") {
-            layout_sub_index_all.visibility = View.GONE
-            layout_sub_value.text = resources.getString(R.string.kKlineIndexCellHide)
+            _binding.layoutSubIndexAll.visibility = View.GONE
+            _binding.layoutSubValue.text = resources.getString(R.string.kKlineIndexCellHide)
         } else {
-            layout_sub_index_all.visibility = View.VISIBLE
-            layout_sub_value.text = value_type.toUpperCase()
+            _binding.layoutSubIndexAll.visibility = View.VISIBLE
+            _binding.layoutSubValue.text = value_type.toUpperCase()
             if (value_type == "macd") {
                 val value_values = _configValueHash.getJSONObject("${value_type}_value")
                 assert(value_values.length() == 3)
-                layout_sub_index01.visibility = View.VISIBLE
-                layout_sub_index02.visibility = View.VISIBLE
-                layout_sub_index03.visibility = View.VISIBLE
-                sub_index01_name.text = resources.getString(R.string.kKlineIndexCellMacdS)
-                sub_index02_name.text = resources.getString(R.string.kKlineIndexCellMacdL)
-                sub_index03_name.text = resources.getString(R.string.kKlineIndexCellMacdM)
-                sub_index01_value.text = value_values.getInt("s").toString()
-                sub_index02_value.text = value_values.getInt("l").toString()
-                sub_index03_value.text = value_values.getInt("m").toString()
+                _binding.layoutSubIndex01.visibility = View.VISIBLE
+                _binding.layoutSubIndex02.visibility = View.VISIBLE
+                _binding.layoutSubIndex03.visibility = View.VISIBLE
+                _binding.subIndex01Name.text = resources.getString(R.string.kKlineIndexCellMacdS)
+                _binding.subIndex02Name.text = resources.getString(R.string.kKlineIndexCellMacdL)
+                _binding.subIndex03Name.text = resources.getString(R.string.kKlineIndexCellMacdM)
+                _binding.subIndex01Value.text = value_values.getInt("s").toString()
+                _binding.subIndex02Value.text = value_values.getInt("l").toString()
+                _binding.subIndex03Value.text = value_values.getInt("m").toString()
             } else {
                 assert(false)
             }
@@ -300,7 +304,7 @@ class ActivityKLineIndexSetting : BtsppActivity() {
         val list = JSONArray()
         _main_index_type_array.forEach<JSONObject> { list.put(it!!.getString("name")) }
         ViewSelector.show(this, resources.getString(R.string.kKlineIndexSelectMainIndex), list.toList<String>().toTypedArray()) { index: Int, result: String ->
-            layout_main_value.text = result
+            _binding.layoutMainValue.text = result
             _configValueHash.put("kMain", _main_index_type_array.getJSONObject(index).getString("value"))
             refreshMainIndexAll()
         }
@@ -310,7 +314,7 @@ class ActivityKLineIndexSetting : BtsppActivity() {
         val list = JSONArray()
         _sub_index_type_array.forEach<JSONObject> { list.put(it!!.getString("name")) }
         ViewSelector.show(this, resources.getString(R.string.kKlineIndexSelectSubIndex), list.toList<String>().toTypedArray()) { index: Int, result: String ->
-            layout_sub_value.text = result
+            _binding.layoutSubValue.text = result
             _configValueHash.put("kSub", _sub_index_type_array.getJSONObject(index).getString("value"))
             refreshSubIndexAll()
         }

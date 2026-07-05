@@ -5,10 +5,10 @@ import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityIndexTransferBinding
 import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_index_transfer.*
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.math.pow
@@ -27,9 +27,13 @@ class ActivityIndexTransfer : BtsppActivity() {
     private var _s_available: String = ""
     private var _tf_amount_watcher: UtilsDigitTextWatcher? = null
 
+    private lateinit var _binding: ActivityIndexTransferBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setAutoLayoutContentView(R.layout.activity_index_transfer)
+
+        _binding = ActivityIndexTransferBinding.inflate(layoutInflater)
+        setAutoLayoutContentView(_binding.root)
         setFullScreen()
         setBottomNavigationStyle(2)
 
@@ -41,8 +45,8 @@ class ActivityIndexTransfer : BtsppActivity() {
 
         //  没有默认收款人：则对收款人字段添加点击事件。
         if (_default_to == null) {
-            cell_to_account_tailer_arrow.visibility = View.VISIBLE
-            cell_to_account.setOnClickListener {
+            _binding.cellToAccountTailerArrow.visibility = View.VISIBLE
+            _binding.cellToAccount.setOnClickListener {
                 TempManager.sharedTempManager().set_query_account_callback { last_activity, it ->
                     last_activity.goTo(ActivityIndexTransfer::class.java, true, back = true)
                     _transfer_args!!.put("to", it)
@@ -51,10 +55,10 @@ class ActivityIndexTransfer : BtsppActivity() {
                 goTo(ActivityAccountQueryBase::class.java, true)
             }
         } else {
-            cell_to_account_tailer_arrow.visibility = View.GONE
+            _binding.cellToAccountTailerArrow.visibility = View.GONE
         }
 
-        cell_transfer_asset.setOnClickListener {
+        _binding.cellTransferAsset.setOnClickListener {
             val list = mutableListOf<String>()
             for (asset in _asset_list!!) {
                 list.add(asset!!.getString("symbol"))
@@ -70,7 +74,7 @@ class ActivityIndexTransfer : BtsppActivity() {
         }
 
         //  事件 - 全部按钮
-        btn_transfer_all.setOnClickListener {
+        _binding.btnTransferAll.setOnClickListener {
             val tf = findViewById<EditText>(R.id.tf_amount)
             tf.setText(_s_available)
             tf.setSelection(tf.text.toString().length)
@@ -78,12 +82,12 @@ class ActivityIndexTransfer : BtsppActivity() {
         }
 
         //  事件 - 发送
-        btn_send.setOnClickListener {
+        _binding.btnSend.setOnClickListener {
             onSendButtonClicked()
         }
 
         //  事件 - 高级
-        btn_more_actions.setOnClickListener { onMoreActionClicked() }
+        _binding.btnMoreActions.setOnClickListener { onMoreActionClicked() }
 
         //  初始化相关参数
         genTransferDefaultArgs(null)
@@ -91,7 +95,7 @@ class ActivityIndexTransfer : BtsppActivity() {
 
         //  初始化事件
         _tf_amount_watcher = UtilsDigitTextWatcher().set_tf(findViewById<EditText>(R.id.tf_amount)).set_precision(_transfer_args!!.getJSONObject("asset").getInt("precision"))
-        tf_amount.addTextChangedListener(_tf_amount_watcher!!)
+        _binding.tfAmount.addTextChangedListener(_tf_amount_watcher!!)
         _tf_amount_watcher!!.on_value_changed(::onAmountChanged)
     }
 

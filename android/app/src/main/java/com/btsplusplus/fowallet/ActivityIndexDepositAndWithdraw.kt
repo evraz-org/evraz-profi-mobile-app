@@ -6,13 +6,13 @@ import android.view.Gravity
 import android.widget.LinearLayout
 import android.widget.TextView
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityIndexDepositAndWithdrawBinding
 import com.btsplusplus.fowallet.gateway.GatewayAssetItemData
 import com.btsplusplus.fowallet.gateway.GatewayBase
 import com.btsplusplus.fowallet.gateway.RuDEX
 import com.btsplusplus.fowallet.utils.VcUtils
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_index_deposit_and_withdraw.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.math.BigInteger
@@ -26,9 +26,13 @@ class ActivityIndexDepositAndWithdraw : BtsppActivity() {
     private var _balanceDataHash = JSONObject()
     private var _balanceDataNameHash = JSONObject()
 
+    private lateinit var _binding: ActivityIndexDepositAndWithdrawBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setAutoLayoutContentView(R.layout.activity_index_deposit_and_withdraw, navigationBarColor = R.color.theme01_tabBarColor)
+
+        _binding = ActivityIndexDepositAndWithdrawBinding.inflate(layoutInflater)
+        setAutoLayoutContentView(_binding.root, navigationBarColor = R.color.theme01_tabBarColor)
 
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
@@ -125,13 +129,13 @@ class ActivityIndexDepositAndWithdraw : BtsppActivity() {
         }
 
         //  gateway assets faq button
-        tip_link_gateway_assets.setOnClickListener { onGatewayAssetsFAQClicked() }
+        _binding.tipLinkGatewayAssets.setOnClickListener { onGatewayAssetsFAQClicked() }
 
         //  current gateway
-        layout_current_gateway.setOnClickListener { onCurrentGatewayClicked() }
+        _binding.layoutCurrentGateway.setOnClickListener { onCurrentGatewayClicked() }
 
         //  初始化UI
-        gateway_assets_list_count_of_recharge_and_withdraw.text = String.format(resources.getString(R.string.kVcDWHelpGatewayAssets, "0"))
+        _binding.gatewayAssetsListCountOfRechargeAndWithdraw.text = String.format(resources.getString(R.string.kVcDWHelpGatewayAssets, "0"))
         refreshGatewayInfoUI()
 
         //  请求
@@ -287,10 +291,10 @@ class ActivityIndexDepositAndWithdraw : BtsppActivity() {
 
     private fun refreshGatewayInfoUI() {
         //  gateway name
-        gateway_name_of_recharge_and_withdraw.text = _currGateway.getString("name")
+        _binding.gatewayNameOfRechargeAndWithdraw.text = _currGateway.getString("name")
 
         //  help rows
-        layout_help_of_recharge_and_withdraw.removeAllViews()
+        _binding.layoutHelpOfRechargeAndWithdraw.removeAllViews()
         _currGateway.getJSONArray("helps").forEach<JSONObject> {
             val layout_params = LinearLayout.LayoutParams(LLAYOUT_MATCH, LLAYOUT_WARP)
             layout_params.setMargins(0, 10.dp, 0, 0)
@@ -326,16 +330,16 @@ class ActivityIndexDepositAndWithdraw : BtsppActivity() {
                 }
             }
 
-            layout_help_of_recharge_and_withdraw.addView(layout)
+            _binding.layoutHelpOfRechargeAndWithdraw.addView(layout)
         }
     }
 
     private fun refreshGatewayAssetsUI() {
         //  gateway assets title view
-        gateway_assets_list_count_of_recharge_and_withdraw.text = String.format(resources.getString(R.string.kVcDWHelpGatewayAssets, _data_array.size.toString()))
+        _binding.gatewayAssetsListCountOfRechargeAndWithdraw.text = String.format(resources.getString(R.string.kVcDWHelpGatewayAssets, _data_array.size.toString()))
 
         //  draw assets list
-        val layout_parent = layout_gateway_list_of_recharge_and_withdraw
+        val layout_parent = _binding.layoutGatewayListOfRechargeAndWithdraw
         layout_parent.removeAllViews()
         if (_data_array.size > 0) {
             for (item in _data_array) {

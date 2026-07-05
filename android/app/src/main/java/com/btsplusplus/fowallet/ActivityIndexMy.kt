@@ -1,13 +1,16 @@
 package com.btsplusplus.fowallet
 
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.widget.TextView
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityIndexMyBinding
 import com.btsplusplus.fowallet.utils.VcUtils
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_index_my.*
 
 class ActivityIndexMy : BtsppActivity() {
+
+    private lateinit var _binding: ActivityIndexMyBinding
 
     /**
      * 重载 - 返回键按下
@@ -23,7 +26,9 @@ class ActivityIndexMy : BtsppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setAutoLayoutContentView(R.layout.activity_index_my, navigationBarColor = R.color.theme01_tabBarColor)
+
+        _binding = ActivityIndexMyBinding.inflate(layoutInflater)
+        setAutoLayoutContentView(_binding.root, navigationBarColor = R.color.theme01_tabBarColor)
 
         //  设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
@@ -32,22 +37,22 @@ class ActivityIndexMy : BtsppActivity() {
         setBottomNavigationStyle(0)
 
         //  设置图标颜色
-        val iconcolor = resources.getColor(R.color.theme01_textColorNormal)
-        img_icon_avatar.setColorFilter(iconcolor)
-        img_icon_assets.setColorFilter(iconcolor)
-        img_icon_orders.setColorFilter(iconcolor)
-        img_icon_wallet.setColorFilter(iconcolor)
-        img_icon_proposal.setColorFilter(iconcolor)
-        img_icon_asset_mgr.setColorFilter(iconcolor)
-        img_icon_faq.setColorFilter(iconcolor)
-        img_icon_share_link.setColorFilter(iconcolor)
-        img_icon_setting.setColorFilter(iconcolor)
+        val iconcolor = ContextCompat.getColor(applicationContext,R.color.theme01_textColorNormal)
+        _binding.imgIconAvatar.setColorFilter(iconcolor)
+        _binding.imgIconAssets.setColorFilter(iconcolor)
+        _binding.imgIconOrders.setColorFilter(iconcolor)
+        _binding.imgIconWallet.setColorFilter(iconcolor)
+        _binding.imgIconProposal.setColorFilter(iconcolor)
+        _binding.imgIconAssetMgr.setColorFilter(iconcolor)
+        _binding.imgIconFaq.setColorFilter(iconcolor)
+        _binding.imgIconShareLink.setColorFilter(iconcolor)
+        _binding.imgIconSetting.setColorFilter(iconcolor)
 
         //  刷新UI
         _refreshFaceUI()
 
         //  需要判断登录
-        layout_my_top.setOnClickListener {
+        _binding.layoutMyTop.setOnClickListener {
             if (WalletManager.sharedWalletManager().isWalletExist()) {
                 goTo(ActivityAccountInfo::class.java, true)
             } else {
@@ -56,10 +61,10 @@ class ActivityIndexMy : BtsppActivity() {
         }
 
         //  事件 - 分享链接
-        layout_share_link.setOnClickListener { _onShareLinkClicked() }
+        _binding.layoutShareLink.setOnClickListener { _onShareLinkClicked() }
 
         //  事件 - 设置
-        layout_setting_from_my.setOnClickListener {
+        _binding.layoutSettingFromMy.setOnClickListener {
             val saveCurrLangCode = LangManager.sharedLangManager().currLangCode
             val result_promise = Promise()
             goTo(ActivitySetting::class.java, true, args = jsonObjectfromKVS("result_promise", result_promise))
@@ -71,42 +76,42 @@ class ActivityIndexMy : BtsppActivity() {
         }
 
         //  [待处提案] 需要判断登录
-        layout_my_proposal_waiting_for_process.setOnClickListener {
+        _binding.layoutMyProposalWaitingForProcess.setOnClickListener {
             guardWalletExist {
                 goTo(ActivityProposal::class.java, true)
             }
         }
 
         //  资产管理
-        layout_asset_mgr.setOnClickListener {
+        _binding.layoutAssetMgr.setOnClickListener {
             guardWalletExist {
                 goTo(ActivityAssetManager::class.java, true)
             }
         }
 
         //  [钱包 & 多签]
-        layout_my_wallet_and_muti_signature.setOnClickListener {
+        _binding.layoutMyWalletAndMutiSignature.setOnClickListener {
             guardWalletExistWithWalletMode(resources.getString(R.string.kLblTipsPasswordModeNotSupportMultiSign)) {
                 goTo(ActivityWalletManager::class.java, true)
             }
         }
 
         //  我的资产：需要钱包存在
-        layout_my_assets_of_my.setOnClickListener {
+        _binding.layoutMyAssetsOfMy.setOnClickListener {
             guardWalletExist {
                 viewUserAssets(WalletManager.sharedWalletManager().getWalletAccountName()!!)
             }
         }
 
         //  订单管理：需要钱包存在
-        layout_order_management_of_my.setOnClickListener {
+        _binding.layoutOrderManagementOfMy.setOnClickListener {
             guardWalletExist {
                 val uid = WalletManager.sharedWalletManager().getWalletAccountInfo()!!.getJSONObject("account").getString("id")
                 viewUserLimitOrders(uid, null)
             }
         }
 
-        layout_faq_from_my.setOnClickListener {
+        _binding.layoutFaqFromMy.setOnClickListener {
             goToWebView(resources.getString(R.string.faq), "https://btspp.io/qa.html")
         }
     }

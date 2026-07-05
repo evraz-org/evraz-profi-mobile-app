@@ -8,13 +8,13 @@ import android.widget.TextView
 import bitshares.*
 import com.btsplusplus.fowallet.ViewEx.EditTextEx
 import com.btsplusplus.fowallet.ViewEx.TextViewEx
+import com.btsplusplus.fowallet.databinding.ActivityGatewayWithdrawBinding
 import com.btsplusplus.fowallet.gateway.GatewayAssetItemData
 import com.btsplusplus.fowallet.gateway.GatewayBase
 import com.btsplusplus.fowallet.utils.ModelUtils
 import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_gateway_withdraw.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.math.BigDecimal
@@ -42,9 +42,13 @@ class ActivityGatewayWithdraw : BtsppActivity() {
 
     private var _withdrawBalanceDirty = false                   //  是否发生提币，如果提币了返回列表需要刷新。
 
+    private lateinit var _binding: ActivityGatewayWithdrawBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_gateway_withdraw)
+
+        _binding = ActivityGatewayWithdrawBinding.inflate(layoutInflater)
+        setContentView(_binding.root)
 
         //  获取参数 / get params
         _withdraw_args = btspp_args_as_JSONObject()
@@ -104,7 +108,7 @@ class ActivityGatewayWithdraw : BtsppActivity() {
         setFullScreen()
 
         //  back
-        layout_back_from_gateway_withdraw.setOnClickListener { onBackClicked(null) }
+        _binding.layoutBackFromGatewayWithdraw.setOnClickListener { onBackClicked(null) }
 
         //  init ui
         initAllUI()
@@ -163,7 +167,7 @@ class ActivityGatewayWithdraw : BtsppActivity() {
 
         //  无效输入
         if (str_amount == "") {
-            available_of_withdraw_page.let {
+            _binding.availableOfWithdrawPage.let {
                 it.text = "${_n_available.toPlainString()} $symbol"
                 it.setTextColor(resources.getColor(R.color.theme01_textColorMain))
             }
@@ -176,12 +180,12 @@ class ActivityGatewayWithdraw : BtsppActivity() {
         //  _n_available < n_amount
         if (_n_available < n_amount) {
             //  数量不足
-            available_of_withdraw_page.let {
+            _binding.availableOfWithdrawPage.let {
                 it.text = "${_n_available.toPlainString()} $symbol(${R.string.kVcTransferSubmitTipAmountNotEnough.xmlstring(this)})"
                 it.setTextColor(resources.getColor(R.color.theme01_tintColor))
             }
         } else {
-            available_of_withdraw_page.let {
+            _binding.availableOfWithdrawPage.let {
                 it.text = "${_n_available.toPlainString()} $symbol"
                 it.setTextColor(resources.getColor(R.color.theme01_textColorMain))
             }
@@ -197,7 +201,7 @@ class ActivityGatewayWithdraw : BtsppActivity() {
         findViewById<TextView>(R.id.id_title).text = _withdraw_args.getString("title")
 
         //  可用
-        available_of_withdraw_page.text = "${_n_available.toPlainString()} ${(_withdrawAssetItem.get("kAppExt") as GatewayAssetItemData).symbol}"
+        _binding.availableOfWithdrawPage.text = "${_n_available.toPlainString()} ${(_withdrawAssetItem.get("kAppExt") as GatewayAssetItemData).symbol}"
 
         //  备注信息
         var label_memo_title: TextViewEx? = null
@@ -239,14 +243,14 @@ class ActivityGatewayWithdraw : BtsppActivity() {
         tv_button_withdraw.setOnClickListener { gotoWithdrawCore() }
 
         //  点击全部
-        total_text_of_withdraw_page.setOnClickListener {
+        _binding.totalTextOfWithdrawPage.setOnClickListener {
             _tf_amount_watcher?.let {
                 it.set_new_text(_n_available.toPlainString())
                 onAmountChanged(it.get_tf_string())
             }
         }
 
-        layout_parent_of_withdraw_page.apply {
+        _binding.layoutParentOfWithdrawPage.apply {
             _tf_memo?.let {
                 addView(label_memo_title!!)
                 addView(it)
@@ -259,13 +263,13 @@ class ActivityGatewayWithdraw : BtsppActivity() {
     }
 
     private fun gotoWithdrawCore() {
-        val str_address = tf_withdraw_address.text.toString()
+        val str_address = _binding.tfWithdrawAddress.text.toString()
         if (str_address == "" || str_address.isEmpty()) {
             showToast(R.string.kVcDWSubmitTipsAddressCannotBeEmpty.xmlstring(this))
             return
         }
 
-        val str_amount = tf_withdraw_amount.text.toString()
+        val str_amount = _binding.tfWithdrawAmount.text.toString()
         var str_memo = ""
         if (_bSupportMemo && _tf_memo != null) {
             str_memo = _tf_memo!!.text.toString()
@@ -372,7 +376,7 @@ class ActivityGatewayWithdraw : BtsppActivity() {
         _refreshWithdrawAssetBalance(full_account_data)
 
         //  刷新UI
-        available_of_withdraw_page.let {
+        _binding.availableOfWithdrawPage.let {
             it.text = "${_n_available.toPlainString()} ${(_withdrawAssetItem.get("kAppExt") as GatewayAssetItemData).symbol}"
             it.setTextColor(resources.getColor(R.color.theme01_textColorMain))
         }

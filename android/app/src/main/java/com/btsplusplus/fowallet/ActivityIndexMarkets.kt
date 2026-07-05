@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityIndexMarketsBinding
 import com.fowallet.walletcore.bts.ChainObjectManager
-import kotlinx.android.synthetic.main.activity_index_markets.*
 import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
@@ -15,6 +15,8 @@ class ActivityIndexMarkets : BtsppActivity() {
     private val fragmens: ArrayList<Fragment> = ArrayList()
 
     private var _tickerRefreshTimer: Timer? = null
+
+    private lateinit var _binding: ActivityIndexMarketsBinding
 
     /**
      * 重载 - 返回键按下
@@ -45,7 +47,9 @@ class ActivityIndexMarkets : BtsppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setAutoLayoutContentView(R.layout.activity_index_markets, navigationBarColor = R.color.theme01_tabBarColor)
+
+        _binding = ActivityIndexMarketsBinding.inflate(layoutInflater)
+        setAutoLayoutContentView(_binding.root, navigationBarColor = R.color.theme01_tabBarColor)
 
         //  动态初始化TabItem
         findViewById<TabLayout>(R.id.tablayout).let { tab ->
@@ -145,7 +149,7 @@ class ActivityIndexMarkets : BtsppActivity() {
 //    }
 
     private fun setAddBtnListener() {
-        button_add.setOnClickListener { goTo(ActivityTradingPairMgr::class.java, true) }
+       _binding.buttonAdd.setOnClickListener { goTo(ActivityTradingPairMgr::class.java, true) }
     }
 
     private fun setFragments() {
