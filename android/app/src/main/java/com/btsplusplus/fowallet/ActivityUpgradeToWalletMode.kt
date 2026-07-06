@@ -1,16 +1,15 @@
 package com.btsplusplus.fowallet
 
 import android.os.Bundle
-import android.widget.EditText
-import android.widget.TextView
 import bitshares.*
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_upgrade_to_wallet_mode.*
+import com.btsplusplus.fowallet.databinding.ActivityUpgradeToWalletModeBinding
 import org.json.JSONObject
 
 class ActivityUpgradeToWalletMode : BtsppActivity() {
 
     private lateinit var _result_promise: Promise
+    private lateinit var _binding: ActivityUpgradeToWalletModeBinding
 
     /**
      * 系统返回键
@@ -21,7 +20,8 @@ class ActivityUpgradeToWalletMode : BtsppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_upgrade_to_wallet_mode)
+        _binding = ActivityUpgradeToWalletModeBinding.inflate(layoutInflater)
+        setContentView(_binding.root)
 
         setFullScreen()
 
@@ -33,15 +33,15 @@ class ActivityUpgradeToWalletMode : BtsppActivity() {
         refreshHeaderInfoUI()
 
         //  返回按钮事件
-        layout_back_from_page_of_upgrade_to_wallet_model.setOnClickListener { onBackClicked(false) }
+        _binding.layoutBackFromPageOfUpgradeToWalletModel.setOnClickListener { onBackClicked(false) }
 
         //  帮助按钮事件
-        tip_link_wallet_password_of_upgrade_to_wallet.setOnClickListener {
+        _binding.tipLinkWalletPasswordOfUpgradeToWallet.setOnClickListener {
             UtilsAlert.showMessageBox(this, R.string.kLoginRegTipsWalletPasswordFormat.xmlstring(this))
         }
 
         //  创建钱包按钮事件
-        button_create_wallet_of_upgrade_to_wallet.setOnClickListener { onSubmitClicked() }
+        _binding.buttonCreateWalletOfUpgradeToWallet.setOnClickListener { onSubmitClicked() }
     }
 
     override fun onBackClicked(success: Any?) {
@@ -50,8 +50,8 @@ class ActivityUpgradeToWalletMode : BtsppActivity() {
     }
 
     private fun onSubmitClicked() {
-        val password = findViewById<EditText>(R.id.tf_password_of_upgrade_to_wallet).text.toString()
-        val wallet_password = findViewById<EditText>(R.id.tf_wallet_password_of_upgrade_to_wallet).text.toString()
+        val password = _binding.tfPasswordOfUpgradeToWallet.text.toString()
+        val wallet_password = _binding.tfWalletPasswordOfUpgradeToWallet.text.toString()
 
         if (password.isEmpty()) {
             showToast(resources.getString(R.string.kMsgPasswordCannotBeNull))
@@ -103,8 +103,8 @@ class ActivityUpgradeToWalletMode : BtsppActivity() {
     private fun refreshHeaderInfoUI() {
         val full_account_data = WalletManager.sharedWalletManager().getWalletAccountInfo()!!
         val account_data = full_account_data.getJSONObject("account")
-        findViewById<TextView>(R.id.account_name_of_upgrade_to_wallet).text = account_data.getString("name")
-        findViewById<TextView>(R.id.account_id_of_upgrade_to_wallet).text = "#${account_data.getString("id").split(".").last()}"
+        _binding.accountNameOfUpgradeToWallet.text = account_data.getString("name")
+        _binding.accountIdOfUpgradeToWallet.text = "#${account_data.getString("id").split(".").last()}"
     }
 
 }

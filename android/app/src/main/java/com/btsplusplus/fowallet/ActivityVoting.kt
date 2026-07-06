@@ -5,17 +5,19 @@ import android.support.v4.app.Fragment
 import android.view.View
 import android.widget.TextView
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityVotingBinding
 import com.btsplusplus.fowallet.utils.VcUtils
 import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_voting.*
 import org.json.JSONArray
 import org.json.JSONObject
 
 class ActivityVoting : BtsppActivity() {
 
     private val fragmens: ArrayList<Fragment> = ArrayList()
+
+    private lateinit var _binding: ActivityVotingBinding
 
     private var _const_proxy_to_self: String = ""
     private var _bHaveProxy: Boolean = false
@@ -24,7 +26,8 @@ class ActivityVoting : BtsppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setAutoLayoutContentView(R.layout.activity_voting)
+        _binding = ActivityVotingBinding.inflate(layoutInflater)
+        setContentView(_binding.root)
 
         // 设置 fragment
         setFragments()
@@ -35,7 +38,7 @@ class ActivityVoting : BtsppActivity() {
         setFullScreen()
 
         //  返回键
-        layout_back_from_voting.setOnClickListener { finish() }
+        _binding.layoutBackFromVoting.setOnClickListener { finish() }
 
         //  部分数据初始化
         _const_proxy_to_self = ChainObjectManager.sharedChainObjectManager().getDefaultParameters().getString("voting_proxy_to_self")
@@ -46,26 +49,26 @@ class ActivityVoting : BtsppActivity() {
         _currVoteInfos = null
 
         //  是否显示当前代理
-        current_proxy_of_voting.visibility = View.INVISIBLE
-        current_proxy_name_of_voting.text = ""
-        current_proxy_help_of_voting.setOnClickListener {
+        _binding.currentProxyOfVoting.visibility = View.INVISIBLE
+        _binding.currentProxyNameOfVoting.text = ""
+        _binding.currentProxyHelpOfVoting.setOnClickListener {
             VcUtils.gotoQaView(this, "qa_proxy", resources.getString(R.string.kVcVoteWhatIsProxy))
         }
 
         //  底部按钮
-        val submit_btn = findViewById<TextView>(R.id.btn_submit_of_voting)
+        val submit_btn = _binding.btnSubmitOfVoting
         submit_btn.isClickable = true
 
-        _btn_proxy = findViewById(R.id.btn_set_delegate_of_voting)
+        _btn_proxy = _binding.btnSetDelegateOfVoting
         _btn_proxy!!.isClickable = true
         if (_bHaveProxy) {
             _btn_proxy!!.text = resources.getString(R.string.kVcVoteBtnCancelProxy)
         }
 
         //  事件
-        btn_submit_of_voting.setOnClickListener { onSubmitVoteClicked() }
-        btn_set_delegate_of_voting.setOnClickListener { onProxyClicked() }
-        button_refresh_of_voting.setOnClickListener { onResetClicked() }
+        _binding.btnSubmitOfVoting.setOnClickListener { onSubmitVoteClicked() }
+        _binding.btnSetDelegateOfVoting.setOnClickListener { onProxyClicked() }
+        _binding.buttonRefreshOfVoting.setOnClickListener { onResetClicked() }
 
         //  查询：全局信息（活跃见证人等）、理事会信息、见证人信息、预算项目信息、预算对象信息、投票信息。
         val conn = GrapheneConnectionManager.sharedGrapheneConnectionManager().any_connection()
@@ -380,13 +383,13 @@ class ActivityVoting : BtsppActivity() {
         if (_bHaveProxy) {
             _btn_proxy!!.text = "取消代理"
             //  显示当前代理
-            current_proxy_of_voting.visibility = View.VISIBLE
+            _binding.currentProxyOfVoting.visibility = View.VISIBLE
             val curr_proxy_name = vote_info.getJSONObject("voting_account").getString("name")
-            current_proxy_name_of_voting.text = "${resources.getString(R.string.kVcVoteTipCurrentProxy)} ${curr_proxy_name}"
+            _binding.currentProxyNameOfVoting.text = "${resources.getString(R.string.kVcVoteTipCurrentProxy)} ${curr_proxy_name}"
         } else {
             _btn_proxy!!.text = resources.getString(R.string.kVcVoteBtnSetupProxy)
             //  隐藏当前代理
-            current_proxy_of_voting.visibility = View.GONE
+            _binding.currentProxyOfVoting.visibility = View.GONE
         }
     }
 

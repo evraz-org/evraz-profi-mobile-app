@@ -10,17 +10,19 @@ import android.widget.TextView
 import bitshares.*
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_wallet_manager.*
+import com.btsplusplus.fowallet.databinding.ActivityWalletManagerBinding
 import org.json.JSONArray
 import org.json.JSONObject
 
 class ActivityWalletManager : BtsppActivity() {
 
     private var _data_array = mutableListOf<JSONObject>()
+    private lateinit var _binding: ActivityWalletManagerBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_wallet_manager)
+        _binding = ActivityWalletManagerBinding.inflate(layoutInflater)
+        setContentView(_binding.root)
 
         setFullScreen()
 
@@ -28,13 +30,13 @@ class ActivityWalletManager : BtsppActivity() {
         queryAllAccountInfos()
 
         //  返回按钮
-        layout_back_from_page_of_wallet_and_muti_sign.setOnClickListener { finish() }
+        _binding.layoutBackFromPageOfWalletAndMutiSign.setOnClickListener { finish() }
 
         // 导入更多钱包点击
-        button_import_more_account_of_wallet_and_muti_sign.setOnClickListener { onImportMoreAccountClicked() }
+        _binding.buttonImportMoreAccountOfWalletAndMutiSign.setOnClickListener { onImportMoreAccountClicked() }
 
         // 备份钱包点击
-        button_backup_wallet_of_wallet_and_muti_sign.setOnClickListener { backupWallet() }
+        _binding.buttonBackupWalletOfWalletAndMutiSign.setOnClickListener { backupWallet() }
     }
 
     /**
@@ -293,7 +295,7 @@ class ActivityWalletManager : BtsppActivity() {
      *  描绘所有账号的列表。
      */
     private fun refreshDrawAllCell(data_array: MutableList<JSONObject>) {
-        val layout_parent = layout_account_list_of_wallet_and_muti_sign
+        val layout_parent = _binding.layoutAccountListOfWalletAndMutiSign
         layout_parent.removeAllViews()
         data_array.forEach {
             drawCell(layout_parent, it)

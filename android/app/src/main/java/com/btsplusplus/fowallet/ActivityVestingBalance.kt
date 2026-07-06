@@ -1,19 +1,18 @@
 package com.btsplusplus.fowallet
 
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_vesting_balance.*
-
-//  TODO: pending
+import com.btsplusplus.fowallet.databinding.ActivityVestingBalanceBinding
 
 class ActivityVestingBalance : BtsppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_vesting_balance)
+        val binding = ActivityVestingBalanceBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         setFullScreen()
 
-        layout_back_from_page_of_unfreeze_amount.setOnClickListener {
+        binding.layoutBackFromPageOfUnfreezeAmount.setOnClickListener {
             finish()
         }
     }

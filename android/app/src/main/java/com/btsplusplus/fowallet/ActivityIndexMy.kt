@@ -34,7 +34,7 @@ class ActivityIndexMy : BtsppActivity() {
         setFullScreen()
 
         //  设置底部导航栏样式
-        setBottomNavigationStyle(0)
+        setBottomNavigationStyle(_binding.bottomNav, 0)
 
         //  设置图标颜色
         val iconcolor = ContextCompat.getColor(applicationContext,R.color.theme01_textColorNormal)
@@ -130,19 +130,19 @@ class ActivityIndexMy : BtsppActivity() {
             //  第一行
             val name = account.getString("name")
             if (walletMgr.isLocked()) {
-                findViewById<TextView>(R.id.label_txt_accoutname).text = "${name}(${R.string.kLblAccountLocked.xmlstring(this)})"
+                _binding.labelTxtAccoutname.text = "${name}(${R.string.kLblAccountLocked.xmlstring(this)})"
             } else {
-                findViewById<TextView>(R.id.label_txt_accoutname).text = "${name}(${R.string.kLblAccountUnlocked.xmlstring(this)})"
+                _binding.labelTxtAccoutname.text = "${name}(${R.string.kLblAccountUnlocked.xmlstring(this)})"
             }
             //  第二行
             if (Utils.isBitsharesVIP(account.optString("membership_expiration_date", ""))) {
-                findViewById<TextView>(R.id.label_txt_status).text = "${R.string.kLblMembership.xmlstring(this)}${R.string.kLblMembershipLifetime.xmlstring(this)}"
+                _binding.labelTxtStatus.text = "${R.string.kLblMembership.xmlstring(this)}${R.string.kLblMembershipLifetime.xmlstring(this)}"
             } else {
-                findViewById<TextView>(R.id.label_txt_status).text = "${R.string.kLblMembership.xmlstring(this)}${R.string.kLblMembershipBasic.xmlstring(this)}"
+                _binding.labelTxtStatus.text = "${R.string.kLblMembership.xmlstring(this)}${R.string.kLblMembershipBasic.xmlstring(this)}"
             }
         } else {
-            findViewById<TextView>(R.id.label_txt_accoutname).text = R.string.kAccountManagement.xmlstring(this)
-            findViewById<TextView>(R.id.label_txt_status).text = R.string.tip_click_to_login.xmlstring(this)
+            _binding.labelTxtAccoutname.text = R.string.kAccountManagement.xmlstring(this)
+            _binding.labelTxtStatus.text = R.string.tip_click_to_login.xmlstring(this)
         }
     }
 }

@@ -4,25 +4,26 @@ import android.os.Bundle
 import bitshares.AsyncTaskManager
 import bitshares.OtcManager
 import bitshares.isTrue
-import kotlinx.android.synthetic.main.activity_otc_user_auth.*
+import com.btsplusplus.fowallet.databinding.ActivityOtcUserAuthBinding
 import org.json.JSONObject
 
 class ActivityOtcUserAuth : BtsppActivity() {
 
     private var _smsTimerId = 0
+    private lateinit var _binding: ActivityOtcUserAuthBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //  设置自动布局
-        setAutoLayoutContentView(R.layout.activity_otc_user_auth)
+        _binding = ActivityOtcUserAuthBinding.inflate(layoutInflater)
+        setAutoLayoutContentView(_binding.root)
         //  设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
         //  事件
-        layout_back_from_otc_user_auth.setOnClickListener { finish() }
-        btn_getsmscode.setOnClickListener { sendPhoneAuthCode() }
-        btn_submit.setOnClickListener { onSubmit() }
+        _binding.layoutBackFromOtcUserAuth.setOnClickListener { finish() }
+        _binding.btnGetsmscode.setOnClickListener { sendPhoneAuthCode() }
+        _binding.btnSubmit.setOnClickListener { onSubmit() }
     }
 
     override fun onDestroy() {
@@ -37,7 +38,7 @@ class ActivityOtcUserAuth : BtsppActivity() {
             return
         }
 
-        val str_phone = tf_phone.text.toString()
+        val str_phone = _binding.tfPhone.text.toString()
         if (!OtcManager.checkIsValidPhoneNumber(str_phone)) {
             showToast(resources.getString(R.string.kOtcRmSubmitTipsInputPhoneNo))
             return
@@ -53,14 +54,14 @@ class ActivityOtcUserAuth : BtsppActivity() {
             //  提示
             showToast(resources.getString(R.string.kOtcAuthInfoTailerTipsGetSmscodeOK))
             //  重发倒计时
-            btn_getsmscode.isClickable = false
-            btn_getsmscode.text = String.format(resources.getString(R.string.kOtcAuthInfoTailerBtnGetSmscodeWaitNsec), max_countdown_secs.toString())
+            _binding.btnGetsmscode.isClickable = false
+            _binding.btnGetsmscode.text = String.format(resources.getString(R.string.kOtcAuthInfoTailerBtnGetSmscodeWaitNsec), max_countdown_secs.toString())
             _smsTimerId = AsyncTaskManager.sharedAsyncTaskManager().scheduledSecondsTimer(max_countdown_secs) { left_ts ->
                 if (left_ts > 0) {
-                    btn_getsmscode.text = String.format(resources.getString(R.string.kOtcAuthInfoTailerBtnGetSmscodeWaitNsec), left_ts.toString())
+                    _binding.btnGetsmscode.text = String.format(resources.getString(R.string.kOtcAuthInfoTailerBtnGetSmscodeWaitNsec), left_ts.toString())
                 } else {
-                    btn_getsmscode.isClickable = true
-                    btn_getsmscode.text = resources.getString(R.string.kOtcAuthInfoTailerBtnGetSmscode)
+                    _binding.btnGetsmscode.isClickable = true
+                    _binding.btnGetsmscode.text = resources.getString(R.string.kOtcAuthInfoTailerBtnGetSmscode)
                 }
             }
             return@then null
@@ -84,10 +85,10 @@ class ActivityOtcUserAuth : BtsppActivity() {
             return
         }
 
-        val str_realname = tf_realname.text.toString()
-        val str_idcard_no = tf_idcard_no.text.toString()
-        val str_phone = tf_phone.text.toString()
-        val str_smscode = tf_smscode.text.toString()
+        val str_realname = _binding.tfRealname.text.toString()
+        val str_idcard_no = _binding.tfIdcardNo.text.toString()
+        val str_phone = _binding.tfPhone.text.toString()
+        val str_smscode = _binding.tfSmscode.text.toString()
 
         if (str_realname.isEmpty()) {
             showToast(resources.getString(R.string.kOtcRmSubmitTipsInputRealname))

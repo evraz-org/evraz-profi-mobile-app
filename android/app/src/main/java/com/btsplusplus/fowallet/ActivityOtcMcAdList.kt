@@ -7,7 +7,7 @@ import android.support.v4.view.ViewPager
 import android.view.animation.OvershootInterpolator
 import bitshares.OtcManager
 import bitshares.Promise
-import kotlinx.android.synthetic.main.activity_otc_mc_ad_list.*
+import com.btsplusplus.fowallet.databinding.ActivityOtcMcAdListBinding
 import org.json.JSONObject
 import java.lang.reflect.Field
 
@@ -23,10 +23,13 @@ class ActivityOtcMcAdList : BtsppActivity() {
 
     private var _curr_select_index = 0
 
+    private lateinit var _binding: ActivityOtcMcAdListBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        _binding = ActivityOtcMcAdListBinding.inflate(layoutInflater)
         // 设置自动布局
-        setAutoLayoutContentView(R.layout.activity_otc_mc_ad_list)
+        setAutoLayoutContentView(_binding.root)
         // 设置全屏
         setFullScreen()
 
@@ -37,8 +40,8 @@ class ActivityOtcMcAdList : BtsppActivity() {
         _user_type = args.get("user_type") as OtcManager.EOtcUserType
 
         // 设置 tablelayout 和 view_pager
-        tablayout = tablayout_of_otc_ad_list
-        view_pager = view_pager_of_otc_ad_list
+        tablayout = _binding.tablayoutOfOtcAdList
+        view_pager = _binding.viewPagerOfOtcAdList
 
         // 添加 fargments
         setFragments()
@@ -50,8 +53,8 @@ class ActivityOtcMcAdList : BtsppActivity() {
         setTabListener()
 
         //  事件
-        button_add_ad_from_otc_mc_ad_list.setOnClickListener { onAddNewAdClicked() }
-        layout_back_from_otc_mc_ad_list.setOnClickListener { finish() }
+        _binding.buttonAddAdFromOtcMcAdList.setOnClickListener { onAddNewAdClicked() }
+        _binding.layoutBackFromOtcMcAdList.setOnClickListener { finish() }
 
         //  查询
         queryCurrentPageAdList()

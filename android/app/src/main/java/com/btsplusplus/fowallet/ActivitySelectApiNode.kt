@@ -9,7 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import bitshares.*
 import com.fowallet.walletcore.bts.ChainObjectManager
-import kotlinx.android.synthetic.main.activity_select_api_node.*
+import com.btsplusplus.fowallet.databinding.ActivitySelectApiNodeBinding
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -21,13 +21,15 @@ class ActivitySelectApiNode : BtsppActivity() {
 
     private var _data_array = JSONArray()
     private var _user_config = JSONObject()
+    private lateinit var _binding: ActivitySelectApiNodeBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        _binding = ActivitySelectApiNodeBinding.inflate(layoutInflater)
         // 设置自动布局
-        setAutoLayoutContentView(R.layout.activity_select_api_node)
-        // 设置全屏(隐藏状态栏和虚拟导航栏)
+        setAutoLayoutContentView(_binding.root)
+        // 设置全屏(隐藏状态栏 and 虚拟导航栏)
         setFullScreen()
 
         //  初始化数据
@@ -46,13 +48,13 @@ class ActivitySelectApiNode : BtsppActivity() {
         _refresh_ui(_data_array)
 
         //  事件 - 新增
-        button_add_from_select_api_node.setOnClickListener { _onAddNewNodeClicked() }
+        _binding.buttonAddFromSelectApiNode.setOnClickListener { _onAddNewNodeClicked() }
 
         //  事件 - 随机选择
-        layout_random.setOnClickListener { _onNodeCellClicked(null, img_icon_arrow_random) }
+        _binding.layoutRandom.setOnClickListener { _onNodeCellClicked(null, _binding.imgIconArrowRandom) }
 
         //  事件 - 返回
-        layout_back_from_select_api_node.setOnClickListener { finish() }
+        _binding.layoutBackFromSelectApiNode.setOnClickListener { finish() }
     }
 
     private fun _onNodeCellClicked(node: JSONObject?, arrow_view: ImageView) {
@@ -234,14 +236,14 @@ class ActivitySelectApiNode : BtsppActivity() {
         //  描绘随机选择后面的箭头
         val current_node = _user_config.optJSONObject(kSettingKey_ApiNode_Current)
         if (current_node != null) {
-            img_icon_arrow_random.visibility = View.INVISIBLE
+            _binding.imgIconArrowRandom.visibility = View.INVISIBLE
         } else {
-            img_icon_arrow_random.visibility = View.VISIBLE
+            _binding.imgIconArrowRandom.visibility = View.VISIBLE
         }
 
         //  描绘所有节点
         val ctx = this
-        layout_nodelist_container.let { container ->
+        _binding.layoutNodelistContainer.let { container ->
             //  清空
             container.removeAllViews()
             container.addView(ViewLine(this, 0.dp, 10.dp))

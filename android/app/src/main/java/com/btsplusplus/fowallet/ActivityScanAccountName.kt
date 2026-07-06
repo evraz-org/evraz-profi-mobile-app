@@ -6,9 +6,9 @@ import android.widget.TextView
 import bitshares.Promise
 import bitshares.jsonObjectfromKVS
 import bitshares.xmlstring
+import com.btsplusplus.fowallet.databinding.ActivityScanAccountNameBinding
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_scan_account_name.*
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -16,8 +16,9 @@ class ActivityScanAccountName : BtsppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val binding = ActivityScanAccountNameBinding.inflate(layoutInflater)
         // 设置自动布局
-        setAutoLayoutContentView(R.layout.activity_scan_account_name)
+        setAutoLayoutContentView(binding.root)
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
@@ -33,7 +34,7 @@ class ActivityScanAccountName : BtsppActivity() {
         tv_account_name.text = account.getString("name")
 
         //  返回
-        layout_back_from_scan_result_account_name.setOnClickListener { finish() }
+        binding.layoutBackFromScanResultAccountName.setOnClickListener { finish() }
 
         //  转账
         btn_transfer.setOnClickListener { onGotoTransfer(account) }

@@ -5,19 +5,21 @@ import android.view.View
 import android.widget.Switch
 import bitshares.OtcManager
 import bitshares.isTrue
-import kotlinx.android.synthetic.main.activity_otc_mc_payment_methods.*
+import com.btsplusplus.fowallet.databinding.ActivityOtcMcPaymentMethodsBinding
 import org.json.JSONObject
 
 class ActivityOtcMcPaymentMethods : BtsppActivity() {
 
+    private lateinit var _binding: ActivityOtcMcPaymentMethodsBinding
     private var _aliPaySwitch = false
     private var _bankcardPaySwitch = false
     private var _disableSwitchEvent = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        _binding = ActivityOtcMcPaymentMethodsBinding.inflate(layoutInflater)
         //  设置自动布局
-        setAutoLayoutContentView(R.layout.activity_otc_mc_payment_methods)
+        setAutoLayoutContentView(_binding.root)
         //  设置全屏
         setFullScreen()
 
@@ -27,10 +29,10 @@ class ActivityOtcMcPaymentMethods : BtsppActivity() {
         //val merchant_detail = args.getJSONObject("merchant_detail")
 
         //  支付宝
-        switch_alipay_from_otc_payment_methods.visibility = View.INVISIBLE
-        switch_bankcard_from_otc_payment_methods.visibility = View.INVISIBLE
+        _binding.switchAlipayFromOtcPaymentMethods.visibility = View.INVISIBLE
+        _binding.switchBankcardFromOtcPaymentMethods.visibility = View.INVISIBLE
 
-        layout_back_from_otc_mc_payment_methods.setOnClickListener { finish() }
+        _binding.layoutBackFromOtcMcPaymentMethods.setOnClickListener { finish() }
 
         //  查询
         queryPaymentMethods()
@@ -44,16 +46,16 @@ class ActivityOtcMcPaymentMethods : BtsppActivity() {
         }
 
         //  支付宝
-        switch_alipay_from_otc_payment_methods.visibility = View.VISIBLE
-        switch_alipay_from_otc_payment_methods.isChecked = _aliPaySwitch
-        switch_alipay_from_otc_payment_methods.setOnCheckedChangeListener { switch, selected: Boolean ->
+        _binding.switchAlipayFromOtcPaymentMethods.visibility = View.VISIBLE
+        _binding.switchAlipayFromOtcPaymentMethods.isChecked = _aliPaySwitch
+        _binding.switchAlipayFromOtcPaymentMethods.setOnCheckedChangeListener { switch, selected: Boolean ->
             onSwitchClicked(OtcManager.EOtcPaymentMethodType.eopmt_alipay, selected, switch as Switch)
         }
 
         //  银行卡
-        switch_bankcard_from_otc_payment_methods.visibility = View.VISIBLE
-        switch_bankcard_from_otc_payment_methods.isChecked = _bankcardPaySwitch
-        switch_bankcard_from_otc_payment_methods.setOnCheckedChangeListener { switch, selected: Boolean ->
+        _binding.switchBankcardFromOtcPaymentMethods.visibility = View.VISIBLE
+        _binding.switchBankcardFromOtcPaymentMethods.isChecked = _bankcardPaySwitch
+        _binding.switchBankcardFromOtcPaymentMethods.setOnCheckedChangeListener { switch, selected: Boolean ->
             onSwitchClicked(OtcManager.EOtcPaymentMethodType.eopmt_bankcard, selected, switch as Switch)
         }
     }

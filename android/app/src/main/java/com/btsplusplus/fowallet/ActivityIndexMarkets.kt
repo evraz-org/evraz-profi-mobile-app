@@ -52,7 +52,7 @@ class ActivityIndexMarkets : BtsppActivity() {
         setAutoLayoutContentView(_binding.root, navigationBarColor = R.color.theme01_tabBarColor)
 
         //  动态初始化TabItem
-        findViewById<TabLayout>(R.id.tablayout).let { tab ->
+        _binding.tablayout.let { tab ->
             tab.addTab(tab.newTab().apply {
                 text = resources.getString(R.string.kLabelMarketFavorites)
             })
@@ -74,7 +74,7 @@ class ActivityIndexMarkets : BtsppActivity() {
         setFullScreen()
 
         // 设置底部导航栏样式
-        setBottomNavigationStyle(1)
+        setBottomNavigationStyle(_binding.bottomNav, 1)
     }
 
     /**
@@ -162,4 +162,3 @@ class ActivityIndexMarkets : BtsppActivity() {
     }
 
 }
-

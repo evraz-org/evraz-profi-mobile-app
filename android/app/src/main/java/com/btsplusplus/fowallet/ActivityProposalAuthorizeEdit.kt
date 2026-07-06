@@ -7,8 +7,8 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityProposalAuthorizeEditBinding
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_proposal_authorize_edit.*
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.math.max
@@ -26,9 +26,13 @@ class ActivityProposalAuthorizeEdit : BtsppActivity() {
     private lateinit var _permissionAccountArray: JSONArray
     private var _title = ""
 
+    private lateinit var _binding: ActivityProposalAuthorizeEditBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_proposal_authorize_edit)
+
+        _binding = ActivityProposalAuthorizeEditBinding.inflate(layoutInflater)
+        setContentView(_binding.root)
 
         //  设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
@@ -53,10 +57,10 @@ class ActivityProposalAuthorizeEdit : BtsppActivity() {
         }
 
         //  事件 - 返回、授权账号、支付账号、提交
-        layout_back_from_agree_proposal.setOnClickListener { onBackClicked(null) }
-        cell_target_account.setOnClickListener { onTargetAccountCellClicked() }
-        cell_fee_paying_account.setOnClickListener { onFeePayingAccountCellClicked() }
-        btn_submmit_core.setOnClickListener { onSubmitClicked() }
+        _binding.layoutBackFromAgreeProposal.setOnClickListener { onBackClicked(null) }
+        _binding.cellTargetAccount.setOnClickListener { onTargetAccountCellClicked() }
+        _binding.cellFeePayingAccount.setOnClickListener { onFeePayingAccountCellClicked() }
+        _binding.btnSubmmitCore.setOnClickListener { onSubmitClicked() }
 
         //  刷新UI
         refreshUI()
@@ -165,7 +169,7 @@ class ActivityProposalAuthorizeEdit : BtsppActivity() {
     }
 
     private fun refreshAuthorizedProgressAndListUI() {
-        val layout_parent = layout_list_of_agress_propsal
+        val layout_parent = _binding.layoutListOfAgressPropsal
         layout_parent.removeAllViews()
 
         //  第三行 授权进度 xxx   状态 xxx

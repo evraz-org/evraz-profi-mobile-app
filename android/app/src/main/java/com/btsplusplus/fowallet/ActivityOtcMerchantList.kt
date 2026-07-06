@@ -9,13 +9,14 @@ import android.widget.TextView
 import bitshares.OtcManager
 import bitshares.forin
 import bitshares.toList
-import kotlinx.android.synthetic.main.activity_otc_merchant_list.*
+import com.btsplusplus.fowallet.databinding.ActivityOtcMerchantListBinding
 import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.reflect.Field
 
 class ActivityOtcMerchantList : BtsppActivity() {
 
+    private lateinit var _binding: ActivityOtcMerchantListBinding
     private val fragmens: ArrayList<Fragment> = ArrayList()
     private var tablayout: TabLayout? = null
     private var view_pager: ViewPager? = null
@@ -29,8 +30,9 @@ class ActivityOtcMerchantList : BtsppActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        _binding = ActivityOtcMerchantListBinding.inflate(layoutInflater)
         //  设置自动布局
-        setAutoLayoutContentView(R.layout.activity_otc_merchant_list)
+        setAutoLayoutContentView(_binding.root)
         //  设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
@@ -45,8 +47,8 @@ class ActivityOtcMerchantList : BtsppActivity() {
         }
 
         //  设置 tablelayout 和 view_pager
-        tablayout = tablayout_of_merchant_list
-        view_pager = view_pager_of_merchant_list
+        tablayout = _binding.tablayoutOfMerchantList
+        view_pager = _binding.viewPagerOfMerchantList
 
         // 添加 fargments
         setFragments()
@@ -58,7 +60,7 @@ class ActivityOtcMerchantList : BtsppActivity() {
         setTabListener()
 
         //  根据 资产修改标题
-        tv_asset_title = findViewById<TextView>(R.id.title)
+        tv_asset_title = _binding.title
         tv_asset_title.text = "$_curr_asset_name${resources.getString(R.string.kOtcAdTitleBase)}"
         tv_asset_title.setOnClickListener {
             onSelectAssetClicked()
@@ -66,11 +68,11 @@ class ActivityOtcMerchantList : BtsppActivity() {
 
         //  初始化图标颜色
         val iconcolor = resources.getColor(R.color.theme01_textColorNormal)
-        img_icon_otc_orders.setColorFilter(iconcolor)
-        img_icon_otc_auth.setColorFilter(iconcolor)
+        _binding.imgIconOtcOrders.setColorFilter(iconcolor)
+        _binding.imgIconOtcAuth.setColorFilter(iconcolor)
 
         //  事件 - 选择订单列表
-        img_icon_otc_orders.setOnClickListener {
+        _binding.imgIconOtcOrders.setOnClickListener {
             OtcManager.sharedOtcManager().guardUserIdVerified(this, resources.getString(R.string.kOtcAdAskIdVerifyTips01)) { auth_info, _ ->
                 goTo(ActivityOtcOrderList::class.java, true, args = JSONObject().apply {
                     put("auth_info", auth_info)
@@ -80,7 +82,7 @@ class ActivityOtcMerchantList : BtsppActivity() {
         }
 
         //  事件 - 认证和收款方式
-        img_icon_otc_auth.setOnClickListener {
+        _binding.imgIconOtcAuth.setOnClickListener {
             val asset_list = JSONArray().apply {
                 put(resources.getString(R.string.kOtcAdUserActionItemAuthInfo))
                 put(resources.getString(R.string.kOtcAdUserActionItemReceiveMethod))
@@ -106,7 +108,7 @@ class ActivityOtcMerchantList : BtsppActivity() {
         }
 
         //  返回
-        layout_back_from_merchant_list.setOnClickListener { finish() }
+        _binding.layoutBackFromMerchantList.setOnClickListener { finish() }
 
         //  查询
         queryCurrentPageAdList()

@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import bitshares.*
-import kotlinx.android.synthetic.main.activity_otc_mc_ad_update.*
+import com.btsplusplus.fowallet.databinding.ActivityOtcMcAdUpdateBinding
 import org.json.JSONArray
 import org.json.JSONObject
 import java.math.BigDecimal
@@ -23,6 +23,8 @@ class ActivityOtcMcAdUpdate : BtsppActivity() {
 
     private var _assetList: JSONArray? = null //  服务器可用的资产列表
     private var _currBalance: BigDecimal? = null
+
+    private lateinit var _binding: ActivityOtcMcAdUpdateBinding
 
     private fun onDeleteAdClicked() {
         UtilsAlert.showMessageConfirm(this, resources.getString(R.string.kWarmTips), resources.getString(R.string.kOtcMcAdTipAskDelete)).then {
@@ -52,7 +54,8 @@ class ActivityOtcMcAdUpdate : BtsppActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // 设置自动布局
-        setAutoLayoutContentView(R.layout.activity_otc_mc_ad_update)
+        _binding = ActivityOtcMcAdUpdateBinding.inflate(layoutInflater)
+        setContentView(_binding.root)
         // 设置全屏
         setFullScreen()
 
@@ -77,19 +80,19 @@ class ActivityOtcMcAdUpdate : BtsppActivity() {
 
         //  UI - 导航栏标题
         if (_bNewAd) {
-            btn_delete_ad.visibility = View.INVISIBLE
-            findViewById<TextView>(R.id.title).text = resources.getString(R.string.kVcTitleOtcMcCreateAd)
-            btn_submit_01.text = resources.getString(R.string.kOtcMcAdBtnPublishAd)
-            btn_submit_02.text = resources.getString(R.string.kOtcMcAdBtnSaveAd)
+            _binding.btnDeleteAd.visibility = View.INVISIBLE
+            _binding.title.text = resources.getString(R.string.kVcTitleOtcMcCreateAd)
+            _binding.btnSubmit01.text = resources.getString(R.string.kOtcMcAdBtnPublishAd)
+            _binding.btnSubmit02.text = resources.getString(R.string.kOtcMcAdBtnSaveAd)
         } else {
-            findViewById<TextView>(R.id.title).text = resources.getString(R.string.kVcTitleOtcMcUpdateAd)
-            btn_delete_ad.setOnClickListener { onDeleteAdClicked() }
+            _binding.title.text = resources.getString(R.string.kVcTitleOtcMcUpdateAd)
+            _binding.btnDeleteAd.setOnClickListener { onDeleteAdClicked() }
             if (_ad_infos.getInt("status") == OtcManager.EOtcAdStatus.eoads_online.value) {
-                btn_submit_01.text = resources.getString(R.string.kOtcMcAdBtnUpdateAd)
+                _binding.btnSubmit01.text = resources.getString(R.string.kOtcMcAdBtnUpdateAd)
             } else {
-                btn_submit_01.text = resources.getString(R.string.kOtcMcAdBtnUpdateAndUpAd)
+                _binding.btnSubmit01.text = resources.getString(R.string.kOtcMcAdBtnUpdateAndUpAd)
             }
-            btn_submit_02.visibility = View.GONE
+            _binding.btnSubmit02.visibility = View.GONE
         }
 
         //  描绘数据
@@ -98,21 +101,21 @@ class ActivityOtcMcAdUpdate : BtsppActivity() {
         //  各种事件
         if (_bNewAd) {
             //  新建时才可点击
-            layout_ad_type.setOnClickListener { onAdTypeClicked() }
-            layout_asset_symbol.setOnClickListener { onAssetSymbolClicked() }
+            _binding.layoutAdType.setOnClickListener { onAdTypeClicked() }
+            _binding.layoutAssetSymbol.setOnClickListener { onAssetSymbolClicked() }
         }
-        layout_your_price.setOnClickListener { onYourPriceClicked() }
-        layout_trade_amount.setOnClickListener { onTradeAmountClicked() }
-        layout_min_limit.setOnClickListener { onMinLimitClicked() }
-        layout_max_limit.setOnClickListener { onMaxLimitClicked() }
-        layout_remark.setOnClickListener { onRemarkClicked() }
+        _binding.layoutYourPrice.setOnClickListener { onYourPriceClicked() }
+        _binding.layoutTradeAmount.setOnClickListener { onTradeAmountClicked() }
+        _binding.layoutMinLimit.setOnClickListener { onMinLimitClicked() }
+        _binding.layoutMaxLimit.setOnClickListener { onMaxLimitClicked() }
+        _binding.layoutRemark.setOnClickListener { onRemarkClicked() }
         if (_bNewAd) {
-            btn_submit_01.setOnClickListener { onSubmitClicked(false) }
-            btn_submit_02.setOnClickListener { onSubmitClicked(true) }
+            _binding.btnSubmit01.setOnClickListener { onSubmitClicked(false) }
+            _binding.btnSubmit02.setOnClickListener { onSubmitClicked(true) }
         } else {
-            btn_submit_01.setOnClickListener { onSubmitClicked(false) }
+            _binding.btnSubmit01.setOnClickListener { onSubmitClicked(false) }
         }
-        layout_back_from_otc_mc_ad_update.setOnClickListener { finish() }
+        _binding.layoutBackFromOtcMcAdUpdate.setOnClickListener { finish() }
 
         //  查询数据
         queryAssetsAndBalance()
@@ -178,91 +181,91 @@ class ActivityOtcMcAdUpdate : BtsppActivity() {
         //  1、广告类型
         if (_ad_infos.has("adType")) {
             if (_ad_infos.getInt("adType") == OtcManager.EOtcAdType.eoadt_merchant_buy.value) {
-                tv_ad_type.text = resources.getString(R.string.kOtcMcAdEditCellAdTypeValueBuy)
-                tv_ad_type.setTextColor(resources.getColor(R.color.theme01_buyColor))
+                _binding.tvAdType.text = resources.getString(R.string.kOtcMcAdEditCellAdTypeValueBuy)
+                _binding.tvAdType.setTextColor(resources.getColor(R.color.theme01_buyColor))
             } else {
-                tv_ad_type.text = resources.getString(R.string.kOtcMcAdEditCellAdTypeValueSell)
-                tv_ad_type.setTextColor(resources.getColor(R.color.theme01_sellColor))
+                _binding.tvAdType.text = resources.getString(R.string.kOtcMcAdEditCellAdTypeValueSell)
+                _binding.tvAdType.setTextColor(resources.getColor(R.color.theme01_sellColor))
             }
         } else {
-            tv_ad_type.text = resources.getString(R.string.kOtcMcAdEditCellAdTypeValueSelectPlaceholder)
-            tv_ad_type.setTextColor(resources.getColor(R.color.theme01_textColorGray))
+            _binding.tvAdType.text = resources.getString(R.string.kOtcMcAdEditCellAdTypeValueSelectPlaceholder)
+            _binding.tvAdType.setTextColor(resources.getColor(R.color.theme01_textColorGray))
         }
         //  新建的时候才可以编辑该字段
         if (!_bNewAd) {
-            img_icon_arrow_ad_type.visibility = View.GONE
+            _binding.imgIconArrowAdType.visibility = View.GONE
         } else {
-            img_icon_arrow_ad_type.visibility = View.VISIBLE
+            _binding.imgIconArrowAdType.visibility = View.VISIBLE
         }
 
         //  2、数字资产
         if (_ad_infos.has("assetSymbol")) {
-            tv_asset_symbol.text = _ad_infos.getString("assetSymbol")
+            _binding.tvAssetSymbol.text = _ad_infos.getString("assetSymbol")
             if (_bNewAd) {
-                tv_asset_symbol.setTextColor(resources.getColor(R.color.theme01_textColorMain))
+                _binding.tvAssetSymbol.setTextColor(resources.getColor(R.color.theme01_textColorMain))
             } else {
-                tv_asset_symbol.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
+                _binding.tvAssetSymbol.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
             }
         } else {
-            tv_asset_symbol.text = resources.getString(R.string.kOtcMcAdEditCellAssetValueSelectPlaceholder)
-            tv_asset_symbol.setTextColor(resources.getColor(R.color.theme01_textColorGray))
+            _binding.tvAssetSymbol.text = resources.getString(R.string.kOtcMcAdEditCellAssetValueSelectPlaceholder)
+            _binding.tvAssetSymbol.setTextColor(resources.getColor(R.color.theme01_textColorGray))
         }
         //  新建的时候才可以编辑该字段
         if (!_bNewAd) {
-            img_icon_arrow_asset_symbol.visibility = View.GONE
+            _binding.imgIconArrowAssetSymbol.visibility = View.GONE
         } else {
-            img_icon_arrow_asset_symbol.visibility = View.VISIBLE
+            _binding.imgIconArrowAssetSymbol.visibility = View.VISIBLE
         }
 
         //  3、法币 TODO:3.0 暂时固定一种
-        tv_fiat_name.text = resources.getString(R.string.kOtcMcAdEditCellFiatAssetValueCN)
+        _binding.tvFiatName.text = resources.getString(R.string.kOtcMcAdEditCellFiatAssetValueCN)
         if (_bNewAd) {
-            tv_fiat_name.setTextColor(resources.getColor(R.color.theme01_textColorMain))
+            _binding.tvFiatName.setTextColor(resources.getColor(R.color.theme01_textColorMain))
         } else {
-            tv_fiat_name.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
+            _binding.tvFiatName.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
         }
 
         //  4、定价方式
         when (_ad_infos.getInt("priceType")) {
             OtcManager.EOtcPriceType.eopt_price_fixed.value -> {
-                tv_price_type.text = resources.getString(R.string.kOtcMcAdEditCellPriceTypeFixed)
+                _binding.tvPriceType.text = resources.getString(R.string.kOtcMcAdEditCellPriceTypeFixed)
             }
             else -> {
                 assert(false)
-                tv_price_type.text = String.format(resources.getString(R.string.kOtcMcAdEditCellPriceTypeUnknown), _ad_infos.getString("priceType"))
+                _binding.tvPriceType.text = String.format(resources.getString(R.string.kOtcMcAdEditCellPriceTypeUnknown), _ad_infos.getString("priceType"))
             }
         }
         if (_bNewAd) {
-            tv_price_type.setTextColor(resources.getColor(R.color.theme01_textColorMain))
+            _binding.tvPriceType.setTextColor(resources.getColor(R.color.theme01_textColorMain))
         } else {
-            tv_price_type.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
+            _binding.tvPriceType.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
         }
 
         //  5、您的价格
-        _drawUI_cell_value(tv_your_price, _ad_infos.optString("price", null),
+        _drawUI_cell_value(_binding.tvYourPrice, _ad_infos.optString("price", null),
                 resources.getString(R.string.kOtcMcAdEditCellYourPlacePlaceholder), true)
 
         //  6、交易数量
-        _drawUI_cell_value(tv_trade_amount, _ad_infos.optString("quantity", null),
+        _drawUI_cell_value(_binding.tvTradeAmount, _ad_infos.optString("quantity", null),
                 resources.getString(R.string.kOtcMcAdEditCellAmountPlaceholder), false)
 
         //  7、可用
         if (_currBalance != null) {
-            tv_balance.text = "${_currBalance!!.toPlainString()} ${_ad_infos.getString("assetSymbol")}"
+            _binding.tvBalance.text = "${_currBalance!!.toPlainString()} ${_ad_infos.getString("assetSymbol")}"
         } else {
-            tv_balance.text = "--"
+            _binding.tvBalance.text = "--"
         }
 
         //  8、最小限额
-        _drawUI_cell_value(tv_min_limit, _ad_infos.optString("lowestLimit", null),
+        _drawUI_cell_value(_binding.tvMinLimit, _ad_infos.optString("lowestLimit", null),
                 resources.getString(R.string.kOtcMcAdEditCellMinLimitPlaceholder), true)
 
         //  9、最大限额
-        _drawUI_cell_value(tv_max_limit, _ad_infos.optString("maxLimit", null),
+        _drawUI_cell_value(_binding.tvMaxLimit, _ad_infos.optString("maxLimit", null),
                 resources.getString(R.string.kOtcMcAdEditCellMaxLimitPlaceholder), true)
 
         //  10、交易说明
-        _drawUI_cell_value(tv_remark, _ad_infos.optString("remark", null),
+        _drawUI_cell_value(_binding.tvRemark, _ad_infos.optString("remark", null),
                 resources.getString(R.string.kOtcMcAdEditCellRemarkPlaceholder), false)
     }
 

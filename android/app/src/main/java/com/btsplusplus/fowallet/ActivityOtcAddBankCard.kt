@@ -3,16 +3,19 @@ package com.btsplusplus.fowallet
 import android.os.Bundle
 import bitshares.OtcManager
 import bitshares.Promise
-import kotlinx.android.synthetic.main.activity_otc_add_bank_card.*
 import org.json.JSONObject
+import com.btsplusplus.fowallet.databinding.ActivityOtcAddBankCardBinding
 
 class ActivityOtcAddBankCard : BtsppActivity() {
+
+    private lateinit var _binding: ActivityOtcAddBankCardBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        _binding = ActivityOtcAddBankCardBinding.inflate(layoutInflater)
         //  设置自动布局
-        setAutoLayoutContentView(R.layout.activity_otc_add_bank_card)
+        setAutoLayoutContentView(_binding.root)
         //  设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
@@ -24,19 +27,19 @@ class ActivityOtcAddBankCard : BtsppActivity() {
         //  初始化值
         val name = auth_info.optString("realName")
         if (name.isNotEmpty()) {
-            tf_realname.setText(name)
-            tf_realname.isEnabled = false
+            _binding.tfRealname.setText(name)
+            _binding.tfRealname.isEnabled = false
         }
 
         //  事件
-        layout_back_from_otc_add_bankcard.setOnClickListener { finish() }
-        tv_submit_from_otc_add_bankcard.setOnClickListener { onSubmit(result_promise) }
+        _binding.layoutBackFromOtcAddBankcard.setOnClickListener { finish() }
+        _binding.tvSubmitFromOtcAddBankcard.setOnClickListener { onSubmit(result_promise) }
     }
 
     private fun onSubmit(result_promise: Promise?) {
-        val str_realname = tf_realname.text.toString()
-        val str_bankno = tf_bankcard_no.text.toString()
-        val str_phoneno = tf_reserve_phone.text.toString()
+        val str_realname = _binding.tfRealname.text.toString()
+        val str_bankno = _binding.tfBankcardNo.text.toString()
+        val str_phoneno = _binding.tfReservePhone.text.toString()
 
         if (str_realname == "") {
             showToast(resources.getString(R.string.kOtcRmSubmitTipsInputRealname))

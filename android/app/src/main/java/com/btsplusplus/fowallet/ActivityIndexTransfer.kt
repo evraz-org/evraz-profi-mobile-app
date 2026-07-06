@@ -35,7 +35,7 @@ class ActivityIndexTransfer : BtsppActivity() {
         _binding = ActivityIndexTransferBinding.inflate(layoutInflater)
         setAutoLayoutContentView(_binding.root)
         setFullScreen()
-        setBottomNavigationStyle(2)
+        setBottomNavigationStyle(_binding.bottomNav,2)
 
         //  获取参数
         val args = btspp_args_as_JSONObject()

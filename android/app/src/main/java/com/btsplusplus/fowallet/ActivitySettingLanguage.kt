@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import bitshares.*
-import kotlinx.android.synthetic.main.activity_setting_language.*
+import com.btsplusplus.fowallet.databinding.ActivitySettingLanguageBinding
 import org.json.JSONObject
 
 class ActivitySettingLanguage : BtsppActivity() {
@@ -17,7 +17,9 @@ class ActivitySettingLanguage : BtsppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setAutoLayoutContentView(R.layout.activity_setting_language)
+
+        val binding = ActivitySettingLanguageBinding.inflate(layoutInflater)
+        setAutoLayoutContentView(binding.root)
 
         //  获取参数 / get params
         val args = btspp_args_as_JSONObject()
@@ -62,8 +64,8 @@ class ActivitySettingLanguage : BtsppActivity() {
 
             val line = ViewUtils.createLine(this)
 
-            layout_wrap_of_language.addView(layout)
-            layout_wrap_of_language.addView(line)
+            binding.layoutWrapOfLanguage.addView(layout)
+            binding.layoutWrapOfLanguage.addView(line)
 
             //  点击事件
             layout.tag = langCode
@@ -81,7 +83,7 @@ class ActivitySettingLanguage : BtsppActivity() {
             }
         }
 
-        layout_back_from_setting_language.setOnClickListener { onBackClicked(false) }
+        binding.layoutBackFromSettingLanguage.setOnClickListener { onBackClicked(false) }
     }
 
     override fun onBackClicked(result: Any?) {

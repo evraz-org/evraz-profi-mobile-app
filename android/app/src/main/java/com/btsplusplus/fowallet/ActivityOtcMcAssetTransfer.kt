@@ -1,12 +1,11 @@
 package com.btsplusplus.fowallet
 
 import android.os.Bundle
-import android.widget.EditText
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityOtcMcAssetTransferBinding
 import com.btsplusplus.fowallet.utils.ModelUtils
 import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_otc_mc_asset_transfer.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.math.BigDecimal
@@ -25,11 +24,13 @@ class ActivityOtcMcAssetTransfer : BtsppActivity() {
     private var _nCurrBalance = BigDecimal.ZERO
 
     private lateinit var _tf_amount_watcher: UtilsDigitTextWatcher
+    private lateinit var _binding: ActivityOtcMcAssetTransferBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        _binding = ActivityOtcMcAssetTransferBinding.inflate(layoutInflater)
         // 设置自动布局
-        setAutoLayoutContentView(R.layout.activity_otc_mc_asset_transfer)
+        setAutoLayoutContentView(_binding.root)
         // 设置全屏
         setFullScreen()
 
@@ -58,20 +59,20 @@ class ActivityOtcMcAssetTransfer : BtsppActivity() {
 
         //  设置图标颜色
         val iconcolor = resources.getColor(R.color.theme01_textColorMain)
-        img_icon_otc_switch.setColorFilter(iconcolor)
+        _binding.imgIconOtcSwitch.setColorFilter(iconcolor)
 
         //  描绘
         _drawUI_all()
 
         //  事件
-        img_icon_otc_switch.setOnClickListener { onSwitchClicked() }
-        layout_curr_asset_symbol.setOnClickListener { onSelectAsset() }
-        btn_all.setOnClickListener { onTransferAllClicked() }
-        btn_submit.setOnClickListener { onTransferClicked() }
-        layout_back_from_otc_mc_asset_transfer.setOnClickListener { finish() }
+        _binding.imgIconOtcSwitch.setOnClickListener { onSwitchClicked() }
+        _binding.layoutCurrAssetSymbol.setOnClickListener { onSelectAsset() }
+        _binding.btnAll.setOnClickListener { onTransferAllClicked() }
+        _binding.btnSubmit.setOnClickListener { onTransferClicked() }
+        _binding.layoutBackFromOtcMcAssetTransfer.setOnClickListener { finish() }
 
         //  输入框
-        val tf = findViewById<EditText>(R.id.tf_amount)
+        val tf = _binding.tfAmount
         _tf_amount_watcher = UtilsDigitTextWatcher().set_tf(tf).set_precision(_curr_merchant_asset.getInt("kExtPrecision"))
         tf.addTextChangedListener(_tf_amount_watcher)
         _tf_amount_watcher.on_value_changed(::onAmountChanged)
@@ -140,49 +141,48 @@ class ActivityOtcMcAssetTransfer : BtsppActivity() {
 
     private fun _drawUI_switchCell() {
         if (_argsFromTo.getBoolean("bFromIsMerchant")) {
-            tv_from_title.text = resources.getString(R.string.kOtcMcAssetTransferFromToMerchantAccount)
-            tv_to_title.text = resources.getString(R.string.kOtcMcAssetTransferFromToUserAccount)
+            _binding.tvFromTitle.text = resources.getString(R.string.kOtcMcAssetTransferFromToMerchantAccount)
+            _binding.tvToTitle.text = resources.getString(R.string.kOtcMcAssetTransferFromToUserAccount)
         } else {
-            tv_from_title.text = resources.getString(R.string.kOtcMcAssetTransferFromToUserAccount)
-            tv_to_title.text = resources.getString(R.string.kOtcMcAssetTransferFromToMerchantAccount)
+            _binding.tvFromTitle.text = resources.getString(R.string.kOtcMcAssetTransferFromToUserAccount)
+            _binding.tvToTitle.text = resources.getString(R.string.kOtcMcAssetTransferFromToMerchantAccount)
         }
-        tv_from_value.text = _argsFromTo.getString("from")
-        tv_to_value.text = _argsFromTo.getString("to")
+        _binding.tvFromValue.text = _argsFromTo.getString("from")
+        _binding.tvToValue.text = _argsFromTo.getString("to")
     }
 
     private fun _drawUI_assetSymbol() {
-        tv_curr_asset_symbol.text = _curr_merchant_asset.getString("assetSymbol")
-        tv_tailer_asset_symbol.text = _curr_merchant_asset.getString("assetSymbol")
+        _binding.tvCurrAssetSymbol.text = _curr_merchant_asset.getString("assetSymbol")
+        _binding.tvTailerAssetSymbol.text = _curr_merchant_asset.getString("assetSymbol")
     }
 
     private fun _drawUI_balance(not_enough: Boolean) {
         val symbol = _curr_merchant_asset.getString("assetSymbol")
         if (not_enough) {
-            tv_curr_balance.text = "${resources.getString(R.string.kOtcMcAssetCellAvailable)} ${_nCurrBalance.toPlainString()} $symbol(${resources.getString(R.string.kOtcMcAssetTransferBalanceNotEnough)})"
-            tv_curr_balance.setTextColor(resources.getColor(R.color.theme01_tintColor))
+            _binding.tvCurrBalance.text = "${resources.getString(R.string.kOtcMcAssetCellAvailable)} ${_nCurrBalance.toPlainString()} $symbol(${resources.getString(R.string.kOtcMcAssetTransferBalanceNotEnough)})"
+            _binding.tvCurrBalance.setTextColor(resources.getColor(R.color.theme01_tintColor))
         } else {
-            tv_curr_balance.text = "${resources.getString(R.string.kOtcMcAssetCellAvailable)} ${_nCurrBalance.toPlainString()} $symbol"
-            tv_curr_balance.setTextColor(resources.getColor(R.color.theme01_textColorMain))
+            _binding.tvCurrBalance.text = "${resources.getString(R.string.kOtcMcAssetCellAvailable)} ${_nCurrBalance.toPlainString()} $symbol"
+            _binding.tvCurrBalance.setTextColor(resources.getColor(R.color.theme01_textColorMain))
         }
     }
 
     private fun _drawUI_tips() {
         if (_argsFromTo.getBoolean("bFromIsMerchant")) {
-            tv_tips.text = resources.getString(R.string.kOtcMcAssetCellTipsTransferOut)
+            _binding.tvTips.text = resources.getString(R.string.kOtcMcAssetCellTipsTransferOut)
         } else {
-            tv_tips.text = resources.getString(R.string.kOtcMcAssetCellTipsTransferIn)
+            _binding.tvTips.text = resources.getString(R.string.kOtcMcAssetCellTipsTransferIn)
         }
     }
 
     private fun onTransferAllClicked() {
-        val tf = findViewById<EditText>(R.id.tf_amount)
-        tf.setText(_nCurrBalance.toPlainString())
-        tf.setSelection(tf.text.toString().length)
+        _binding.tfAmount.setText(_nCurrBalance.toPlainString())
+        _binding.tfAmount.setSelection(_binding.tfAmount.text.toString().length)
         //  onAmountChanged 会自动触发
     }
 
     private fun onTransferClicked() {
-        val n_amount = Utils.auxGetStringDecimalNumberValue(tf_amount.text.toString())
+        val n_amount = Utils.auxGetStringDecimalNumberValue(_binding.tfAmount.text.toString())
         if (n_amount <= BigDecimal.ZERO) {
             showToast(resources.getString(R.string.kOtcMcAssetSubmitTipPleaseInputAmount))
             return

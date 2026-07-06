@@ -9,6 +9,7 @@ import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -17,11 +18,11 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Scroller
 import android.widget.Toast
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.BottomNavBinding
 import com.btsplusplus.fowallet.kline.TradingPair
 import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.bottom_nav.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.reflect.Field
@@ -38,34 +39,34 @@ fun AppCompatActivity.setFullScreen() {
     window.navigationBarColor = Color.TRANSPARENT
 }
 
-fun AppCompatActivity.setBottomNavigationStyle(position: Int) {
-    val color: Int = resources.getColor(R.color.theme01_textColorMain)
+fun AppCompatActivity.setBottomNavigationStyle(binding: BottomNavBinding, position: Int) {
+    val color: Int = ContextCompat.getColor(applicationContext,R.color.theme01_textColorMain)
     when (position) {
         0 -> {
-            bottom_nav_text_view_my.setTextColor(color)
-            bottom_nav_image_view_my.setColorFilter(color)
+            binding.bottomNavTextViewMy.setTextColor(color)
+            binding.bottomNavImageViewMy.setColorFilter(color)
         }
         1 -> {
-            bottom_nav_text_view_markets.setTextColor(color)
-            bottom_nav_image_view_markets.setColorFilter(color)
+            binding.bottomNavTextViewMarkets.setTextColor(color)
+            binding.bottomNavImageViewMarkets.setColorFilter(color)
         }
         2 -> {
-            bottom_nav_text_view_transfer.setTextColor(color)
-            bottom_nav_image_view_transfer.setColorFilter(color)
+            binding.bottomNavTextViewTransfer.setTextColor(color)
+            binding.bottomNavImageViewTransfer.setColorFilter(color)
         }
         3 -> {
-            bottom_nav_text_view_gateways.setTextColor(color)
-            bottom_nav_image_view_gateways.setColorFilter(color)
+            binding.bottomNavTextViewGateways.setTextColor(color)
+            binding.bottomNavImageViewGateways.setColorFilter(color)
         }
         4 -> {
-            bottom_nav_text_view_services.setTextColor(color)
-            bottom_nav_image_view_services.setColorFilter(color)
+            binding.bottomNavTextViewServices.setTextColor(color)
+            binding.bottomNavImageViewServices.setColorFilter(color)
         }
     }
     //  TODO:7.0 每次点击都重新生成一个，后面考虑用 singleTop，结合 onNewIntent重用。
     if (BuildConfig.kAppModuleEnableTabMarket) {
-        bottom_nav_markets_frame.visibility = View.VISIBLE
-        bottom_nav_markets_frame.setOnClickListener {
+        binding.bottomNavMarketsFrame.visibility = View.VISIBLE
+        binding.bottomNavMarketsFrame.setOnClickListener {
             val top = BtsppApp.getInstance().getTopActivity()
             if (top == null || top !is ActivityIndexMarkets) {
                 goTo(ActivityIndexMarkets::class.java)
@@ -73,11 +74,11 @@ fun AppCompatActivity.setBottomNavigationStyle(position: Int) {
             }
         }
     } else {
-        bottom_nav_markets_frame.visibility = View.GONE
+        binding.bottomNavMarketsFrame.visibility = View.GONE
     }
     if (BuildConfig.kAppModuleEnableGateway) {
-        bottom_nav_markets_frame.visibility = View.VISIBLE
-        bottom_nav_gateways_frame.setOnClickListener {
+        binding.bottomNavMarketsFrame.visibility = View.VISIBLE
+        binding.bottomNavGatewaysFrame.setOnClickListener {
             val top = BtsppApp.getInstance().getTopActivity()
             if (top == null || top !is ActivityIndexDepositAndWithdraw) {
                 guardWalletExist {
@@ -87,9 +88,9 @@ fun AppCompatActivity.setBottomNavigationStyle(position: Int) {
             }
         }
     } else {
-        bottom_nav_gateways_frame.visibility = View.GONE
+        binding.bottomNavGatewaysFrame.visibility = View.GONE
     }
-    bottom_nav_transfer_frame.setOnClickListener {
+    binding.bottomNavTransferFrame.setOnClickListener {
         val top = BtsppApp.getInstance().getTopActivity()
         if (top == null || top !is ActivityIndexTransfer) {
             guardWalletExist {
@@ -111,14 +112,14 @@ fun AppCompatActivity.setBottomNavigationStyle(position: Int) {
             }
         }
     }
-    bottom_nav_services_frame.setOnClickListener {
+    binding.bottomNavServicesFrame.setOnClickListener {
         val top = BtsppApp.getInstance().getTopActivity()
         if (top == null || top !is ActivityIndexServices) {
             goTo(ActivityIndexServices::class.java)
             BtsppApp.getInstance().finishAllActivity()
         }
     }
-    bottom_nav_my_frame.setOnClickListener {
+    binding.bottomNavMyFrame.setOnClickListener {
         val top = BtsppApp.getInstance().getTopActivity()
         if (top == null || top !is ActivityIndexMy) {
             goTo(ActivityIndexMy::class.java)
@@ -127,20 +128,20 @@ fun AppCompatActivity.setBottomNavigationStyle(position: Int) {
     }
 }
 
-fun AppCompatActivity.clearBottomAllColor() {
-    val default_color: Int = resources.getColor(R.color.theme01_textColorGray)
+fun AppCompatActivity.clearBottomAllColor(binding: BottomNavBinding) {
+    val default_color: Int = ContextCompat.getColor(applicationContext,R.color.theme01_textColorGray)
     //  文字
-    bottom_nav_text_view_markets.setTextColor(default_color)
-    bottom_nav_text_view_gateways.setTextColor(default_color)
-    bottom_nav_text_view_services.setTextColor(default_color)
-    bottom_nav_text_view_transfer.setTextColor(default_color)
-    bottom_nav_text_view_my.setTextColor(default_color)
+    binding.bottomNavTextViewMarkets.setTextColor(default_color)
+    binding.bottomNavTextViewGateways.setTextColor(default_color)
+    binding.bottomNavTextViewServices.setTextColor(default_color)
+    binding.bottomNavTextViewTransfer.setTextColor(default_color)
+    binding.bottomNavTextViewMy.setTextColor(default_color)
     //  图片
-    bottom_nav_image_view_markets.setColorFilter(default_color)
-    bottom_nav_image_view_gateways.setColorFilter(default_color)
-    bottom_nav_image_view_services.setColorFilter(default_color)
-    bottom_nav_image_view_transfer.setColorFilter(default_color)
-    bottom_nav_image_view_my.setColorFilter(default_color)
+    binding.bottomNavImageViewMarkets.setColorFilter(default_color)
+    binding.bottomNavImageViewGateways.setColorFilter(default_color)
+    binding.bottomNavImageViewServices.setColorFilter(default_color)
+    binding.bottomNavImageViewTransfer.setColorFilter(default_color)
+    binding.bottomNavImageViewMy.setColorFilter(default_color)
 }
 
 fun android.app.Activity.alerShowMessageConfirm(title: String?, message: String): Promise {
@@ -161,7 +162,7 @@ fun android.app.Activity.viewUserLimitOrders(account_id: String, tradingPair: Tr
     val stop = "1.${EBitsharesObjectType.ebot_operation_history.value}.0"
     val start = "1.${EBitsharesObjectType.ebot_operation_history.value}.0"
     //  start - 从指定ID号往前查询（包含该ID号），如果指定ID为0，则从最新的历史记录往前查询。结果包含 start。
-    //  stop  - 指定停止查询ID号（结果不包含该ID），如果指定为0，则查询到最早的记录位置（or达到limit停止。）结果不包含该 stop ID。
+    //  stop  - 指定停止查询ID号（结果不包含该ID），如果指定ID为0，则查询到最早的记录位置（or达到limit停止。）结果不包含该 stop ID。
     val conn = GrapheneConnectionManager.sharedGrapheneConnectionManager().any_connection()
     val p2 = conn.async_exec_history("get_account_history", jsonArrayfrom(account_id, stop, 100, start))
 
@@ -359,7 +360,7 @@ fun android.app.Activity.showGrapheneError(error: Any?) {
                 //  "flags & white_list" - when account black or white list is not empty.
 
                 //  Transaction exceeds maximum transaction size. TODO:8.0 超过交易最大大小限制
-                //  TODO:fowallet 提案等手续费不足等情况显示
+                //  //  TODO:fowallet 提案等手续费不足等情况显示
             }
         } catch (e: Exception) {
         }
@@ -463,7 +464,9 @@ fun android.app.Activity.guardWalletUnlocked(checkActivePermission: Boolean, bod
             AppCacheManager.EWalletMode.kwmPasswordOnlyMode.value -> resources.getString(R.string.unlockTipsPleaseInputAccountPassword)
             //  交易密码
             AppCacheManager.EWalletMode.kwmPasswordWithWallet.value -> resources.getString(R.string.kLoginTipsPlaceholderTradePassword)
+            //  交易密码
             AppCacheManager.EWalletMode.kwmPrivateKeyWithWallet.value -> resources.getString(R.string.kLoginTipsPlaceholderTradePassword)
+            //  交易密码
             AppCacheManager.EWalletMode.kwmBrainKeyWithWallet.value -> resources.getString(R.string.kLoginTipsPlaceholderTradePassword)
             //  钱包密码
             AppCacheManager.EWalletMode.kwmFullWalletMode.value -> resources.getString(R.string.registerLoginPagePleaseInputWalletPws)
@@ -548,7 +551,7 @@ fun android.app.Activity.get_full_account_data_and_asset_hash(account_name_or_id
             list.put(balance!!.getString("asset_type"))
         }
         return@then ChainObjectManager.sharedChainObjectManager().queryAllAssetsInfo(list).then {
-            //  (void)asset_hash 省略，缓存到 ChainObjectManager 即可。
+            //  (void)asset_hash 省ложен, 缓存到 ChainObjectManager 即可。
             return@then full_account_data
         }
     }
@@ -666,9 +669,9 @@ fun android.app.Activity.adjustWindowSizeForNavigationBar(navigationBarColor: In
         contentView.layoutParams.height = size.y
         //  设置留出的导航栏区域背景
         if (navigationBarColor != null) {
-            contentView.rootView?.setBackgroundColor(resources.getColor(navigationBarColor))
+            contentView.rootView?.setBackgroundColor(ContextCompat.getColor(applicationContext,navigationBarColor))
         } else {
-            contentView.rootView?.setBackgroundColor(resources.getColor(R.color.theme01_appBackColor))
+            contentView.rootView?.setBackgroundColor(ContextCompat.getColor(applicationContext,R.color.theme01_appBackColor))
         }
     }
 }
@@ -690,7 +693,7 @@ class ViewPagerAdapter(fm: FragmentManager, _fragmets: ArrayList<Fragment>) : Fr
     }
 }
 
-class ViewPagerScroller(context: Context?, interpolator: OvershootInterpolator) : Scroller(context) {
+class ViewPagerScroller(context: Context?, interpolator: OvershootInterpolator) : Scroller(context, interpolator) {
 
     var mDuration: Int = 0
 
@@ -715,7 +718,7 @@ fun AppCompatActivity.setViewPager(default_select_index: Int, view_pager_id: Int
     f.isAccessible = true
     val vpc = ViewPagerScroller(_view_pager.context, OvershootInterpolator(0.6f))
     f.set(_view_pager, vpc)
-    vpc.duration = 700
+    vpc.setDuration(700)
 
     //  default selected
     val _tablayout = findViewById<TabLayout>(tablayout_id)

@@ -7,9 +7,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import bitshares.EBitsharesAccountPasswordLang
 import bitshares.LLAYOUT_WARP
+import com.btsplusplus.fowallet.databinding.ActivityNewAccountPasswordBinding
 import com.btsplusplus.fowallet.utils.kAppBlindAccountBrainKeyCheckSumPrefix
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_new_account_password.*
 import org.json.JSONObject
 
 /**
@@ -21,6 +21,7 @@ const val kNewPasswordSceneGenBlindAccountBrainKey = 2  //  生成隐私账号�
 
 class ActivityNewAccountPassword : BtsppActivity() {
 
+    private lateinit var _binding: ActivityNewAccountPasswordBinding
     private var _currPasswordLang = EBitsharesAccountPasswordLang.ebap_lang_zh
     private var _currPasswordWords = mutableListOf<String>()
     private var _new_account_name: String? = null
@@ -29,8 +30,9 @@ class ActivityNewAccountPassword : BtsppActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        _binding = ActivityNewAccountPasswordBinding.inflate(layoutInflater)
         // 设置自动布局
-        setAutoLayoutContentView(R.layout.activity_new_account_password)
+        setAutoLayoutContentView(_binding.root)
 
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
@@ -39,7 +41,7 @@ class ActivityNewAccountPassword : BtsppActivity() {
         val args = btspp_args_as_JSONObject()
         _scene = args.getInt("scene")
         _new_account_name = args.optString("args", null)
-        findViewById<TextView>(R.id.title).text = args.getString("title")
+        _binding.title.text = args.getString("title")
 
         //  初始化数据
         //  REMARK：根据当前语言决定默认密码语言。
@@ -54,16 +56,16 @@ class ActivityNewAccountPassword : BtsppActivity() {
         processGeneratePassword()
 
         //  UI - 提示信息
-        tv_tip_from_new_account_password.text = getCellTipsMessage()
+        _binding.tvTipFromNewAccountPassword.text = getCellTipsMessage()
 
         //  事件 - 切换语言
-        tv_toggle_password_lang.setOnClickListener { onTogglePasswordLang() }
+        _binding.tvTogglePasswordLang.setOnClickListener { onTogglePasswordLang() }
 
         //  事件 - 返回
-        layout_back_from_new_account_password.setOnClickListener { finish() }
+        _binding.layoutBackFromNewAccountPassword.setOnClickListener { finish() }
 
         //  事件 - 下一步
-        btn_next_from_new_account_password.setOnClickListener { onNextButtonClick() }
+        _binding.btnNextFromNewAccountPassword.setOnClickListener { onNextButtonClick() }
     }
 
     /**
@@ -97,8 +99,8 @@ class ActivityNewAccountPassword : BtsppActivity() {
     }
 
     private fun _draw_ui_new_password(new_words: MutableList<String>) {
-        lyt_new_password_line01.let { line01 ->
-            lyt_new_password_line02.let { line02 ->
+        _binding.lytNewPasswordLine01.let { line01 ->
+            _binding.lytNewPasswordLine02.let { line02 ->
                 line01.removeAllViews()
                 line02.removeAllViews()
 
@@ -152,10 +154,10 @@ class ActivityNewAccountPassword : BtsppActivity() {
         }
 
         //  刷新切换按钮
-        tv_toggle_password_lang.text = switchPasswordLangButtonString()
+        _binding.tvTogglePasswordLang.text = switchPasswordLangButtonString()
 
         //  刷新描述信息
-        tv_tip_from_new_account_password.text = getCellTipsMessage()
+        _binding.tvTipFromNewAccountPassword.text = getCellTipsMessage()
 
         //  重新生成密码
         processGeneratePassword()

@@ -11,13 +11,15 @@ import bitshares.*
 import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_process_proposal.*
+import com.btsplusplus.fowallet.databinding.ActivityProcessProposalBinding
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.math.max
 import kotlin.math.min
 
 class ActivityProposal : BtsppActivity() {
+
+    private lateinit var _binding: ActivityProcessProposalBinding
 
     private var _allDataArray = mutableListOf<JSONObject>()     //  所有提案
     private var _safeDataArray = mutableListOf<JSONObject>()    //  安全的提案列表（经过了安全等级筛选的）
@@ -27,13 +29,14 @@ class ActivityProposal : BtsppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_process_proposal)
+        _binding = ActivityProcessProposalBinding.inflate(layoutInflater)
+        setContentView(_binding.root)
 
         //  设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
         //  返回按钮
-        layout_back_from_process_proposal.setOnClickListener { finish() }
+        _binding.layoutBackFromProcessProposal.setOnClickListener { finish() }
 
         //  查询提案
         queryAllProposals()
@@ -440,16 +443,16 @@ class ActivityProposal : BtsppActivity() {
 
         if (_showSecTips) {
             _currSourceArrayRef = _safeDataArray
-            lyt_sectips.visibility = View.VISIBLE
-            lbl_sectips.text = String.format(resources.getString(R.string.kProposalTipsSecTipBannerMsg), (_allDataArray.size - _safeDataArray.size).toString())
-            lyt_sectips.setOnClickListener { onSecTipViewClicked() }
+            _binding.lytSectips.visibility = View.VISIBLE
+            _binding.lblSectips.text = String.format(resources.getString(R.string.kProposalTipsSecTipBannerMsg), (_allDataArray.size - _safeDataArray.size).toString())
+            _binding.lytSectips.setOnClickListener { onSecTipViewClicked() }
         } else {
             _currSourceArrayRef = _allDataArray
-            lyt_sectips.visibility = View.GONE
+            _binding.lytSectips.visibility = View.GONE
         }
 
         //  清除UI
-        val layout_parent = layout_list_of_process_propsal
+        val layout_parent = _binding.layoutListOfProcessPropsal
         layout_parent.removeAllViews()
         //  描绘提案 or 空列表
         if (_currSourceArrayRef.size > 0) {

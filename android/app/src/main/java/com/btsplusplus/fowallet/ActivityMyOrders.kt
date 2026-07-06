@@ -5,8 +5,8 @@ import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.view.animation.OvershootInterpolator
+import com.btsplusplus.fowallet.databinding.ActivityMyOrdersBinding
 import com.btsplusplus.fowallet.kline.TradingPair
-import kotlinx.android.synthetic.main.activity_my_orders.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.reflect.Field
@@ -22,9 +22,13 @@ class ActivityMyOrders : BtsppActivity() {
     private lateinit var _tradeHistory: JSONArray
     private var _tradingPair: TradingPair? = null
 
+    private lateinit var _binding: ActivityMyOrdersBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setAutoLayoutContentView(R.layout.activity_my_orders)
+
+        _binding = ActivityMyOrdersBinding.inflate(layoutInflater)
+        setAutoLayoutContentView(_binding.root)
 
         //  获取参数
         val args = btspp_args_as_JSONObject()
@@ -33,13 +37,13 @@ class ActivityMyOrders : BtsppActivity() {
         _tradingPair = args.opt("tradingPair") as? TradingPair
 
         //  事件 - 返回
-        layout_back_from_my_orders.setOnClickListener { finish() }
+        _binding.layoutBackFromMyOrders.setOnClickListener { finish() }
 
         setFullScreen()
 
         // 设置 tablelayout 和 view_pager
-        tablayout = tablayout_of_my_orders
-        view_pager = view_pager_of_my_orders
+        tablayout = _binding.tablayoutOfMyOrders
+        view_pager = _binding.viewPagerOfMyOrders
 
         // 添加 fargments
         setFragments()

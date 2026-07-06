@@ -5,7 +5,7 @@ import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.view.animation.OvershootInterpolator
-import kotlinx.android.synthetic.main.activity_register.*
+import com.btsplusplus.fowallet.databinding.ActivityRegisterBinding
 import java.lang.reflect.Field
 
 class ActivityRegister : BtsppActivity() {
@@ -16,15 +16,17 @@ class ActivityRegister : BtsppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setAutoLayoutContentView(R.layout.activity_register)
 
-        layout_back_from_register.setOnClickListener { finish() }
+        val binding = ActivityRegisterBinding.inflate(layoutInflater)
+        setAutoLayoutContentView(binding.root)
+
+        binding.layoutBackFromRegister.setOnClickListener { finish() }
 
         setFullScreen()
 
         // 设置 tablelayout 和 view_pager
-        tablayout = tablayout_of_register
-        view_pager = view_pager_of_register
+        tablayout = binding.tablayoutOfRegister
+        view_pager = binding.viewPagerOfRegister
 
         // 添加 fargments
         setFragments()
@@ -36,7 +38,7 @@ class ActivityRegister : BtsppActivity() {
         setTabListener()
 
         //  事件
-        btn_terms_of_service.setOnClickListener { onTermsOfServiceClicked() }
+        binding.btnTermsOfService.setOnClickListener { onTermsOfServiceClicked() }
     }
 
     private fun onTermsOfServiceClicked() {

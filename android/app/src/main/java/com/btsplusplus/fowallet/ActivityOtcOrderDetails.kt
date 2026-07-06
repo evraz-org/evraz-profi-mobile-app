@@ -10,7 +10,7 @@ import bitshares.*
 import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_otc_order_details.*
+import com.btsplusplus.fowallet.databinding.ActivityOtcOrderDetailsBinding
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.math.max
@@ -28,6 +28,8 @@ class ActivityOtcOrderDetails : BtsppActivity() {
 
     private var _orderStatusDirty = false                               //  订单状态是否更新过了
 
+    private lateinit var _binding: ActivityOtcOrderDetailsBinding
+
     override fun onDestroy() {
         _stopPaymentTimer()
         super.onDestroy()
@@ -43,8 +45,8 @@ class ActivityOtcOrderDetails : BtsppActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //  设置自动布局
-        setAutoLayoutContentView(R.layout.activity_otc_order_details)
+        _binding = ActivityOtcOrderDetailsBinding.inflate(layoutInflater)
+        setAutoLayoutContentView(_binding.root)
         //  设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
@@ -75,26 +77,26 @@ class ActivityOtcOrderDetails : BtsppActivity() {
         _drawUI_all()
 
         //  事件 - 返回
-        layout_back_from_otc_order_details.setOnClickListener {
+        _binding.layoutBackFromOtcOrderDetails.setOnClickListener {
             _result_promise?.resolve(_orderStatusDirty)
             _result_promise = null
             finish()
         }
 
         //  事件 - 电话
-        img_icon_phone.setOnClickListener { onPhoneButtonClicked() }
+        _binding.imgIconPhone.setOnClickListener { onPhoneButtonClicked() }
 
         //  事件 - 各种复制
-        btn_copy_curr_payment_realname.setOnClickListener { onCopyButtonClicked(_currSelectedPaymentMethod?.optString("realName", null)) }
-        btn_copy_curr_payment_account.setOnClickListener { onCopyButtonClicked(_currSelectedPaymentMethod?.optString("account", null)) }
-        btn_copy_order_detail_merchant_name_or_account.setOnClickListener {
+        _binding.btnCopyCurrPaymentRealname.setOnClickListener { onCopyButtonClicked(_currSelectedPaymentMethod?.optString("realName", null)) }
+        _binding.btnCopyCurrPaymentAccount.setOnClickListener { onCopyButtonClicked(_currSelectedPaymentMethod?.optString("account", null)) }
+        _binding.btnCopyOrderDetailMerchantNameOrAccount.setOnClickListener {
             if (_user_type == OtcManager.EOtcUserType.eout_normal_user) {
                 onCopyButtonClicked(_order_details.optString("payRealName", null))
             } else {
                 onCopyButtonClicked(_order_details.optString("userAccount", null))
             }
         }
-        btn_copy_order_detail_orderid.setOnClickListener { onCopyButtonClicked(_order_details.optString("orderId", null)) }
+        _binding.btnCopyOrderDetailOrderid.setOnClickListener { onCopyButtonClicked(_order_details.optString("orderId", null)) }
     }
 
     /**
@@ -110,7 +112,7 @@ class ActivityOtcOrderDetails : BtsppActivity() {
             }
             _statusInfos.put("desc", desc)//        }
             //  刷新倒计时描述字符串
-            tv_status_desc.text = _statusInfos.getString("desc")
+            _binding.tvStatusDesc.text = _statusInfos.getString("desc")
         } else {
             //  TODO:2.9 cancel? 未完成 定时器到了应该是直接刷新页面？
         }
@@ -142,18 +144,18 @@ class ActivityOtcOrderDetails : BtsppActivity() {
     }
 
     private fun _drawUI_orderStatus() {
-        tv_status_main.text = _statusInfos.getString("main")
-        tv_status_desc.text = _statusInfos.getString("desc")
-        img_icon_phone.setColorFilter(resources.getColor(R.color.theme01_textColorMain))
+        _binding.tvStatusMain.text = _statusInfos.getString("main")
+        _binding.tvStatusDesc.text = _statusInfos.getString("desc")
+        _binding.imgIconPhone.setColorFilter(resources.getColor(R.color.theme01_textColorMain))
     }
 
     private fun _drawUI_orderBasicInfo() {
         val fiatSymbol = OtcManager.sharedOtcManager().getFiatCnyInfo().getString("legalCurrencySymbol")
         val assetSymbol = _order_details.getString("assetSymbol")
         //  TODO:2.9 3E+2 格式 未处理
-        tv_order_total_value.text = "$fiatSymbol ${_order_details.getString("amount")}"
-        tv_unit_price.text = "$fiatSymbol${_order_details.getString("unitPrice")}"
-        tv_order_amount.text = "${_order_details.getString("quantity")} $assetSymbol"
+        _binding.tvOrderTotalValue.text = "$fiatSymbol ${_order_details.getString("amount")}"
+        _binding.tvUnitPrice.text = "$fiatSymbol${_order_details.getString("unitPrice")}"
+        _binding.tvOrderAmount.text = "${_order_details.getString("quantity")} $assetSymbol"
     }
 
     /**
@@ -186,9 +188,9 @@ class ActivityOtcOrderDetails : BtsppActivity() {
             headerString = resources.getString(R.string.kOtcOdCellPaymentSameNameTipsAndroidHeader02)
             middleString = resources.getString(R.string.kOtcOdCellPaymentSameNameTitle)
         }
-        tv_pm_sametips_prev_string.text = headerString
-        tv_pm_sametips_color_string.text = middleString
-        tv_pm_sametips_after_string.text = tailerString
+        _binding.tvPmSametipsPrevString.text = headerString
+        _binding.tvPmSametipsColorString.text = middleString
+        _binding.tvPmSametipsAfterString.text = tailerString
     }
 
     /**
@@ -198,17 +200,17 @@ class ActivityOtcOrderDetails : BtsppActivity() {
         //  点击切换收款方式
         val pminfos = OtcManager.auxGenPaymentMethodInfos(this, curr_pm.getString("account"), curr_pm.getInt("type"), curr_pm.optString("bankName"))
         //  图标 + 名字
-        img_icon_curr_payment_method.setImageDrawable(resources.getDrawable(pminfos.getInt("icon")))
-        tv_curr_payment_method_name.text = pminfos.getString("name")
+        _binding.imgIconCurrPaymentMethod.setImageDrawable(resources.getDrawable(pminfos.getInt("icon")))
+        _binding.tvCurrPaymentMethodName.text = pminfos.getString("name")
         //  是否可点击切换
         if (_order_details.getJSONArray("payMethod").length() > 1) {
-            layout_curr_payment_method_click_switch.visibility = View.VISIBLE
-            img_icon_arrow_curr_payment_method.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
+            _binding.layoutCurrPaymentMethodClickSwitch.visibility = View.VISIBLE
+            _binding.imgIconArrowCurrPaymentMethod.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
             //  绑定事件
-            layout_curr_payment_method_main.setOnClickListener { onSwitchPaymentMethodClicked() }
+            _binding.layoutCurrPaymentMethodMain.setOnClickListener { onSwitchPaymentMethodClicked() }
         } else {
-            layout_curr_payment_method_click_switch.visibility = View.INVISIBLE
-            layout_curr_payment_method_main.setOnClickListener(null)
+            _binding.layoutCurrPaymentMethodClickSwitch.visibility = View.INVISIBLE
+            _binding.layoutCurrPaymentMethodMain.setOnClickListener(null)
         }
     }
 
@@ -217,35 +219,35 @@ class ActivityOtcOrderDetails : BtsppActivity() {
      */
     private fun _drawUI_paymentInfos() {
         if (_currSelectedPaymentMethod != null) {
-            layout_payment_section.visibility = View.VISIBLE
+            _binding.layoutPaymentSection.visibility = View.VISIBLE
             _currSelectedPaymentMethod?.let { curr_pm ->
                 //  本人提示信息
                 __drawUI_payment_same_tips(curr_pm)
                 //  点击切换CELL
                 __drawUI_payment_click_switch_cell(curr_pm)
                 //  收款人
-                tv_curr_payment_realname.text = curr_pm.optString("realName")
+                _binding.tvCurrPaymentRealname.text = curr_pm.optString("realName")
                 //  收款账号
-                tv_curr_payment_account.text = curr_pm.optString("account")
+                _binding.tvCurrPaymentAccount.text = curr_pm.optString("account")
                 if (curr_pm.getInt("type") == OtcManager.EOtcPaymentMethodType.eopmt_bankcard.value) {
                     //  开户银行
                     val bankName = curr_pm.opt("bankName") as? String
                     if (bankName != null && bankName.isNotEmpty()) {
-                        layout_curr_payment_bankname_cell.visibility = View.VISIBLE
-                        layout_curr_payment_bankname_line.visibility = View.VISIBLE
-                        tv_curr_payment_bankname.text = bankName
+                        _binding.layoutCurrPaymentBanknameCell.visibility = View.VISIBLE
+                        _binding.layoutCurrPaymentBanknameLine.visibility = View.VISIBLE
+                        _binding.tvCurrPaymentBankname.text = bankName
                     } else {
-                        layout_curr_payment_bankname_cell.visibility = View.GONE
-                        layout_curr_payment_bankname_line.visibility = View.GONE
+                        _binding.layoutCurrPaymentBanknameCell.visibility = View.GONE
+                        _binding.layoutCurrPaymentBanknameLine.visibility = View.GONE
                     }
                 } else {
                     //  二维码 TODO：3.0 暂时不支持
-                    layout_curr_payment_bankname_cell.visibility = View.GONE
-                    layout_curr_payment_bankname_line.visibility = View.GONE
+                    _binding.layoutCurrPaymentBanknameCell.visibility = View.GONE
+                    _binding.layoutCurrPaymentBanknameLine.visibility = View.GONE
                 }
             }
         } else {
-            layout_payment_section.visibility = View.GONE
+            _binding.layoutPaymentSection.visibility = View.GONE
         }
     }
 
@@ -257,36 +259,36 @@ class ActivityOtcOrderDetails : BtsppActivity() {
         //  商家用户：用户账号 + 空
         if (_user_type == OtcManager.EOtcUserType.eout_normal_user) {
             //  商家姓名
-            tv_order_detail_merchant_name_or_account_title.text = resources.getString(R.string.kOtcOdCellLabelMcRealName)
-            tv_order_detail_merchant_name_or_account_value.text = _order_details.optString("payRealName")
+            _binding.tvOrderDetailMerchantNameOrAccountTitle.text = resources.getString(R.string.kOtcOdCellLabelMcRealName)
+            _binding.tvOrderDetailMerchantNameOrAccountValue.text = _order_details.optString("payRealName")
             //  商户昵称
-            layout_order_detail_merchant_nickname_line.visibility = View.VISIBLE
-            layout_order_detail_merchant_nickname_cell.visibility = View.VISIBLE
-            tv_order_detail_merchant_nickname_value.text = _order_details.optString("merchantsNickname")
+            _binding.layoutOrderDetailMerchantNicknameLine.visibility = View.VISIBLE
+            _binding.layoutOrderDetailMerchantNicknameCell.visibility = View.VISIBLE
+            _binding.tvOrderDetailMerchantNicknameValue.text = _order_details.optString("merchantsNickname")
         } else {
-            tv_order_detail_merchant_name_or_account_title.text = resources.getString(R.string.kOtcOdCellLabelUserAccount)
-            tv_order_detail_merchant_name_or_account_value.text = _order_details.optString("userAccount")
+            _binding.tvOrderDetailMerchantNameOrAccountTitle.text = resources.getString(R.string.kOtcOdCellLabelUserAccount)
+            _binding.tvOrderDetailMerchantNameOrAccountValue.text = _order_details.optString("userAccount")
 
-            layout_order_detail_merchant_nickname_line.visibility = View.GONE
-            layout_order_detail_merchant_nickname_cell.visibility = View.GONE
+            _binding.layoutOrderDetailMerchantNicknameLine.visibility = View.GONE
+            _binding.layoutOrderDetailMerchantNicknameCell.visibility = View.GONE
         }
 
         //  订单编号
-        tv_order_detail_orderid_value.text = _order_details.optString("orderId")
+        _binding.tvOrderDetailOrderidValue.text = _order_details.optString("orderId")
 
         //  订单日期
-        tv_order_detail_time_value.text = OtcManager.fmtOrderDetailTime(_order_details.getString("ctime"))
+        _binding.tvOrderDetailTimeValue.text = OtcManager.fmtOrderDetailTime(_order_details.getString("ctime"))
 
         //  收款方式 or 付款方式
         val payAccount = _order_details.opt("payAccount") as? String
         if (payAccount != null && payAccount.isNotEmpty()) {
-            layout_order_detail_payment_or_receive_item_cell.visibility = View.VISIBLE
-            layout_order_detail_payment_or_receive_item_line.visibility = View.VISIBLE
+            _binding.layoutOrderDetailPaymentOrReceiveItemCell.visibility = View.VISIBLE
+            _binding.layoutOrderDetailPaymentOrReceiveItemLine.visibility = View.VISIBLE
 
             val pminfos = OtcManager.auxGenPaymentMethodInfos(this, payAccount, _order_details.optInt("payChannel"), null)
 
             //  标题
-            tv_order_detail_payment_or_receive_item_title.text = if (_user_type == OtcManager.EOtcUserType.eout_normal_user) {
+            _binding.tvOrderDetailPaymentOrReceiveItemTitle.text = if (_user_type == OtcManager.EOtcUserType.eout_normal_user) {
                 if (_statusInfos.getBoolean("sell")) {
                     resources.getString(R.string.kOtcAdCellLabelTitleReceiveMethod)
                 } else {
@@ -301,11 +303,11 @@ class ActivityOtcOrderDetails : BtsppActivity() {
             }
 
             //  图标 + 值
-            img_order_detail_payment_or_receive_item_icon.setImageDrawable(resources.getDrawable(pminfos.getInt("icon")))
-            tv_order_detail_payment_or_receive_item_value.text = pminfos.getString("name_with_short_account")
+            _binding.imgOrderDetailPaymentOrReceiveItemIcon.setImageDrawable(resources.getDrawable(pminfos.getInt("icon")))
+            _binding.tvOrderDetailPaymentOrReceiveItemValue.text = pminfos.getString("name_with_short_account")
         } else {
-            layout_order_detail_payment_or_receive_item_cell.visibility = View.GONE
-            layout_order_detail_payment_or_receive_item_line.visibility = View.GONE
+            _binding.layoutOrderDetailPaymentOrReceiveItemCell.visibility = View.GONE
+            _binding.layoutOrderDetailPaymentOrReceiveItemLine.visibility = View.GONE
         }
     }
 
@@ -314,7 +316,7 @@ class ActivityOtcOrderDetails : BtsppActivity() {
      */
     private fun _drawUI_secTips() {
         if (_statusInfos.getBoolean("show_remark")) {
-            tv_order_payment_sectips.visibility = View.VISIBLE
+            _binding.tvOrderPaymentSectips.visibility = View.VISIBLE
 
             val tips_array = mutableListOf<String>()
             val remark = _order_details.opt("remark") as? String
@@ -322,9 +324,9 @@ class ActivityOtcOrderDetails : BtsppActivity() {
                 tips_array.add("${resources.getString(R.string.kOtcOdPaymentTipsMcRemarkPrefix)}$remark")
             }
             tips_array.add(resources.getString(R.string.kOtcOdPaymentTipsSystemMsg))
-            tv_order_payment_sectips.text = tips_array.joinToString("\n\n")
+            _binding.tvOrderPaymentSectips.text = tips_array.joinToString("\n\n")
         } else {
-            tv_order_payment_sectips.visibility = View.GONE
+            _binding.tvOrderPaymentSectips.visibility = View.GONE
         }
     }
 
@@ -332,26 +334,26 @@ class ActivityOtcOrderDetails : BtsppActivity() {
         val actions = _statusInfos.optJSONArray("actions")
         if (actions != null && actions.length() > 0) {
             assert(actions.length() <= 2)
-            layout_order_bottom_buttons.visibility = View.VISIBLE
+            _binding.layoutOrderBottomButtons.visibility = View.VISIBLE
             //  动态设置布局参数
-            btn_order_button01.setOnClickListener { onButtomButtonClicked(it) }
+            _binding.btnOrderButton01.setOnClickListener { onButtomButtonClicked(it) }
             if (actions.length() == 2) {
-                btn_order_button02.visibility = View.VISIBLE
+                _binding.btnOrderButton02.visibility = View.VISIBLE
                 //  如果有2个按钮则取消第一个按钮的右margin
-                val layoutParams = btn_order_button01.layoutParams as LinearLayout.LayoutParams
+                val layoutParams = _binding.btnOrderButton01.layoutParams as LinearLayout.LayoutParams
                 layoutParams.setMargins(8.dp, 8.dp, 0, 8.dp)
-                btn_order_button01.layoutParams = layoutParams
-                btn_order_button02.setOnClickListener { onButtomButtonClicked(it) }
+                _binding.btnOrderButton01.layoutParams = layoutParams
+                _binding.btnOrderButton02.setOnClickListener { onButtomButtonClicked(it) }
             } else {
-                btn_order_button02.visibility = View.GONE
-                val layoutParams = btn_order_button01.layoutParams as LinearLayout.LayoutParams
+                _binding.btnOrderButton02.visibility = View.GONE
+                val layoutParams = _binding.btnOrderButton01.layoutParams as LinearLayout.LayoutParams
                 layoutParams.setMargins(8.dp, 8.dp, 8.dp, 8.dp)
-                btn_order_button01.layoutParams = layoutParams
-                btn_order_button02.setOnClickListener(null)
+                _binding.btnOrderButton01.layoutParams = layoutParams
+                _binding.btnOrderButton02.setOnClickListener(null)
             }
             var idx = 0
             for (item in actions.forin<JSONObject>()) {
-                val curr_button = if (idx == 0) btn_order_button01 else btn_order_button02
+                val curr_button = if (idx == 0) _binding.btnOrderButton01 else _binding.btnOrderButton02
                 //  设置按钮文字
                 val btnType = item!!.get("type") as OtcManager.EOtcOrderOperationType
                 when (btnType) {
@@ -393,9 +395,9 @@ class ActivityOtcOrderDetails : BtsppActivity() {
                 ++idx
             }
         } else {
-            btn_order_button01.setOnClickListener(null)
-            btn_order_button02.setOnClickListener(null)
-            layout_order_bottom_buttons.visibility = View.GONE
+            _binding.btnOrderButton01.setOnClickListener(null)
+            _binding.btnOrderButton02.setOnClickListener(null)
+            _binding.layoutOrderBottomButtons.visibility = View.GONE
         }
     }
 

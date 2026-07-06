@@ -11,7 +11,7 @@ import bitshares.*
 import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_permission_edit.*
+import com.btsplusplus.fowallet.databinding.ActivityPermissionEditBinding
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.math.max
@@ -28,6 +28,8 @@ class ActivityPermissionEdit : BtsppActivity() {
 
     private var _permissionList = mutableListOf<JSONObject>()
     private var _weightThreshold = 0
+
+    private lateinit var _binding: ActivityPermissionEditBinding
 
     /**
      *  初始化数据
@@ -75,6 +77,8 @@ class ActivityPermissionEdit : BtsppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        _binding = ActivityPermissionEditBinding.inflate(layoutInflater)
+        setContentView(_binding.root)
         setAutoLayoutContentView(R.layout.activity_permission_edit)
         setFullScreen()
 
@@ -88,14 +92,14 @@ class ActivityPermissionEdit : BtsppActivity() {
         _initPermissionList()
 
         //  类型 & 阈值
-        tv_permission_type_from_edit_permission.text = _permission_item.getString("title")
+        _binding.tvPermissionTypeFromEditPermission.text = _permission_item.getString("title")
         _refreshUI()
 
         //  事件
-        ly_threshold_value_from_edit_permission.setOnClickListener { _onPassThresholdClicked() }
-        btn_add_one_from_edit_permission.setOnClickListener { _onAddOneClicked() }
-        btn_submit_from_edit_permission.setOnClickListener { _onSubmitClicked() }
-        layout_back_from_edit_permission.setOnClickListener { onBackClicked(null) }
+        _binding.lyThresholdValueFromEditPermission.setOnClickListener { _onPassThresholdClicked() }
+        _binding.btnAddOneFromEditPermission.setOnClickListener { _onAddOneClicked() }
+        _binding.btnSubmitFromEditPermission.setOnClickListener { _onSubmitClicked() }
+        _binding.layoutBackFromEditPermission.setOnClickListener { onBackClicked(null) }
     }
 
     /**
@@ -123,12 +127,12 @@ class ActivityPermissionEdit : BtsppActivity() {
      *  描绘UI - 当前阈值
      */
     private fun _drawUI_passThreshold() {
-        tv_threshold_value_from_edit_permission.text = _weightThreshold.toString()
+        _binding.tvThresholdValueFromEditPermission.text = _weightThreshold.toString()
         if (_weightThreshold == 0 || _weightThreshold > _calcAuthorityListTotalThreshold()) {
             //  门槛阈值太高：无效
-            tv_threshold_value_from_edit_permission.setTextColor(resources.getColor(R.color.theme01_sellColor))
+            _binding.tvThresholdValueFromEditPermission.setTextColor(resources.getColor(R.color.theme01_sellColor))
         } else {
-            tv_threshold_value_from_edit_permission.setTextColor(resources.getColor(R.color.theme01_buyColor))
+            _binding.tvThresholdValueFromEditPermission.setTextColor(resources.getColor(R.color.theme01_buyColor))
         }
     }
 
@@ -215,7 +219,7 @@ class ActivityPermissionEdit : BtsppActivity() {
      *  描绘UI - 权限实体列表
      */
     private fun _drawUI_authorityList() {
-        val layout_parent = ly_edit_public_key_from_edit_permission
+        val layout_parent = _binding.lyEditPublicKeyFromEditPermission
         layout_parent.removeAllViews()
 
         val _this = this

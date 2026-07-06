@@ -10,13 +10,13 @@ import android.view.MotionEvent
 import android.view.SurfaceView
 import android.view.View
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityQrScanBinding
 import com.btsplusplus.fowallet.utils.StealthTransferUtils
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.google.zxing.Result
 import com.google.zxing.client.android.AutoScannerView
 import com.google.zxing.client.android.BaseCaptureActivity
 import com.google.zxing.utils.PicDecode
-import kotlinx.android.synthetic.main.activity_qr_scan.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.math.BigDecimal
@@ -67,7 +67,9 @@ class ActivityQrScan : BaseCaptureActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setAutoLayoutContentView(R.layout.activity_qr_scan)
+
+        val binding = ActivityQrScanBinding.inflate(layoutInflater)
+        setAutoLayoutContentView(binding.root)
         setFullScreen()
 
         //  获取参数
@@ -86,8 +88,8 @@ class ActivityQrScan : BaseCaptureActivity() {
         }
 
         //  事件
-        btn_back.setOnClickListener { finish() }
-        btn_album.setOnClickListener { onAlbumClicked() }
+        binding.btnBack.setOnClickListener { finish() }
+        binding.btnAlbum.setOnClickListener { onAlbumClicked() }
     }
 
     private fun onAlbumClicked() {

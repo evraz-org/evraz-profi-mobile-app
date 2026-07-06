@@ -5,21 +5,23 @@ import bitshares.OtcManager
 import bitshares.Promise
 import bitshares.forEach
 import bitshares.toList
-import kotlinx.android.synthetic.main.activity_otc_payment_list.*
+import com.btsplusplus.fowallet.databinding.ActivityOtcPaymentListBinding
 import org.json.JSONArray
 import org.json.JSONObject
 
 class ActivityOtcReceiveMethods : BtsppActivity() {
 
+    private lateinit var _binding: ActivityOtcPaymentListBinding
     private lateinit var _auth_info: JSONObject
     private var _user_type = OtcManager.EOtcUserType.eout_normal_user
     private var _data_array: JSONArray? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        _binding = ActivityOtcPaymentListBinding.inflate(layoutInflater)
 
         //  设置自动布局
-        setAutoLayoutContentView(R.layout.activity_otc_payment_list)
+        setAutoLayoutContentView(_binding.root)
         //  设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
@@ -29,10 +31,10 @@ class ActivityOtcReceiveMethods : BtsppActivity() {
         _user_type = args.get("user_type") as OtcManager.EOtcUserType
 
         //  添加支付方式
-        button_add_payment_method_from_merchant_payment_list.setOnClickListener { onAddPaymentMethodClicked() }
+        _binding.buttonAddPaymentMethodFromMerchantPaymentList.setOnClickListener { onAddPaymentMethodClicked() }
 
         //  返回
-        layout_back_from_otc_merchant_payment_list.setOnClickListener { finish() }
+        _binding.layoutBackFromOtcMerchantPaymentList.setOnClickListener { finish() }
 
         //  查询
         queryPaymentMethods()
@@ -58,7 +60,7 @@ class ActivityOtcReceiveMethods : BtsppActivity() {
     }
 
     private fun refreshUI(data_array: JSONArray?) {
-        val layout_payment_lists = layout_payment_lists_from_orc_merchant
+        val layout_payment_lists = _binding.layoutPaymentListsFromOrcMerchant
         layout_payment_lists.removeAllViews()
         if (data_array == null || data_array.length() == 0) {
             layout_payment_lists.addView(ViewUtils.createEmptyCenterLabel(this, resources.getString(R.string.kOtcRmLabelEmpty)))

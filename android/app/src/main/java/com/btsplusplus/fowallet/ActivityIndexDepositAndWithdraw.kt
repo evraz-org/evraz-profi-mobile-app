@@ -37,7 +37,7 @@ class ActivityIndexDepositAndWithdraw : BtsppActivity() {
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
-        setBottomNavigationStyle(3)
+        setBottomNavigationStyle(_binding.bottomNav, 3)
 
         //  当前账号信息
         assert(WalletManager.sharedWalletManager().isWalletExist())
@@ -91,7 +91,7 @@ class ActivityIndexDepositAndWithdraw : BtsppActivity() {
                     })
                 })
             })
-            //  RuDEX   API reference: https://docs.google.com/document/d/196hdHb1BTGdmuVi_w74y7lt4Acl0mqt8P02Xg4GSkcI/edit
+            //  RuDEX   API reference: https://docs.google.com/document/d/196hd6Hb1BTGdmuVi_w74y7lt4Acl0mqt8P02Xg4GSkcI/edit
             put(JSONObject().apply {
                 put("name", "RuDEX")
                 put("api", RuDEX().initWithApiConfig(JSONObject().apply {

@@ -8,15 +8,17 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivitySettingCurrencyBinding
 import com.fowallet.walletcore.bts.ChainObjectManager
-import kotlinx.android.synthetic.main.activity_setting_currency.*
 import org.json.JSONObject
 
 class ActivitySettingCurrency : BtsppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setAutoLayoutContentView(R.layout.activity_setting_currency)
+
+        val binding = ActivitySettingCurrencyBinding.inflate(layoutInflater)
+        setAutoLayoutContentView(binding.root)
 
         setFullScreen()
 
@@ -57,8 +59,8 @@ class ActivitySettingCurrency : BtsppActivity() {
 
             val line = ViewUtils.createLine(this)
 
-            layout_wrap_of_currency.addView(layout)
-            layout_wrap_of_currency.addView(line)
+            binding.layoutWrapOfCurrency.addView(layout)
+            binding.layoutWrapOfCurrency.addView(line)
 
             //  点击事件
             layout.tag = symbol
@@ -76,6 +78,6 @@ class ActivitySettingCurrency : BtsppActivity() {
             }
         }
 
-        layout_back_from_setting_currency.setOnClickListener { finish() }
+        binding.layoutBackFromSettingCurrency.setOnClickListener { finish() }
     }
 }

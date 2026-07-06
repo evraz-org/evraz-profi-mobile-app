@@ -2,13 +2,13 @@ package com.btsplusplus.fowallet
 
 import android.os.Bundle
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityTransferToBlindBinding
 import com.btsplusplus.fowallet.utils.ModelUtils
 import com.btsplusplus.fowallet.utils.StealthTransferUtils
 import com.btsplusplus.fowallet.utils.kAppBlindReceiptBlockNum
 import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_transfer_to_blind.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.math.BigDecimal
@@ -21,12 +21,14 @@ class ActivityTransferToBlind : BtsppActivity() {
     private lateinit var _nCurrBalance: BigDecimal
 
     private lateinit var _viewBlindOutputs: ViewBlindAccountsOrReceipt
+    private lateinit var _binding: ActivityTransferToBlindBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        _binding = ActivityTransferToBlindBinding.inflate(layoutInflater)
         // 设置自动布局
-        setAutoLayoutContentView(R.layout.activity_transfer_to_blind)
+        setAutoLayoutContentView(_binding.root)
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
@@ -40,20 +42,20 @@ class ActivityTransferToBlind : BtsppActivity() {
         _nCurrBalance = ModelUtils.findAssetBalance(_full_account_data, _curr_asset)
 
         //  初始化UI
-        _viewBlindOutputs = ViewBlindAccountsOrReceipt(this, kBlindItemTypeOutput, layout_blind_account_list_from_transfer_to_blind, callback_remove = { _on_remove_clicked(it) }, callback_add = { _on_add_clicked() })
+        _viewBlindOutputs = ViewBlindAccountsOrReceipt(this, kBlindItemTypeOutput, _binding.layoutBlindAccountListFromTransferToBlind, callback_remove = { _on_remove_clicked(it) }, callback_add = { _on_add_clicked() })
         refreshUI()
 
         //  选择资产箭头颜色
-        iv_select_asset_from_transfer_to_blind.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
+        _binding.ivSelectAssetFromTransferToBlind.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
 
         //  事件 - 选择资产
-        layout_select_asset_from_transfer_to_blind.setOnClickListener { onSelectAssetClicked() }
+        _binding.layoutSelectAssetFromTransferToBlind.setOnClickListener { onSelectAssetClicked() }
 
         //  提交事件
-        btn_commit.setOnClickListener { onSubmit() }
+        _binding.btnCommit.setOnClickListener { onSubmit() }
 
         //  返回事件
-        layout_back_from_transfer_to_blind.setOnClickListener { finish() }
+        _binding.layoutBackFromTransferToBlind.setOnClickListener { finish() }
     }
 
     private fun onSelectAssetDone(asset_info: JSONObject) {
@@ -152,7 +154,7 @@ class ActivityTransferToBlind : BtsppActivity() {
     }
 
     private fun refreshUI() {
-        tv_curr_asset_symbol.text = _curr_asset.getString("symbol")
+        _binding.tvCurrAssetSymbol.text = _curr_asset.getString("symbol")
         _draw_ui_blind_outputs()
         _draw_ui_bottom_data()
     }
@@ -176,7 +178,7 @@ class ActivityTransferToBlind : BtsppActivity() {
         }
 
         //  可用余额
-        tv_balance_value.let { tv ->
+        _binding.tvBalanceValue.let { tv ->
             if (n_max_balance < n_total) {
                 tv.text = String.format("%s(%s)", base_str, resources.getString(R.string.kVcTradeTipAmountNotEnough))
                 tv.setTextColor(resources.getColor(R.color.theme01_tintColor))
@@ -187,10 +189,10 @@ class ActivityTransferToBlind : BtsppActivity() {
         }
 
         //  输出总金额
-        tv_total_output_value.text = String.format("%s %s", n_total.toPriceAmountString(), symbol)
+        _binding.tvTotalOutputValue.text = String.format("%s %s", n_total.toPriceAmountString(), symbol)
 
         //  广播手续费
-        tv_network_fee_value.text = String.format("%s %s", n_core_fee.toPriceAmountString(), chainMgr.grapheneAssetSymbol)
+        _binding.tvNetworkFeeValue.text = String.format("%s %s", n_core_fee.toPriceAmountString(), chainMgr.grapheneAssetSymbol)
     }
 
     /**
@@ -250,17 +252,17 @@ class ActivityTransferToBlind : BtsppActivity() {
 
         val value = if (i_output_count > 1) {
             String.format(resources.getString(R.string.kVcStTipAskConfrimTransferToBlindN),
-                    i_output_count.toString(),
-                    n_total.toPlainString(),
-                    _curr_asset.getString("symbol"),
-                    n_core_fee.toPlainString(),
-                    core_asset.getString("symbol"))
+                i_output_count.toString(),
+                n_total.toPlainString(),
+                _curr_asset.getString("symbol"),
+                n_core_fee.toPlainString(),
+                core_asset.getString("symbol"))
         } else {
             String.format(resources.getString(R.string.kVcStTipAskConfrimTransferToBlind1),
-                    n_total.toPlainString(),
-                    _curr_asset.getString("symbol"),
-                    n_core_fee.toPlainString(),
-                    core_asset.getString("symbol"))
+                n_total.toPlainString(),
+                _curr_asset.getString("symbol"),
+                n_core_fee.toPlainString(),
+                core_asset.getString("symbol"))
         }
 
         UtilsAlert.showMessageConfirm(this, resources.getString(R.string.kWarmTips), value).then {
@@ -270,7 +272,7 @@ class ActivityTransferToBlind : BtsppActivity() {
 
                         //  确保有权限发起普通交易，否则作为提案交易处理。
                         GuardProposalOrNormalTransaction(EBitsharesOperations.ebo_transfer_to_blind, false, false,
-                                op, op_account) { isProposal, _ ->
+                            op, op_account) { isProposal, _ ->
                             assert(!isProposal)
 
                             val mask = ViewMask(resources.getString(R.string.kTipsBeRequesting), this).apply { show() }

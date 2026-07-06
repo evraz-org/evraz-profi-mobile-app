@@ -2,12 +2,11 @@ package com.btsplusplus.fowallet
 
 import android.os.Bundle
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivitySelectBlindBalanceBinding
 import com.btsplusplus.fowallet.utils.VcUtils
 import com.fowallet.walletcore.bts.ChainObjectManager
-import kotlinx.android.synthetic.main.activity_select_blind_balance.*
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -15,12 +14,14 @@ class ActivitySelectBlindBalance : BtsppActivity() {
 
     private var _data_array = JSONArray()
     private lateinit var _default_selected: JSONObject
+    private lateinit var _binding: ActivitySelectBlindBalanceBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        _binding = ActivitySelectBlindBalanceBinding.inflate(layoutInflater)
         // 设置自动布局
-        setAutoLayoutContentView(R.layout.activity_select_blind_balance)
+        setAutoLayoutContentView(_binding.root)
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
 
@@ -30,10 +31,10 @@ class ActivitySelectBlindBalance : BtsppActivity() {
         _default_selected = args.getJSONObject("default_selected")
 
         //  确认提交按钮事件
-        btn_done.setOnClickListener { onSubmit(result_promise) }
+        _binding.btnDone.setOnClickListener { onSubmit(result_promise) }
 
         //  返回事件
-        layout_back_from_select_blind_balance.setOnClickListener { finish() }
+        _binding.layoutBackFromSelectBlindBalance.setOnClickListener { finish() }
 
         //  查询数据依赖
         queryBlindBalanceAndDependence()
@@ -79,7 +80,7 @@ class ActivitySelectBlindBalance : BtsppActivity() {
 
     private fun refreshUI(data_array: JSONArray) {
         //  清空
-        val container = layout_receipt_list_from_select_blind_balance
+        val container = _binding.layoutReceiptListFromSelectBlindBalance
         container.removeAllViews()
 
         if (data_array.length() > 0) {
@@ -89,7 +90,7 @@ class ActivitySelectBlindBalance : BtsppActivity() {
             container.layoutParams = oldLayoutParams
 
             //  确定按钮可见性
-            layout_submit_button.visibility = View.VISIBLE
+            _binding.layoutSubmitButton.visibility = View.VISIBLE
             //  描绘
             var index = 0
             data_array.forEach<JSONObject> {
@@ -112,7 +113,7 @@ class ActivitySelectBlindBalance : BtsppActivity() {
             container.layoutParams = oldLayoutParams
 
             //  确定按钮可见性
-            layout_submit_button.visibility = View.GONE
+            _binding.layoutSubmitButton.visibility = View.GONE
             //  无数据
             container.addView(ViewUtils.createEmptyCenterLabel(this, resources.getString(R.string.kVcStTipEmptyNoBlindBalance)))
         }

@@ -12,8 +12,8 @@ import bitshares.AppCacheManager
 import bitshares.btsppLogCustom
 import bitshares.jsonArrayfrom
 import bitshares.jsonObjectfromKVS
+import com.btsplusplus.fowallet.databinding.ActivityMyAssetsBinding
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_my_assets.*
 import org.json.JSONObject
 import java.lang.reflect.Field
 
@@ -26,9 +26,13 @@ class ActivityMyAssets : BtsppActivity() {
     private lateinit var _userAssetDetailInfos: JSONObject
     private lateinit var _full_account_data: JSONObject
 
+    private lateinit var _bionding: ActivityMyAssetsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setAutoLayoutContentView(R.layout.activity_my_assets)
+
+        _bionding = ActivityMyAssetsBinding.inflate(layoutInflater)
+        setAutoLayoutContentView(_bionding.root)
 
         //  获取参数
         val args = btspp_args_as_JSONArray()
@@ -41,7 +45,7 @@ class ActivityMyAssets : BtsppActivity() {
         if (WalletManager.sharedWalletManager().isMyselfAccount(target_name)) {
             findViewById<TextView>(R.id.title).text = resources.getString(R.string.kVcTitleMyBalance)
             //  不显示关注按钮
-            btn_fav.visibility = View.GONE
+            _bionding.btnFav.visibility = View.GONE
         } else {
             findViewById<TextView>(R.id.title).text = target_name
             //  关注按钮事件
@@ -50,18 +54,18 @@ class ActivityMyAssets : BtsppActivity() {
             } else {
                 findViewById<ImageButton>(R.id.btn_fav).setColorFilter(resources.getColor(R.color.theme01_textColorGray))
             }
-            btn_fav.setOnClickListener {
+            _bionding.btnFav.setOnClickListener {
                 _onFavClicked(it as ImageButton, account)
             }
         }
 
-        layout_back_from_my_assets.setOnClickListener { finish() }
+        _bionding.layoutBackFromMyAssets.setOnClickListener { finish() }
 
         setFullScreen()
 
         // 设置 tablelayout 和 view_pager
-        tablayout = tablayout_of_my_assets
-        view_pager = view_pager_of_my_assets
+        tablayout = _bionding.tablayoutOfMyAssets
+        view_pager = _bionding.viewPagerOfMyAssets
 
         // 添加 fargments
         setFragments()

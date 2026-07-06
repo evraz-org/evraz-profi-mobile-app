@@ -2,31 +2,28 @@ package com.btsplusplus.fowallet
 
 import android.content.Context
 import android.os.Bundle
-import android.widget.TextView
-import bitshares.*
+import bitshares.AppCacheManager
+import bitshares.OrgUtils
+import bitshares.Utils
+import bitshares.btsppLogCustom
+import bitshares.hexDecode
+import bitshares.jsonObjectfromKVS
+import bitshares.xmlstring
+import com.btsplusplus.fowallet.databinding.ActivityWalletBackupBinding
 import com.btsplusplus.fowallet.http.HttpConfig
 import com.yanzhenjie.andserver.AndServer
 import com.yanzhenjie.andserver.Server
-import com.yanzhenjie.andserver.annotation.Config
-import com.yanzhenjie.andserver.framework.body.FileBody
-import com.yanzhenjie.andserver.framework.config.WebConfig
-import com.yanzhenjie.andserver.framework.handler.RequestHandler
-import com.yanzhenjie.andserver.framework.view.BodyView
-import com.yanzhenjie.andserver.framework.view.View
 import com.yanzhenjie.andserver.framework.website.AssetsWebsite
-import com.yanzhenjie.andserver.http.HttpRequest
-import com.yanzhenjie.andserver.http.HttpResponse
-import kotlinx.android.synthetic.main.activity_wallet_backup.*
-import java.io.File
 import java.net.InetAddress
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
 class ActivityWalletBackup : BtsppActivity() {
 
     private var _webserver: Server? = null
     private var _fullpath: String = ""
     private var _filename: String = ""
+    private lateinit var _binding: ActivityWalletBackupBinding
 
     override fun onDestroy() {
         _webserver?.shutdown()
@@ -36,21 +33,22 @@ class ActivityWalletBackup : BtsppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setAutoLayoutContentView(R.layout.activity_wallet_backup)
+        _binding = ActivityWalletBackupBinding.inflate(layoutInflater)
+        setAutoLayoutContentView(_binding.root)
 
-        layout_back_from_backup_wallet.setOnClickListener { finish() }
+        _binding.layoutBackFromBackupWallet.setOnClickListener { finish() }
 
         //  导出钱包
         if (backupWalletToWebdir()) {
             //  初始化webserver
             val nowifi = Utils.isWifi(this)
             if (!nowifi) {
-                findViewById<TextView>(R.id.label_txt_address_or_error).text = resources.getString(R.string.kBackupWalletOnlyViaWIFI)
+                _binding.labelTxtAddressOrError.text = resources.getString(R.string.kBackupWalletOnlyViaWIFI)
             } else {
                 startInitWebserver(this)
             }
         } else {
-            findViewById<TextView>(R.id.label_txt_address_or_error).text = resources.getString(R.string.registerLoginTipBackupError)
+            _binding.labelTxtAddressOrError.text = resources.getString(R.string.registerLoginTipBackupError)
         }
     }
 
@@ -78,7 +76,7 @@ class ActivityWalletBackup : BtsppActivity() {
         }
         val ipv4 = Utils.getIpv4Address(context)
         if (ipv4 == null) {
-            findViewById<TextView>(R.id.label_txt_address_or_error).text = R.string.registerLoginWebServerErrorIp.xmlstring(context)
+            _binding.labelTxtAddressOrError.text = R.string.registerLoginWebServerErrorIp.xmlstring(context)
             return
         }
         //  REMARK：不能绑定到80端口，会出现无权限错误。
@@ -88,13 +86,13 @@ class ActivityWalletBackup : BtsppActivity() {
         
         _webserver = AndServer.webServer(context).port(port).inetAddress(address).listener(object : Server.ServerListener {
             override fun onStarted() {
-                findViewById<TextView>(R.id.label_txt_address_or_error).text = "${ipv4}:${port}"
+                _binding.labelTxtAddressOrError.text = "${ipv4}:${port}"
             }
 
             override fun onException(e: Exception) {
                 btsppLogCustom("webserver_download_init_error", jsonObjectfromKVS("message", e.message
                     ?: "unknown"))
-                findViewById<TextView>(R.id.label_txt_address_or_error).text = R.string.registerLoginWebServerErrorInit.xmlstring(context)
+                _binding.labelTxtAddressOrError.text = R.string.registerLoginWebServerErrorInit.xmlstring(context)
             }
 
             override fun onStopped() {

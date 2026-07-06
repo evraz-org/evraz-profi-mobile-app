@@ -7,8 +7,8 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import bitshares.*
+import com.btsplusplus.fowallet.databinding.ActivityScanResultPrivateKeyBinding
 import com.fowallet.walletcore.bts.WalletManager
-import kotlinx.android.synthetic.main.activity_scan_result_private_key.*
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -18,7 +18,8 @@ class ActivityScanResultPrivateKey : BtsppActivity() {
         super.onCreate(savedInstanceState)
 
         //  设置自动布局
-        setAutoLayoutContentView(R.layout.activity_scan_result_private_key)
+        val binding = ActivityScanResultPrivateKeyBinding.inflate(layoutInflater)
+        setAutoLayoutContentView(binding.root)
 
         //  设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
@@ -69,11 +70,11 @@ class ActivityScanResultPrivateKey : BtsppActivity() {
         //  初始化钱包密码（可选）
         val bNeedWalletPassword = _needWalletPasswordField()
         if (bNeedWalletPassword) {
-            lay_wallet_password.visibility = View.VISIBLE
+            binding.layWalletPassword.visibility = View.VISIBLE
             //  交易密码 tip
             findViewById<ImageView>(R.id.tip_password).setOnClickListener { UtilsAlert.showMessageBox(this, resources.getString(R.string.kLoginRegTipsWalletPasswordFormat)) }
         } else {
-            lay_wallet_password.visibility = View.GONE
+            binding.layWalletPassword.visibility = View.GONE
         }
 
         //  初始化导入按钮文字
@@ -85,7 +86,7 @@ class ActivityScanResultPrivateKey : BtsppActivity() {
         }
 
         //  事件 - 返回
-        layout_back_from_scan_result_private_key.setOnClickListener { finish() }
+        binding.layoutBackFromScanResultPrivateKey.setOnClickListener { finish() }
 
         //  事件 - 导入
         btn_import.setOnClickListener {
