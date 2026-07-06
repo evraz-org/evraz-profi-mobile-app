@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace 'com.btsplusplus.fowallet'
-    compileSdkVersion 35
+    compileSdkVersion 37
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -14,7 +14,7 @@ android {
     defaultConfig {
         applicationId "org.evrazcoin.app"
         minSdkVersion 23
-        targetSdkVersion 35
+        targetSdkVersion 37
         versionCode 202009132
         versionName "6.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
