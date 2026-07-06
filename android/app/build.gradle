@@ -44,6 +44,8 @@ android {
             buildConfigField "int", "kAppChannelID", "10"
             buildConfigField "boolean", "kUseCommunityFaucet", "false"
             buildConfigField "String", "kAppConfigFile", "\"fowallet_config_btspp.json\""
+            buildConfigField "boolean", "kUseCommunityFaucet", "true"
+            buildConfigField "String", "kAppCommunityFaucetAddress", "\"https://faucet.evrazcoin.org/api/v1/accounts\""
         }
     }
     buildTypes {

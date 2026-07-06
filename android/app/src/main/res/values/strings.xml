@@ -1794,4 +1794,27 @@
     <string name="kSkip">Skip</string>
     <string name="app_description">Current mobile application allows to register through Account Model. Account Model enable to manage the account from anywhere, using only password and without loading .bin file.\n\n\nKeys for Account will be received with using your password. They won\'t be saved in browser or central server, that\'s why it is necessary  to make sure that you\'ve recognized the password.\n\n\nPlease enter desired account name. This name will be registered openly in blockchain and be the identifier for any of your transactions.\n\n\nThe name should include more than 6 characters with dash, numbers and u.c.</string>
     <string name="continue_registration">To continue the registration</string>
+    <string name="account_name">Account name</string>
+    <string name="create_password">Create the password</string>
+    <string name="confirm_password">Confirm the password</string>
+    <string name="reg_checkbox_1">I realize that I will lose access to my funds if I lose my password</string>
+    <string name="reg_checkbox_2">I realize, that nobody can restore my password if I lose or forget it</string>
+    <string name="reg_checkbox_3">I wrote down or have saved in the other way my password</string>
+    <string name="create_account_password_confirm">Confirm password:</string>
+    <string name="create_account_activity_button">SIGN UP</string>
+    <string name="create_account_activity_network_fail">Failed to connect to server</string>
+    <string name="create_account_activity_account_object_exist">The account has already existed</string>
+    <string name="create_account_activity_response_fail">Server failed to response</string>
+    <string name="create_account_activity_create_fail">Failed to sign up</string>
+    <string name="create_account_account_name_error_full_letter">The account name cannot contain only letters</string>
+    <string name="create_account_account_name_too_short">The account name is too short</string>
+    <string name="create_account_account_name_error_start_letter">The account name should start with a letter</string>
+    <string name="create_account_account_name_error_dash_end">The account name can not end with a dash</string>
+    <string name="create_account_check_box">I confirm I have backed up my password (password is the only certification, you will lose all property if you lose it)</string>
+    <string name="create_account_password_requirement">The password should include more than 12 characters with at least 1 capital letter and 1 number</string>
+    <string name="create_account_password_confirm_error">Two passwords do not match</string>
+    <string name="create_account_account_name_empty">The account name is empty</string>
+    <string name="create_account_password_empty">The password is empty</string>
+    <string name="create_account_password_confirm_empty">The confirmation password is empty</string>
+    <string name="create_account_check_box_confirm">You should confirm the content after the checkbox.</string>
 </resources>

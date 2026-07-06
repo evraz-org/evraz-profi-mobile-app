@@ -1,19 +1,21 @@
 package com.btsplusplus.fowallet
 
 import android.os.Bundle
-import android.view.View
+import com.btsplusplus.fowallet.databinding.ActivitySignUpInfoBinding
 
 class SignUpInfoActivity : BtsppActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setAutoLayoutContentView(R.layout.activity_sign_up_info)
+        val binding = ActivitySignUpInfoBinding.inflate(layoutInflater)
+        setAutoLayoutContentView(binding.root)
+        setFullScreen()
 
-        findViewById<View>(R.id.layout_back).setOnClickListener {
+        binding.layoutBack.setOnClickListener {
             finish()
         }
 
-        findViewById<View>(R.id.sign_up_next).setOnClickListener {
-            goTo(ActivityRegisterEntry::class.java, true)
+        binding.signUpNext.setOnClickListener {
+            goTo(CreateAccountActivity::class.java, true)
         }
     }
 }

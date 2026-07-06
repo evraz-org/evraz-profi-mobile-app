@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    tools:context=".CreateAccountActivity"
+    android:fitsSystemWindows="true">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/layout_back"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_btn_back"/>
+            <TextView
+                style="@style/kNavigationBarTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/kBtnBack"
+                android:gravity="center_vertical"
+                />
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:layout_gravity="center_vertical"
+            android:text="@string/kSignUp"
+            style="@style/kNavigationBarTextStyle" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_marginTop="40dp"
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="655dp"
+        android:padding="8dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/layoutAccountName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/EvrazTextHeaderViewStyle"
+                        android:text="@string/account_name" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <EditText
+                            android:id="@+id/editTextAccountName"
+                            style="@style/EvrazEditTextStyle"
+                            android:digits="0123456789abcdefghijklmnopqrstuvwxyz-"
+                            android:gravity="center_vertical"
+                            android:inputType="textNoSuggestions" />
+
+                        <ImageView
+                            android:id="@+id/imageViewAccountCheck"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@+id/editTextAccountName"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="12dp"
+                            android:layout_marginBottom="12dp"
+                            android:src="@mipmap/check"
+                            android:visibility="invisible" />
+
+                    </RelativeLayout>
+
+
+                    <TextView
+                        android:id="@+id/textViewErrorAccount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginRight="4dp"
+                        android:textColor="@color/red"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+                <TextView
+                    style="@style/EvrazTextHeaderViewStyle"
+                    android:text="@string/create_password" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    app:passwordToggleEnabled="true">
+
+                    <EditText
+                        android:id="@+id/editTextPassword"
+                        style="@style/EvrazEditTextStyle"
+                        android:inputType="textPassword" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/textViewErrorPasswrod"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="4dp"
+                    android:textColor="@color/red"
+                    android:textSize="14sp" />
+
+                <TextView
+                    style="@style/EvrazTextHeaderViewStyle"
+                    android:text="@string/confirm_password" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/editTextPasswordConfirmLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="45dp"
+                        android:layout_weight="1"
+                        app:passwordToggleEnabled="true">
+
+                        <EditText
+                            android:id="@+id/editTextPasswordConfirm"
+                            style="@style/EvrazEditTextStyle"
+                            android:inputType="textPassword" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <ImageView
+                        android:id="@+id/imageViewPasswordConfirmCheck"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="5dp"
+                        android:src="@mipmap/check"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textViewErrorInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="4dp"
+                    android:textColor="@color/red"
+                    android:textSize="14sp" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/checkBoxConfirm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="top"
+                    android:text="@string/reg_checkbox_1"
+                    android:textColor="@color/beige_color"
+                    app:buttonTint="@color/beige_color" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/checkBoxConfirm2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="top"
+                    android:text="@string/reg_checkbox_2"
+                    android:textColor="@color/beige_color"
+                    app:buttonTint="@color/beige_color" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/checkBoxConfirm3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="top"
+                    android:text="@string/reg_checkbox_3"
+                    android:textColor="@color/beige_color"
+                    app:buttonTint="@color/beige_color" />
+
+                <TextView
+                    android:id="@+id/buttonCreate"
+                    style="@style/EvrazTextViewButton"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="12dp"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:text="@string/create_account_activity_button" />
+            </LinearLayout>
+        </ScrollView>
+    </FrameLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

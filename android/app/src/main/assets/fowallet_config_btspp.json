@@ -197,7 +197,7 @@
     "voting_proxy_max_level": 3
   },
   "faucet": {
-    "url": "https://faucet.evrazcoin.org/"
+    "url": "https://faucet.evrazcoin.org/api/v1/accounts/"
   },
   "main_smart_asset_list": [
     "CNY",

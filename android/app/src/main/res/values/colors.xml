@@ -68,6 +68,8 @@
     <color name="beige_color">#f6efcc</color>
     <color name="gray_color">#424242</color>
     <color name="light_gray_color">#938e8e</color>
+    <color name="red">#fe0000</color>
+    <color name="table_gray_color">#ededed</color>
 
     <!--
         navigationBarBackColor: '131f30', # => done! 同 appBackColor
