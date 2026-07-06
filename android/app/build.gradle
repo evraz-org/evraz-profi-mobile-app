@@ -1,10 +1,6 @@
-apply plugin: 'com.android.application'
-
-apply plugin: 'kotlin-android'
-
-apply plugin: 'com.yanzhenjie.andserver'
-
-apply plugin: 'kotlin-kapt'
+plugins {
+    id 'com.android.application'
+}
 
 android {
     namespace 'com.btsplusplus.fowallet'
@@ -13,10 +9,6 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = '1.8'
     }
 
     defaultConfig {
@@ -57,7 +49,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFile 'proguard-rules.pro'
         }
     }
 
@@ -84,8 +76,8 @@ dependencies {
     implementation 'com.orhanobut:logger:2.2.0'
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     //  for webserver
-    implementation 'com.yanzhenjie.andserver:api:2.1.12'
-    kapt 'com.yanzhenjie.andserver:processor:2.1.12'
+    implementation("io.ktor:ktor-server-cio:3.5.1")
+    implementation("io.ktor:ktor-server-core:3.5.1")
     //  for wallet core
     implementation files('libs/armeabi-v7a.jar')
     implementation files('libs/x86.jar')
