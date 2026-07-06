@@ -1,8 +1,8 @@
 package com.btsplusplus.fowallet
 
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
+import com.google.android.material.tabs.TabLayout
+import androidx.fragment.app.Fragment
 import bitshares.*
 import com.btsplusplus.fowallet.databinding.ActivityIndexMarketsBinding
 import com.fowallet.walletcore.bts.ChainObjectManager

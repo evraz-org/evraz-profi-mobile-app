@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -253,7 +253,7 @@
                     android:orientation="horizontal">
 
                     <!-- 周期按钮 -->
-                    <android.support.design.widget.TabLayout
+                    <com.google.android.material.tabs.TabLayout
                         android:id="@+id/tablayout_of_kline"
                         app:tabPaddingBottom="0dp"
                         app:tabPaddingEnd="0dp"
@@ -268,37 +268,37 @@
                         app:tabSelectedTextColor="@color/theme01.textColorHighlight"
                         app:tabTextColor="@color/theme01.textColorGray">
 
-                        <android.support.design.widget.TabItem
+                        <com.google.android.material.tabs.TabItem
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/kLabelEkdptLine" />
 
-                        <android.support.design.widget.TabItem
+                        <com.google.android.material.tabs.TabItem
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/kLabelEkdpt15min" />
 
-                        <android.support.design.widget.TabItem
+                        <com.google.android.material.tabs.TabItem
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/kLabelEkdpt1hour" />
 
-                        <android.support.design.widget.TabItem
+                        <com.google.android.material.tabs.TabItem
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/kLabelEkdpt4hour" />
 
-                        <android.support.design.widget.TabItem
+                        <com.google.android.material.tabs.TabItem
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/kLabelEkdpt1day" />
 
-                        <android.support.design.widget.TabItem
+                        <com.google.android.material.tabs.TabItem
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/kLabelEkdptBtnMore" />
 
-                    </android.support.design.widget.TabLayout>
+                    </com.google.android.material.tabs.TabLayout>
 
                     <!-- Index -->
                     <TextView
@@ -333,7 +333,7 @@
                 </FrameLayout>
 
                 <!-- 深度和成交 -->
-                <android.support.design.widget.TabLayout
+                <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tablayout_depth_of_kline"
                     app:tabPaddingBottom="0dp"
                     app:tabPaddingEnd="0dp"
@@ -347,18 +347,18 @@
                     app:tabSelectedTextColor="@color/theme01.textColorHighlight"
                     app:tabTextColor="@color/theme01.textColorGray">
 
-                    <android.support.design.widget.TabItem
+                    <com.google.android.material.tabs.TabItem
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/kLabelBtnDepth" />
 
-                    <android.support.design.widget.TabItem
+                    <com.google.android.material.tabs.TabItem
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/kLabelBtnMarketTrades" />
 
 
-                </android.support.design.widget.TabLayout>
+                </com.google.android.material.tabs.TabLayout>
 
 
                 <LinearLayout
@@ -499,4 +499,4 @@
             android:scaleY="0.8"
             app:srcCompat="@drawable/ic_btn_star" />
     </LinearLayout>
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

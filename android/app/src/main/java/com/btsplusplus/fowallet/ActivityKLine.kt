@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.support.design.widget.TabLayout
+import com.google.android.material.tabs.TabLayout
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageButton

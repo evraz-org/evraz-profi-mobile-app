@@ -5,7 +5,6 @@ import android.os.Bundle
 import bitshares.Utils
 import bitshares.xmlstring
 import com.btsplusplus.fowallet.databinding.ActivityAboutBinding
-import com.btsplusplus.fowallet.databinding.ActivityLoginBinding
 
 class ActivityAbout : BtsppActivity() {
 
@@ -14,8 +13,7 @@ class ActivityAbout : BtsppActivity() {
         super.onCreate(savedInstanceState)
 
         val binding = ActivityAboutBinding.inflate(layoutInflater)
-        val view = binding.root
-        setAutoLayoutContentView(view)
+        setAutoLayoutContentView(binding.root)
 
         // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()

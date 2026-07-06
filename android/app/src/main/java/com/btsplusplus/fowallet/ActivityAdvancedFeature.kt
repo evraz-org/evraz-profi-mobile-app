@@ -1,7 +1,7 @@
 package com.btsplusplus.fowallet
 
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import bitshares.EHtlcDeployMode
 import bitshares.Promise
 import bitshares.xmlstring

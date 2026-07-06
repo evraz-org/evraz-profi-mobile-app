@@ -1,14 +1,14 @@
 package com.btsplusplus.fowallet
 
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
-import android.support.v4.view.ViewPager
 import android.view.animation.OvershootInterpolator
+import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
 import bitshares.*
 import com.btsplusplus.fowallet.databinding.ActivityAssetInfosBinding
 import com.btsplusplus.fowallet.kline.TradingPair
 import com.fowallet.walletcore.bts.ChainObjectManager
+import com.google.android.material.tabs.TabLayout
 import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.reflect.Field

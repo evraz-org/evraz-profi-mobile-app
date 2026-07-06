@@ -1,22 +1,25 @@
 package com.btsplusplus.fowallet
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Point
 import android.net.Uri
-import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewPager
-import android.support.v7.app.AppCompatActivity
+import com.google.android.material.tabs.TabLayout
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
+import androidx.core.content.ContextCompat
+import androidx.viewpager.widget.ViewPager
+import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import android.view.animation.OvershootInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.Scroller
 import android.widget.Toast
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import bitshares.*
 import com.btsplusplus.fowallet.databinding.BottomNavBinding
 import com.btsplusplus.fowallet.kline.TradingPair
@@ -624,7 +627,7 @@ fun android.app.Activity.goTo(cls: Class<*>, transition_animation: Boolean = fal
 }
 
 /**
- * 是否存在虚拟导航栏判断。
+ 是否存在虚拟导航栏判断。
  */
 fun android.app.Activity.isHaveNavigationBar(): Boolean {
     val display = this.windowManager.defaultDisplay
@@ -638,7 +641,7 @@ fun android.app.Activity.isHaveNavigationBar(): Boolean {
 }
 
 /**
- * 设置自动调整高度的 contentView
+ 设置自动调整高度的 contentView
  */
 fun AppCompatActivity.setAutoLayoutContentView(layoutResID: Int, navigationBarColor: Int? = null) {
     setContentView(layoutResID)
@@ -655,24 +658,22 @@ fun AppCompatActivity.setAutoLayoutContentView(view: View, navigationBarColor: I
 }
 
 /**
- * 适配虚拟机导航栏
+ 适配虚拟机导航栏
  */
-fun android.app.Activity.adjustWindowSizeForNavigationBar(navigationBarColor: Int? = null) {
-    val display = this.windowManager.defaultDisplay
-    val size = Point()
-    val realsize = Point()
-    display.getSize(size)
-    display.getRealSize(realsize)
-    if (size.y != realsize.y) {
-        val contentView = findViewById<View>(android.R.id.content)
-        //  更改布局高度（留出虚拟导航栏位置）
-        contentView.layoutParams.height = size.y
-        //  设置留出的导航栏区域背景
-        if (navigationBarColor != null) {
-            contentView.rootView?.setBackgroundColor(ContextCompat.getColor(applicationContext,navigationBarColor))
-        } else {
-            contentView.rootView?.setBackgroundColor(ContextCompat.getColor(applicationContext,R.color.theme01_appBackColor))
-        }
+fun Activity.adjustWindowSizeForNavigationBar(navigationBarColorResId: Int? = null) {
+    val contentView = findViewById<View>(android.R.id.content)
+
+    ViewCompat.setOnApplyWindowInsetsListener(contentView) { view, windowInsets ->
+        val systemBarsInsets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        val navigationBarHeight = systemBarsInsets.bottom
+
+        view.setPadding(0, 0, 0, navigationBarHeight)
+
+        val colorResId = navigationBarColorResId ?: R.color.theme01_appBackColor
+        val color = ContextCompat.getColor(this, colorResId)
+        window.decorView.setBackgroundColor(color)
+
+        windowInsets
     }
 }
 

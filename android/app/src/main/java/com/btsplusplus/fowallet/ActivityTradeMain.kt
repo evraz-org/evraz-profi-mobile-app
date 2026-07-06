@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import bitshares.*
 import com.btsplusplus.fowallet.databinding.ActivityMainBinding
 import com.btsplusplus.fowallet.kline.TradingPair

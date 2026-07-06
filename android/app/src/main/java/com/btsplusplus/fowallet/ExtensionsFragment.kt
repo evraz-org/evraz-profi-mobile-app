@@ -1,6 +1,6 @@
 package com.btsplusplus.fowallet
 
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import bitshares.dp
 
 fun Fragment.toDp(v: Float): Int {
