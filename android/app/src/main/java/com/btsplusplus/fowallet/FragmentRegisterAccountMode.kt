@@ -65,7 +65,7 @@ class FragmentRegisterAccountMode : Fragment() {
         val mask = ViewMask(R.string.kTipsBeRequesting.xmlstring(this.activity!!), this.activity!!)
         mask.show()
         val chainMgr = ChainObjectManager.sharedChainObjectManager()
-        val username = account_name.toLowerCase()
+        val username = account_name.lowercase()
         //  1、查询名字是否被占用。
         chainMgr.isAccountExistOnBlockChain(username).then {
             if (it != null && it as Boolean) {

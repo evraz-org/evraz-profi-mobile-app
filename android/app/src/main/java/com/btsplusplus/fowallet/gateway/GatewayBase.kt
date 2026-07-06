@@ -216,14 +216,14 @@ open class GatewayBase {
                 }
 
                 //  TODO:wallet for openledger wrong backingCoinType
-                val backingCoinWalletSymbol = backingCoinItem.optString("walletSymbol").toLowerCase()
+                val backingCoinWalletSymbol = backingCoinItem.optString("walletSymbol").lowercase()
                 if (backingCoinWalletSymbol != backingCoinType) {
                     //  TODO:openledger eosdac、eos.eosdac
                     //  CLS_LOG(@"incorrect backingCoinType: %@", backingCoinType);
                     backingCoinType = backingCoinWalletSymbol
                 }
 
-                val symbol = item.getString("symbol").toUpperCase()
+                val symbol = item.getString("symbol").uppercase()
                 val balance_item = balanceHash.optJSONObject(symbol)
                         ?: jsonObjectfromKVS("iszero", true)
 
@@ -231,7 +231,7 @@ open class GatewayBase {
                 appext.enableWithdraw = enableWithdraw
                 appext.enableDeposit = enableDeposit
                 appext.symbol = symbol
-                appext.backSymbol = backingCoinItem.getString("symbol").toUpperCase()
+                appext.backSymbol = backingCoinItem.getString("symbol").uppercase()
                 appext.name = item.getString("name")
                 appext.intermediateAccount = item.getString("intermediateAccount")
                 appext.balance = balance_item
@@ -263,8 +263,8 @@ open class GatewayBase {
         //  查询充值地址
         val account_data = fullAccountData.getJSONObject("account")
 
-        val backingCoinType = appext.backingCoinType.toLowerCase()
-        val coinType = appext.coinType.toLowerCase()
+        val backingCoinType = appext.backingCoinType.lowercase()
+        val coinType = appext.coinType.lowercase()
 
         val outputAddress = account_data.getString("name")
 
@@ -310,11 +310,11 @@ open class GatewayBase {
                     p.resolve(R.string.kVcDWErrTipsRequestDepositAddrFailed.xmlstring(ctx))
                     return@then null
                 }
-                if (resp_data.optString("inputCoinType").toLowerCase() != backingCoinType) {
+                if (resp_data.optString("inputCoinType").lowercase() != backingCoinType) {
                     p.resolve(String.format(R.string.kVcDWErrTipsRequestDepositAddrFailed2.xmlstring(ctx), "inputCoinType"))
                     return@then null
                 }
-                if (resp_data.optString("outputCoinType").toLowerCase() != coinType) {
+                if (resp_data.optString("outputCoinType").lowercase() != coinType) {
                     p.resolve(String.format(R.string.kVcDWErrTipsRequestDepositAddrFailed2.xmlstring(ctx), "outputCoinType"))
                     return@then null
                 }

@@ -1716,7 +1716,7 @@ class ChainObjectManager {
     fun queryAccountData(account_name_or_id: String): Promise {
         val p = Promise()
         val conn = GrapheneConnectionManager.sharedGrapheneConnectionManager().any_connection()
-        conn.async_exec_db("get_accounts", jsonArrayfrom(jsonArrayfrom(account_name_or_id.toLowerCase()))).then {
+        conn.async_exec_db("get_accounts", jsonArrayfrom(jsonArrayfrom(account_name_or_id.lowercase()))).then {
             val data_array = it as JSONArray?
             if (data_array == null || data_array.length() <= 0) {
                 p.resolve(null)

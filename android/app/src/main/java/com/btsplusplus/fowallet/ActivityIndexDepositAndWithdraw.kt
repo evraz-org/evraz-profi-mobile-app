@@ -260,7 +260,7 @@ class ActivityIndexDepositAndWithdraw : BtsppActivity() {
         _balanceDataHash.keys().forEach { asset_id ->
             val obj = chainMgr.getChainObjectByID(asset_id)
             val item = _balanceDataHash.getJSONObject(asset_id)
-            val asset_symbol = obj.getString("symbol").toUpperCase()
+            val asset_symbol = obj.getString("symbol").uppercase()
             _balanceDataNameHash.put(asset_symbol, item)
         }
     }

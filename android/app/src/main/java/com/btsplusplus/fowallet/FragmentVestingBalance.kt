@@ -130,7 +130,7 @@ class FragmentVestingBalance : BtsppFragment() {
                         var name = nameHash.optString(oid, null)
                         if (name == null) {
                             val balance_type = vesting.optString("balance_type", null)
-                            if (balance_type != null && balance_type.toLowerCase() == "market_fee_sharing") {
+                            if (balance_type != null && balance_type.lowercase() == "market_fee_sharing") {
                                 name = R.string.kVestingCellNameMarketFeeSharing.xmlstring(_ctx!!)
                             }
                         }

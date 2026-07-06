@@ -486,7 +486,7 @@ class OrgUtils {
                         if (error != null) {
                             val server_error = error.optJSONArray("base")?.optString(0, null)
                             if (server_error != null) {
-                                val lowermsg = server_error.toLowerCase()
+                                val lowermsg = server_error.lowercase()
                                 //  特化错误信息
                                 err_msg = if (lowermsg.indexOf("account exists") >= 0) {
                                     R.string.kLoginFaucetTipsAccountAlreadyExist.xmlstring(ctx)

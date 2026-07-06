@@ -655,7 +655,7 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
             val value = it as? String
             if (value != null) {
                 //  资产名称有效性再提交的时候检测
-                _symbol = value.toUpperCase()
+                _symbol = value.uppercase()
                 _drawValue_assetSymbol()
             }
             return@then null
@@ -925,7 +925,7 @@ class ActivityAssetCreateOrEdit : BtsppActivity() {
         }
 
         //  各种条件校验
-        val sym = _symbol.toUpperCase().trim()
+        val sym = _symbol.uppercase().trim()
         if (!_checkAssetSymbolName(sym)) {
             return
         }

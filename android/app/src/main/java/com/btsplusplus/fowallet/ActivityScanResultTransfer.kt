@@ -65,7 +65,7 @@ class ActivityScanResultTransfer : BtsppActivity() {
             binding.layoutTransferAmountAutoInput.visibility = View.GONE
             binding.layoutTransferAmountInput.visibility = View.VISIBLE
 
-            binding.btnTransferAsset.text = _asset.getString("symbol").toUpperCase()
+            binding.btnTransferAsset.text = _asset.getString("symbol").uppercase()
 
             //  绑定事件处理
             //  初始化事件

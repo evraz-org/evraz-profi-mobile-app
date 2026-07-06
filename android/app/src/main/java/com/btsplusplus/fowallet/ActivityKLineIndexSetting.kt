@@ -222,7 +222,7 @@ class ActivityKLineIndexSetting : BtsppActivity() {
             _binding.layoutMainValue.text = resources.getString(R.string.kKlineIndexCellHide)
         } else {
             _binding.layoutMainIndexAll.visibility = View.VISIBLE
-            _binding.layoutMainValue.text = value_type.toUpperCase()
+            _binding.layoutMainValue.text = value_type.uppercase()
             if (value_type == "ma") {
                 val value_values = _configValueHash.getJSONArray("${value_type}_value")
                 assert(value_values.length() == 3)
@@ -281,7 +281,7 @@ class ActivityKLineIndexSetting : BtsppActivity() {
             _binding.layoutSubValue.text = resources.getString(R.string.kKlineIndexCellHide)
         } else {
             _binding.layoutSubIndexAll.visibility = View.VISIBLE
-            _binding.layoutSubValue.text = value_type.toUpperCase()
+            _binding.layoutSubValue.text = value_type.uppercase()
             if (value_type == "macd") {
                 val value_values = _configValueHash.getJSONObject("${value_type}_value")
                 assert(value_values.length() == 3)

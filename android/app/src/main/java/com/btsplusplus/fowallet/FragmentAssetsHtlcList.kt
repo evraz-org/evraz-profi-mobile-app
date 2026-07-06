@@ -211,7 +211,7 @@ class FragmentAssetsHtlcList : BtsppFragment() {
             else -> String.format(R.string.kVcHtlcListHashTypeValueUnknown.xmlstring(ctx), hash_type)
         }
 
-        val hash_value = hash_lock.getJSONArray("preimage_hash").getString(1).toUpperCase()
+        val hash_value = hash_lock.getJSONArray("preimage_hash").getString(1).uppercase()
 
         // 父级 layout
         val layout_parent = LinearLayout(ctx)

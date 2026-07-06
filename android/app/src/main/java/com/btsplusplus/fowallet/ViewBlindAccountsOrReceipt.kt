@@ -159,7 +159,7 @@ class ViewBlindAccountsOrReceipt : LinearLayout {
             when (_view_type) {
                 kBlindItemTypeInput -> {
                     val decrypted_memo = data.getJSONObject("decrypted_memo")
-                    val hex_check_num = BinSerializer().write_u32(decrypted_memo.getLong("check")).get_data().hexEncode().toUpperCase()
+                    val hex_check_num = BinSerializer().write_u32(decrypted_memo.getLong("check")).get_data().hexEncode().uppercase()
                     text = String.format(resources.getString(R.string.kVcStCellValueReceiptValue), hex_check_num)
                     ellipsize = TextUtils.TruncateAt.END
                 }

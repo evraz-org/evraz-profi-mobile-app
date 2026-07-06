@@ -308,7 +308,7 @@ fun android.app.Activity.showGrapheneError(error: Any?) {
                     return
                 }
                 //  "Preimage size mismatch." or ""Provided preimage does not generate correct hash."
-                val lowermsg = msg.toLowerCase()
+                val lowermsg = msg.lowercase()
                 if (lowermsg.indexOf("preimage size") >= 0 || lowermsg.indexOf("provided preimage") >= 0) {
                     showToast(resources.getString(R.string.kGPErrorRedeemInvalidPreimage))
                     return

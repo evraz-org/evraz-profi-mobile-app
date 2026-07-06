@@ -47,7 +47,7 @@ class ActivityRegisterEntry : BtsppActivity() {
             return
         }
         val self = this
-        val new_account_name = _binding.tfAccountName.text.toString().toLowerCase()
+        val new_account_name = _binding.tfAccountName.text.toString().lowercase()
         val mask = ViewMask(resources.getString(R.string.kTipsBeRequesting), this).apply { show() }
         ChainObjectManager.sharedChainObjectManager().isAccountExistOnBlockChain(new_account_name).then {
             mask.dismiss()

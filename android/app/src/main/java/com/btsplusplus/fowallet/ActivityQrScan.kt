@@ -170,7 +170,7 @@ class ActivityQrScan : BaseCaptureActivity() {
      *  二维码结果：商家收款发票情况处理。
      */
     private fun _processScanResultAsMerchantInvoice(invoice: JSONObject, raw: String, mask: ViewMask) {
-        _queryInvoiceDependencyData(invoice.optString("currency", null)?.toUpperCase(), invoice.optString("to", null)?.toLowerCase()).then {
+        _queryInvoiceDependencyData(invoice.optString("currency", null)?.uppercase(), invoice.optString("to", null)?.lowercase()).then {
             val data_array = it as? JSONArray
             var accountData: JSONObject? = null
             var assetData: JSONObject? = null

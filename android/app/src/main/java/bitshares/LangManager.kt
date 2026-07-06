@@ -83,9 +83,9 @@ class LangManager {
                 currentLanguage = "en"
                 val localeLang = Locale.getDefault().language
                 if (localeLang != null) {
-                    if (localeLang.toLowerCase().indexOf("zh") == 0) {
+                    if (localeLang.lowercase().indexOf("zh") == 0) {
                         currentLanguage = "zh-Hans"
-                    } else if (localeLang.toLowerCase().indexOf("ja") == 0) {
+                    } else if (localeLang.lowercase().indexOf("ja") == 0) {
                         currentLanguage = "ja"
                     }
                 }

@@ -65,7 +65,7 @@ class FragmentRegisterWalletMode : Fragment() {
         val mask = ViewMask(R.string.kTipsBeRequesting.xmlstring(this.activity!!), this.activity!!)
         mask.show()
         //  1、查询名字是否被占用。
-        val username = account_name.toLowerCase()
+        val username = account_name.lowercase()
         val chainMgr = ChainObjectManager.sharedChainObjectManager()
         chainMgr.isAccountExistOnBlockChain(username).then {
             if (it != null && it as Boolean) {
