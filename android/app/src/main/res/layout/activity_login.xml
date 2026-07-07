@@ -1,71 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/theme01.appBackColor"
+    android:background="@android:color/black"
+    android:fitsSystemWindows="true"
     tools:context=".ActivityLogin">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="15dp"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:layout_height="40dp"
+        android:orientation="horizontal">
 
-        <FrameLayout
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/layout_back_from_login"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:orientation="horizontal">
 
-            <LinearLayout
-                android:id="@+id/layout_back_from_login"
+            <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_btn_back" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/ic_btn_back" />
+            <TextView
+                style="@style/kNavigationBarTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/kBtnBack" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/kNavigationBarTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:text="@string/kNormalCellBtnLogin" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_marginTop="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:padding="16dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="3sp"
+                android:text="@string/login_description"
+                android:textColor="#f6efcc"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:id="@+id/layoutAccountName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="70dp"
+                android:orientation="vertical">
 
                 <TextView
-                    style="@style/kNavigationBarTextStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    style="@style/EvrazTextHeaderViewStyle"
+                    android:text="@string/import_account_name" />
+
+                <EditText
+                    android:id="@+id/editTextAccountName"
+                    style="@style/EvrazEditTextStyle"
+                    android:digits="0123456789abcdefghijklmnopqrstuvwxyz-"
                     android:gravity="center_vertical"
-                    android:text="@string/kBtnBack" />
+                    android:inputType="text" />
+
+                <TextView
+                    android:id="@+id/textViewAccountInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="4dp"
+                    android:textColor="@color/quotation_top_green"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
+
             </LinearLayout>
 
             <TextView
-                android:id="@+id/title"
-                style="@style/kNavigationBarTextStyle"
+                style="@style/EvrazTextHeaderViewStyle"
+                android:layout_marginTop="36dp"
+                android:text="@string/import_password" />
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:text="@string/kNormalCellBtnLogin" />
+                android:layout_height="45dp"
+                app:passwordToggleEnabled="true">
+            <EditText
+                android:id="@+id/editTextPassword"
+                style="@style/EvrazEditTextStyle"
+                android:inputType="textPassword" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
-                android:id="@+id/button_register"
-                style="@style/kNavigationBarTextStyle"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/textViewErrorInfo"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginRight="10dp"
-                android:background="#00000000"
-                android:text="@string/kLoginBtnRegister"
-                android:textAllCaps="false" />
-        </FrameLayout>
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/red"
+                android:textSize="14sp" />
 
-        <FrameLayout
-            android:id="@+id/fragment_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="48dp">
-        </FrameLayout>
+            <TextView
+                android:id="@+id/buttonImport"
+                style="@style/EvrazTextViewButton"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/btn_green_background"
+                android:paddingEnd="22dp"
+                android:paddingStart="22dp"
+                android:text="@string/log_in"
+                android:textColor="@android:color/black" />
 
-    </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+    </FrameLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

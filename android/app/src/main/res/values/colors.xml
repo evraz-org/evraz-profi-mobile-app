@@ -70,6 +70,8 @@
     <color name="light_gray_color">#938e8e</color>
     <color name="red">#fe0000</color>
     <color name="table_gray_color">#ededed</color>
+    <color name="quotation_top_green">#009933</color>
+    <color name="light_green_color">#7fe478</color>
 
     <!--
         navigationBarBackColor: '131f30', # => done! 同 appBackColor

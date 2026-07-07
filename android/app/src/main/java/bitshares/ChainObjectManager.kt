@@ -1725,7 +1725,7 @@ class ChainObjectManager {
             p.resolve(data_array.optJSONObject(0))
             return@then null
         }.catch {
-            p.resolve(null)
+            p.resolve("error")
         }
         return p
     }

@@ -2,7 +2,6 @@ package com.btsplusplus.fowallet
 
 import android.os.Bundle
 import androidx.core.content.ContextCompat
-import android.widget.TextView
 import bitshares.*
 import com.btsplusplus.fowallet.databinding.ActivityIndexMyBinding
 import com.btsplusplus.fowallet.utils.VcUtils

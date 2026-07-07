@@ -1817,4 +1817,14 @@
     <string name="create_account_password_empty">The password is empty</string>
     <string name="create_account_password_confirm_empty">The confirmation password is empty</string>
     <string name="create_account_check_box_confirm">You should confirm the content after the checkbox.</string>
+    <string name="login_description">Application log in is implemented only through Account Model</string>
+    <string name="import_account_name">Account Name:</string>
+    <string name="import_password">Password:</string>
+    <string name="log_in">Log In</string>
+    <string name="import_activity_connect_failed">Failed to connect to server.</string>
+    <string name="annual">Annual subscriber</string>
+    <string name="basic">Basic member</string>
+    <string name="lifetime">Lifetime member</string>
+    <string name="unknown">Unknown member</string>
+    <string name="import_activity_account_invalid">The account does not exist.</string>
 </resources>

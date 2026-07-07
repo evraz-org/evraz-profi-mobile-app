@@ -85,6 +85,7 @@ class ActivityLaunch : BtsppActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if ((requestCode == LOGIN_CODE) && (resultCode == RESULT_OK)) {
             _enterToMain()
         }
