@@ -14,6 +14,7 @@ import org.json.JSONObject
 class CreateAccountActivity : BtsppActivity() {
     private lateinit var mMask: ViewMask
     private lateinit var mBinding: ActivityCreateAccountBinding
+    private lateinit var mAccauntPasswordCondition: ViewFormatConditons
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +41,6 @@ class CreateAccountActivity : BtsppActivity() {
             val checkBox3 = mBinding.checkBoxConfirm3
 
             val textViewAccountError = mBinding.textViewErrorAccount
-            val textViewPasswordError = mBinding.textViewErrorPasswrod
             val textViewPasswordConfirmError = mBinding.textViewErrorInfo
 
             var bError = false
@@ -49,8 +49,8 @@ class CreateAccountActivity : BtsppActivity() {
                 bError = true
             }
 
-            if (strPassword.isEmpty()) {
-                textViewPasswordError.setText(R.string.create_account_password_empty)
+            if (!mAccauntPasswordCondition.isAllConditionsMatched()) {
+                mBinding.textViewErrorInfo.text = resources.getString(R.string.kLoginSubmitTipsAccountPasswordIncorrect)
                 bError = true
             }
 
@@ -113,34 +113,14 @@ class CreateAccountActivity : BtsppActivity() {
                         processCheckAccount(strAccountName)
                     }
                 }
-
             }
         })
 
-        mBinding.editTextPassword.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable) {
-                val strPassword = s.toString()
-
-                if (strPassword.length < 12) {
-                    mBinding.textViewErrorPasswrod.setText(R.string.create_account_password_requirement)
-                } else {
-                    val bDigit = strPassword.matches(".*\\d+.*".toRegex())
-                    val bUpperCase = strPassword.matches(".*[A-Z]+.*".toRegex())
-                    val bLowerCase = strPassword.matches(".*[a-z]+.*".toRegex())
-                    if ((bDigit && bUpperCase && bLowerCase) == false) {
-                        mBinding.textViewErrorPasswrod.setText(R.string.create_account_password_requirement)
-                    } else {
-                        mBinding.textViewErrorPasswrod.text = ""
-                    }
-                }
-            }
-        })
+        mAccauntPasswordCondition = ViewFormatConditons(this).apply {
+            auxFastConditionsViewForAccountPassword()
+            bindingTextField(mBinding.editTextPassword)
+        }
+        mBinding.layoutFormatAccountPassword.addView(mAccauntPasswordCondition)
 
         mBinding.editTextPasswordConfirm.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

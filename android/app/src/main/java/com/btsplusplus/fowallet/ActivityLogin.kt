@@ -53,25 +53,25 @@ class ActivityLogin: BtsppActivity() {
 
         override fun afterTextChanged(s: Editable?) {
             if(s.isNullOrEmpty()) {
-                mBidding.editTextAccountName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-                mBidding.textViewAccountInfo.visibility = View.GONE
+                mBinding.editTextAccountName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                mBinding.textViewAccountInfo.visibility = View.GONE
             }
             ChainObjectManager.sharedChainObjectManager().queryAccountData(s.toString()).then { accountObject ->
                 this@ActivityLogin.runOnUiThread {
                     if ((accountObject == null) || (accountObject !is JSONObject)) {
-                        mBidding.editTextAccountName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.cross_circle, 0)
-                        mBidding.textViewAccountInfo.setText(if (accountObject == null) R.string.import_activity_account_invalid else R.string.import_activity_connect_failed)
-                        mBidding.textViewAccountInfo.setTextColor(ContextCompat.getColor(this@ActivityLogin,R.color.red))
-                        mBidding.textViewAccountInfo.visibility = View.VISIBLE
+                        mBinding.editTextAccountName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.cross_circle, 0)
+                        mBinding.textViewAccountInfo.setText(if (accountObject == null) R.string.import_activity_account_invalid else R.string.import_activity_connect_failed)
+                        mBinding.textViewAccountInfo.setTextColor(ContextCompat.getColor(this@ActivityLogin,R.color.red))
+                        mBinding.textViewAccountInfo.visibility = View.VISIBLE
                     } else {
-                        mBidding.editTextAccountName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.checkmark_circle, 0)
-                        mBidding.textViewAccountInfo.text = String.format(
+                        mBinding.editTextAccountName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.checkmark_circle, 0)
+                        mBinding.textViewAccountInfo.text = String.format(
                             Locale.getDefault(),
                             getStatus(accountObject) + " #%s",
                             accountObject.getString("id").replace(".", "")
                         )
-                        mBidding.textViewAccountInfo.setTextColor(ContextCompat.getColor(this@ActivityLogin,R.color.quotation_top_green))
-                        mBidding.textViewAccountInfo.visibility = View.VISIBLE
+                        mBinding.textViewAccountInfo.setTextColor(ContextCompat.getColor(this@ActivityLogin,R.color.quotation_top_green))
+                        mBinding.textViewAccountInfo.visibility = View.VISIBLE
                     }
                 }
             }
@@ -79,42 +79,54 @@ class ActivityLogin: BtsppActivity() {
     }
 
     private val mAccountNameWatcher = AccountNameWatcher()
-    private lateinit var mBidding: ActivityLoginBinding
+    private lateinit var mBinding: ActivityLoginBinding
+    private lateinit var mAccauntPasswordCondition: ViewFormatConditons
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mBidding = ActivityLoginBinding.inflate(layoutInflater)
-        setAutoLayoutContentView(mBidding.root)
+        mBinding = ActivityLoginBinding.inflate(layoutInflater)
+        setAutoLayoutContentView(mBinding.root)
         setFullScreen()
 
-        mBidding.layoutBackFromLogin.setOnClickListener { finish() }
+        mBinding.layoutBackFromLogin.setOnClickListener { finish() }
 
-        mBidding.editTextAccountName.addTextChangedListener(mAccountNameWatcher)
+        mBinding.editTextAccountName.addTextChangedListener(mAccountNameWatcher)
 
-        mBidding.buttonImport.setOnClickListener {
-            processImport(mBidding.editTextAccountName.text.toString(), mBidding.editTextPassword.text.toString())
+        mAccauntPasswordCondition = ViewFormatConditons(this).apply {
+            auxFastConditionsViewForAccountPassword()
+            bindingTextField(mBinding.editTextPassword)
+        }
+        mBinding.layoutFormatAccountPassword.addView(mAccauntPasswordCondition)
+
+        mBinding.buttonImport.setOnClickListener {
+            processImport(mBinding.editTextAccountName.text.toString(), mBinding.editTextPassword.text.toString())
         }
     }
 
-    private fun processImport(account_name: String, password: String) {
-        if (account_name.isEmpty()) {
-            mBidding.textViewErrorInfo.text = resources.getString(R.string.kLoginSubmitTipsAccountIsEmpty)
+    private fun processImport(accountName: String, password: String) {
+        if (accountName.isEmpty()) {
+            mBinding.textViewErrorInfo.text = resources.getString(R.string.kLoginSubmitTipsAccountIsEmpty)
             return
         }
         if (password.isEmpty()) {
-            mBidding.textViewErrorInfo.text = resources.getString(R.string.kMsgPasswordCannotBeNull)
+            mBinding.textViewErrorInfo.text = resources.getString(R.string.kMsgPasswordCannotBeNull)
             return
         }
 
-        val username = account_name.lowercase()
+        if (!mAccauntPasswordCondition.isAllConditionsMatched()) {
+            mBinding.textViewErrorInfo.text = resources.getString(R.string.kLoginSubmitTipsAccountPasswordIncorrect)
+            return
+        }
+
+        val username = accountName.lowercase()
         val mask = ViewMask(R.string.kTipsBeRequesting.xmlstring(this), this)
         mask.show()
         ChainObjectManager.sharedChainObjectManager().queryFullAccountInfo(username).then {
             mask.dismiss()
             val full_data = it as? JSONObject
             if (full_data == null) {
-                mBidding.textViewErrorInfo.text = resources.getString(R.string.kLoginSubmitTipsAccountIsNotExist)
+                mBinding.textViewErrorInfo.text = resources.getString(R.string.kLoginSubmitTipsAccountIsNotExist)
                 return@then null
             }
 
@@ -124,10 +136,10 @@ class ActivityLogin: BtsppActivity() {
 
             val status = WalletManager.calcPermissionStatus(account_active, jsonObjectfromKVS(calc_bts_active_address, true))
             if (status == EAccountPermissionStatus.EAPS_NO_PERMISSION) {
-                mBidding.textViewErrorInfo.text = R.string.kLoginSubmitTipsAccountPasswordIncorrect.xmlstring(this)
+                mBinding.textViewErrorInfo.text = R.string.kLoginSubmitTipsAccountPasswordIncorrect.xmlstring(this)
             }
             if (status == EAccountPermissionStatus.EAPS_PARTIAL_PERMISSION) {
-                mBidding.textViewErrorInfo.text = R.string.kLoginSubmitTipsAccountPasswordPermissionNotEnough.xmlstring(this)
+                mBinding.textViewErrorInfo.text = R.string.kLoginSubmitTipsAccountPasswordPermissionNotEnough.xmlstring(this)
             }
 
             val active_private_wif = OrgUtils.genBtsWifPrivateKey(active_seed.utf8String())

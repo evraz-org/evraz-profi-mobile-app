@@ -63,7 +63,7 @@ class ViewFormatConditons : LinearLayout {
         fastConditionContainsUppercaseLetter(resources.getString(R.string.kFmtConditioncontainsUpperLetters))
         fastConditionContainsLowercaseLetter(resources.getString(R.string.kFmtConditionContainsLowerLetters))
         fastConditionContainsArabicNumerals(resources.getString(R.string.kFmtConditionContainsDigits))
-        addLengthCondition(resources.getString(R.string.kFmtConditionLen32To40Chars), min_length = 32, max_length = 40, negative = false)
+        addLengthCondition(resources.getString(R.string.kFmtConditionLen12To50Chars), min_length = 12, max_length = 50, negative = false)
     }
 
     /**

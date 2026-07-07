@@ -93,7 +93,6 @@
                             android:visibility="invisible" />
 
                     </RelativeLayout>
-
                     <TextView
                         android:id="@+id/textViewErrorAccount"
                         android:layout_width="match_parent"
@@ -103,7 +102,6 @@
                         android:layout_marginRight="4dp"
                         android:textColor="@color/red"
                         android:textSize="14sp" />
-
                 </LinearLayout>
 
                 <TextView
@@ -121,15 +119,15 @@
                         android:inputType="textPassword" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <TextView
-                    android:id="@+id/textViewErrorPasswrod"
+                <LinearLayout
+                    android:id="@+id/layoutFormatAccountPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                </LinearLayout>
+
+                <Space
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginRight="4dp"
-                    android:textColor="@color/red"
-                    android:textSize="14sp" />
+                    android:layout_height="18dp"/>
 
                 <TextView
                     style="@style/EvrazTextHeaderViewStyle"

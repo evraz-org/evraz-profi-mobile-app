@@ -281,6 +281,7 @@
     <string name="kFmtConditionLen12To40Chars">12 to 40 characters in length</string>
     <string name="kFmtConditionLen3To32Chars">3 to 32 characters in length</string>
     <string name="kFmtConditionLen32To40Chars">32 to 40 characters in length</string>
+    <string name="kFmtConditionLen12To50Chars">12 to 50 characters in length</string>
     <string name="kFmtConditionOnlyContainsLetterDigitAndHyphens">Composed of letters, numbers, or hyphens</string>
     <string name="kFmtConditionBeginwithLetters">Begin with a letter</string>
     <string name="kFmtConditionEndWithLetterOrDigits">End with a letter or number</string>
