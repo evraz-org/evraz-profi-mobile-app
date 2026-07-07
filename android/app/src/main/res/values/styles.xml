@@ -187,6 +187,13 @@
         </item><!--special for ListPreference-->
         <!--dialog background-->
         <item name="android:windowBackground">@color/gray_color</item>
-
+    </style>
+    <style name="EvrazTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/beige_color</item>
+        <item name="android:textSize">16sp</item>
     </style>
 </resources>

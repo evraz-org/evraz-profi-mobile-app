@@ -1828,4 +1828,17 @@
     <string name="lifetime">Lifetime member</string>
     <string name="unknown">Unknown member</string>
     <string name="import_activity_account_invalid">The account does not exist.</string>
+    <string name="send">Send</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="count">Amount</string>
+    <string name="label_balance">Available:</string>
+    <string name="note">Note</string>
+    <string name="comission">Commission</string>
+    <string name="label_ok">OK</string>
+    <string name="share">Share</string>
+    <string name="password_confirm_title">Please type your password to confirm the transaction:</string>
+    <string name="password_confirm_button_confirm">CONFIRM</string>
+    <string name="password_confirm_button_cancel">CANCEL</string>
+    <string name="password_invalid">Invalid password.</string>
 </resources>

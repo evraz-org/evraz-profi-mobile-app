@@ -1,268 +1,300 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ActivityIndexTransfer"
-    android:background="@color/theme01.appBackColor">
+    android:background="@android:color/black"
+    android:fitsSystemWindows="true"
+    tools:context=".ActivityIndexTransfer">
 
-
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="15dp"
-        android:padding="10dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="20dp"
         android:orientation="vertical">
 
-        <!-- 导航栏 -->
-        <FrameLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/btn_send"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true">
 
-            <TextView
-                android:id="@+id/title"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:gravity="center"
-                android:layout_gravity="center_vertical"
-                android:text="@string/kVcTitleTransfer"
-                style="@style/kNavigationBarTextStyle" />
-
-            <Button
-                android:id="@+id/btn_more_actions"
-                android:layout_width="48dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:background="#00000000"
-                style="@style/kNavigationBarTextStyle"
-                android:text="@string/kVcTransferAdvButtonName"
-                android:textAllCaps="false"
-                android:layout_marginRight="10dp" />
-        </FrameLayout>
-        
-        <LinearLayout
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/EvrazTitle"
+                    android:text="@string/send" />
+
+                <TextView
+                    style="@style/EvrazTextHeaderViewStyle"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/from" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp">
+
+                    <WebView
+                        android:id="@+id/webViewAvatarFrom"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp" />
+
+                    <EditText
+                        android:id="@+id/editTextFrom"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_toRightOf="@id/webViewAvatarFrom"
+                        android:background="@drawable/btn_default_background"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:inputType="text"
+                        android:paddingBottom="10dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="80dp"
+                        android:paddingTop="10dp"
+                        android:textColor="@color/beige_color"
+                        android:textSize="@dimen/send_fragment_text_size"
+                        android:textStyle="bold"
+                        tools:text="test124" />
+
+                    <TextView
+                        android:id="@+id/textViewFromId"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/editTextFrom"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        tools:text="#22222"
+                        android:textColor="@color/beige_color"
+                        android:textSize="@dimen/send_fragment_text_size" />
+
+                </RelativeLayout>
+
+
+                <TextView
+                    style="@style/EvrazTextHeaderViewStyle"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/to" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp">
+
+                    <WebView
+                        android:id="@+id/webViewAvatarTo"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp" />
+
+                    <EditText
+                        android:id="@+id/editTextTo"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:background="@drawable/btn_default_background"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_toRightOf="@+id/webViewAvatarTo"
+                        android:layout_toEndOf="@+id/webViewAvatarTo"
+                        android:layout_toLeftOf="@id/qrScan"
+                        android:layout_toStartOf="@id/qrScan"
+                        android:inputType="text"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="80dp"
+                        android:textColor="@color/beige_color"
+                        android:textSize="@dimen/send_fragment_text_size"
+                        tools:text="test1241"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/textViewToId"
+                        android:layout_marginEnd="8dp"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/editTextTo"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        tools:text="#10714822222"
+                        android:lines="1"
+                        android:textColor="@color/beige_color"
+                        android:layout_toLeftOf="@+id/qrScan"
+                        android:layout_toStartOf="@+id/qrScan"
+                        android:textSize="@dimen/send_fragment_text_size" />
+
+                    <ImageView
+                        android:id="@+id/qrScan"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        tools:text="#22222"
+                        android:layout_marginBottom="12dp"
+                        app:srcCompat="@drawable/qrcode_scan" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/EvrazTextHeaderViewStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/count" />
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        style="@style/EvrazTextHeaderViewStyle"
+                        android:textSize="10sp"
+                        android:layout_width="wrap_content"
+                        android:textAlignment="textEnd"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/label_balance" />
+
+                    <TextView
+                        android:id="@+id/editTextAvailable"
+                        android:layout_weight="0"
+                        style="@style/EvrazTextHeaderViewStyle"
+                        android:layout_width="wrap_content"
+                        android:textAlignment="textEnd"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginTop="8dp"
+                        android:text="0" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_default_background"
+                    android:orientation="horizontal">
+
+
+                    <EditText
+                        android:id="@+id/editTextQuantity"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:inputType="numberDecimal"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:text="0"
+                        android:textColor="@color/beige_color"
+                        android:textSize="@dimen/send_fragment_text_size" />
+
+                    <androidx.appcompat.widget.AppCompatSpinner
+                        android:id="@+id/spinner_unit"
+                        android:layout_width="95dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:entries="@array/bts_unit"
+                        android:textColor="@color/beige_color"
+                        tools:listitem="@layout/new_custom_spinner_item"
+                        android:textSize="@dimen/send_fragment_text_size"
+                        app:backgroundTint="@color/beige_color" />
+                </LinearLayout>
+
+                <TextView
+                    style="@style/EvrazTextHeaderViewStyle"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/note" />
+
+                <EditText
+                    android:id="@+id/editTextMemo"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:background="@drawable/btn_default_background"
+                    android:inputType="text"
+                    android:paddingBottom="10dp"
+                    android:paddingStart="10dp"
+                    android:paddingTop="10dp"
+                    android:textColor="@color/beige_color"
+                    android:textSize="@dimen/send_fragment_text_size" />
+
+                <TextView
+                    style="@style/EvrazTextHeaderViewStyle"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/comission" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/btn_default_background"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/editTextFee"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:minHeight="44dp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:paddingBottom="10dp"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:text="0"
+                        android:textColor="@color/beige_color"
+                        android:textSize="@dimen/send_fragment_text_size" />
+
+                    <androidx.appcompat.widget.AppCompatSpinner
+                        android:id="@+id/spinner_fee_unit"
+                        android:layout_width="95dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="16dp"
+                        tools:entries="@array/bts_unit"
+                        android:textColor="@color/beige_color"
+                        tools:listitem="@layout/new_custom_spinner_item"
+                        android:textSize="@dimen/send_fragment_text_size"
+                        app:backgroundTint="@color/beige_color"  />
+                </LinearLayout>
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <TextView
+            android:id="@+id/btn_send"
+            style="@style/EvrazTextViewButton"
+            android:layout_above="@+id/bottom_nav"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/btn_green_background"
+            android:text="@string/send"
+            android:textColor="@android:color/black" />
+
+        <include
+            layout="@layout/bottom_nav"
+            android:id="@+id/bottom_nav"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="40dp"
-            android:layout_marginTop="15dp">
+            android:layout_alignParentBottom="true"
+            android:layout_height="48dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:textSize="16dp"
-                android:textColor="@color/theme01.textColorMain"
-                android:text="@string/kVcTransferCellFrom"/>
-
-            <TextView
-                android:id="@+id/txt_value_from_name"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_vertical|right"
-                android:textSize="16dp"
-                android:textColor="@color/theme01.textColorMain"
-                android:text=""/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/cell_to_account"
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="40dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:textSize="16dp"
-                android:textColor="@color/theme01.textColorMain"
-                android:text="@string/kVcTransferCellTo"/>
-
-            <TextView
-                android:id="@+id/txt_value_to_name"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_vertical|right"
-                android:textSize="16dp"
-                android:textColor="@color/theme01.textColorGray"
-                android:text="@string/kVcTransferTipSelectToAccount"/>
-
-            <ImageView
-                android:id="@+id/cell_to_account_tailer_arrow"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical|right"
-                android:foregroundGravity="right"
-                android:src="@drawable/ic_btn_right_arrow" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/cell_transfer_asset"
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="40dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:textSize="16dp"
-                android:textColor="@color/theme01.textColorMain"
-                android:text="@string/kVcTransferCellAsset"/>
-
-            <TextView
-                android:id="@+id/txt_value_asset_name"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_vertical|right"
-                android:textSize="16dp"
-                android:textColor="@color/theme01.textColorMain"
-                android:text="CNY"/>
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical|right"
-
-
-                android:foregroundGravity="right"
-                android:src="@drawable/ic_btn_right_arrow" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="40dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:textSize="12dp"
-                android:textColor="@color/theme01.textColorNormal"
-                android:text="@string/kLableAvailable"/>
-
-            <TextView
-                android:id="@+id/txt_value_avaiable"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_vertical|right"
-                android:textSize="16dp"
-                android:textColor="@color/theme01.textColorMain"
-                android:text="4.969999CNY"/>
-
-        </LinearLayout>
+    </RelativeLayout>
 
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="40dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:textSize="16dp"
-                android:textColor="@color/theme01.textColorMain"
-                android:text="@string/kVcTransferCellAmount"/>
-
-            <EditText
-                android:id="@+id/tf_amount"
-                android:maxLength="24"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                style="@style/kTextFieldDecimalPad"
-                android:hint="@string/kVcTransferSubmitTipPleaseInputAmount"/>
-
-            <TextView
-                android:id="@+id/btn_transfer_all"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_vertical|right"
-                android:textSize="16dp"
-                android:textColor="@color/theme01.textColorHighlight"
-                android:text="@string/kLabelSendAll"/>
-
-        </LinearLayout>
-
-        <View android:layout_height="1dp" android:background="@color/theme01.bottomLineColor" android:layout_width="fill_parent"></View>
-
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginTop="40dp"
-            android:layout_height="40dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:textSize="16dp"
-                android:textColor="@color/theme01.textColorMain"
-                android:text="@string/kVcTransferCellMemo"/>
-
-            <EditText
-                android:id="@+id/tf_memo"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                style="@style/kTextFieldNormal"
-                android:hint="@string/kVcTransferTipInputMemo"/>
-
-
-        </LinearLayout>
-
-        <View android:layout_height="1dp" android:background="@color/theme01.bottomLineColor" android:layout_width="fill_parent"></View>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="20dp"
-            android:layout_weight="1"
-            android:background="@color/colorPrimary"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/btn_send"
-                android:layout_width="wrap_content"
-                style="@style/kMainButtonStyle"
-                android:layout_weight="1"
-                android:gravity="center|center_vertical"
-                android:padding="5dp"
-                android:textAllCaps="false"
-                android:text="@string/kLabelSendBtn" />
-        </LinearLayout>
-
-
-
-    </LinearLayout>
-
-    <include
-        layout="@layout/bottom_nav"
-        android:id="@+id/bottom_nav"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

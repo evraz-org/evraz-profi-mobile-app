@@ -4,13 +4,18 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
+import android.content.ContextWrapper
+import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.net.wifi.WifiManager
+import android.os.Environment
 import android.os.Looper
 import android.telephony.TelephonyManager
 import android.util.TypedValue
+import androidx.core.content.FileProvider
 import com.btsplusplus.fowallet.BuildConfig
 import com.btsplusplus.fowallet.R
 import com.google.zxing.BarcodeFormat
@@ -21,11 +26,12 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
+import java.io.File
+import java.io.FileOutputStream
 import java.io.InputStreamReader
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.HashMap
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
@@ -715,6 +721,68 @@ class Utils {
          */
         fun delay(body: () -> Unit) {
             android.os.Handler(Looper.getMainLooper()).postDelayed({ body() }, 1L)
+        }
+
+        fun getTempPath(context: Context?, folder: String): String {
+            val path = getRootFolder(context) +
+                    folder
+
+            return path
+        }
+
+        fun getRootFolder(context: Context?): String {
+            val packageNameString = if (context != null) context.applicationContext
+                .packageName else "com.NGSE.Temp"
+            return getRootFolderWithoutPackage(context) + packageNameString + File.separator
+        }
+
+        fun getRootFolderWithoutPackage(context: Context?): String {
+            val state = Environment.getExternalStorageState()
+            val isTempStorageAccessibile = Environment.MEDIA_MOUNTED == state
+
+            if (isTempStorageAccessibile || context == null) {
+                return Environment.getExternalStorageDirectory().absolutePath + "/Android/data/"
+            } else {
+                val cw = ContextWrapper(context)
+                val directory = cw.getDir("media", Context.MODE_PRIVATE)
+                return directory.absolutePath
+            }
+        }
+
+        fun shareImage(context: Context, bitmap: Bitmap) {
+            val file_path: String = getTempPath(context, "bitshare_qrcode")
+            val dir = File(file_path)
+            if (!dir.exists()) dir.mkdirs()
+
+            val format = SimpleDateFormat(
+                "yyyyMMddHHmmss",
+                Locale.getDefault()
+            ).format(Date())
+
+            val file = File(dir, "$format.png")
+            val fOut: FileOutputStream?
+            try {
+                fOut = FileOutputStream(file)
+                bitmap.compress(Bitmap.CompressFormat.PNG, 85, fOut)
+                fOut.flush()
+                fOut.close()
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+
+            val uri = FileProvider.getUriForFile(
+                context,
+                "${context.packageName}.fileprovider",
+                file
+            )
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.setType("image/*")
+            intent.putExtra(Intent.EXTRA_SUBJECT, "")
+            intent.putExtra(Intent.EXTRA_TEXT, "")
+            intent.putExtra(Intent.EXTRA_STREAM, uri)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+            context.startActivity(Intent.createChooser(intent, "Sharing something"))
         }
     }
 }

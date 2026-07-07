@@ -1,489 +1,253 @@
 package com.btsplusplus.fowallet
 
+import android.annotation.SuppressLint
+import android.content.DialogInterface
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.Message
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
+import android.webkit.WebView
 import android.widget.EditText
-import android.widget.TextView
-import bitshares.*
+import android.widget.ImageView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.set
+import bitshares.Promise
+import bitshares.Utils
+import bitshares.xmlstring
 import com.btsplusplus.fowallet.databinding.ActivityIndexTransferBinding
-import com.fowallet.walletcore.bts.BitsharesClientManager
-import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
-import org.json.JSONArray
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.WriterException
+import com.google.zxing.qrcode.QRCodeWriter
 import org.json.JSONObject
-import kotlin.math.pow
 
-class ActivityIndexTransfer : BtsppActivity() {
+class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback {
 
-    private var _full_account_data: JSONObject? = null
-    private var _default_asset: JSONObject? = null
-    private var _default_to: JSONObject? = null
+    companion object {
+        const val CLICK_ON_WEBVIEW: Int = 1
+        const val CLICK_ON_URL: Int = 2
+    }
 
-    private var _balances_hash: JSONObject? = null
-    private var _fee_item: JSONObject? = null
-    private var _asset_list: JSONArray? = null
-    private var _transfer_args: JSONObject? = null
-    private var _n_available: Double = 0.0
-    private var _s_available: String = ""
-    private var _tf_amount_watcher: UtilsDigitTextWatcher? = null
+    private var mFull_account_data: JSONObject? = null
+    private var mDefault_asset: JSONObject? = null
+    private var mDefault_to: JSONObject? = null
 
-    private lateinit var _binding: ActivityIndexTransferBinding
+    private lateinit var mMask: ViewMask
+
+    private lateinit var mBnding: ActivityIndexTransferBinding
+    private val mHandler: Handler = Handler(Looper.getMainLooper(),this)
+    private var symbolList: MutableList<String?>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        _binding = ActivityIndexTransferBinding.inflate(layoutInflater)
-        setAutoLayoutContentView(_binding.root)
+        mBnding = ActivityIndexTransferBinding.inflate(layoutInflater)
+        setAutoLayoutContentView(mBnding.root)
         setFullScreen()
-        setBottomNavigationStyle(_binding.bottomNav,2)
+        setBottomNavigationStyle(mBnding.bottomNav,2)
 
-        //  获取参数
+        mMask = ViewMask(R.string.kTipsBeRequesting.xmlstring(this), this)
+
         val args = btspp_args_as_JSONObject()
-        _full_account_data = args.getJSONObject("full_account_data")
-        _default_asset = args.optJSONObject("default_asset")
-        _default_to = args.optJSONObject("default_to")
+        mFull_account_data = args.getJSONObject("full_account_data")
+        mDefault_asset = args.optJSONObject("default_asset")
+        mDefault_to = args.optJSONObject("default_to")
 
-        //  没有默认收款人：则对收款人字段添加点击事件。
-        if (_default_to == null) {
-            _binding.cellToAccountTailerArrow.visibility = View.VISIBLE
-            _binding.cellToAccount.setOnClickListener {
-                TempManager.sharedTempManager().set_query_account_callback { last_activity, it ->
-                    last_activity.goTo(ActivityIndexTransfer::class.java, true, back = true)
-                    _transfer_args!!.put("to", it)
-                    refreshUI()
-                }
-                goTo(ActivityAccountQueryBase::class.java, true)
+        val accountName = mFull_account_data?.getJSONObject("account")?.getString("name") ?: ""
+        mBnding.editTextFrom.setText(accountName)
+
+        fun ByteArray.toHex(): String = joinToString("") { b -> "%02x".format(b) }
+        val sha256Name = NativeInterface.sharedNativeInterface().sha256(accountName.toByteArray(Charsets.UTF_8)).toHex()
+        loadWebView(mBnding.webViewAvatarFrom, 40, sha256Name)
+
+        @SuppressLint("ClickableViewAccessibility")
+        mBnding.webViewAvatarFrom.setOnTouchListener(this)
+
+        val id = mFull_account_data?.getJSONObject("account")?.getString("id")?.replace(".", "") ?: ""
+        @SuppressLint("SetTextI18n")
+        mBnding.textViewFromId.text = "#$id"
+
+        mBnding.btnSend.setOnClickListener {
+             processSendClick()
+        }
+
+        mBnding.editTextTo.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
-        } else {
-            _binding.cellToAccountTailerArrow.visibility = View.GONE
-        }
 
-        _binding.cellTransferAsset.setOnClickListener {
-            val list = mutableListOf<String>()
-            for (asset in _asset_list!!) {
-                list.add(asset!!.getString("symbol"))
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
-            ViewSelector.show(this, resources.getString(R.string.kVcTransferTipSelectAsset), list.toTypedArray()) { index: Int, result: String ->
-                val select_asset = _asset_list!![index] as JSONObject
-                //  选择发生变化则刷新
-                if (select_asset.getString("symbol") != _transfer_args!!.getJSONObject("asset").getString("symbol")) {
-                    setAsset(select_asset)
-                    refreshUI()
-                }
+
+            override fun afterTextChanged(s: Editable) {
+                fun ByteArray.toHex(): String = joinToString("") { b -> "%02x".format(b) }
+                val sha256Name = NativeInterface.sharedNativeInterface().sha256(s.toString().toByteArray(Charsets.UTF_8)).toHex()
+                loadWebView(mBnding.webViewAvatarTo, 40, sha256Name)
             }
-        }
+        })
 
-        //  事件 - 全部按钮
-        _binding.btnTransferAll.setOnClickListener {
-            val tf = findViewById<EditText>(R.id.tf_amount)
-            tf.setText(_s_available)
-            tf.setSelection(tf.text.toString().length)
-            //  onAmountChanged 会自动触发
-        }
-
-        //  事件 - 发送
-        _binding.btnSend.setOnClickListener {
-            onSendButtonClicked()
-        }
-
-        //  事件 - 高级
-        _binding.btnMoreActions.setOnClickListener { onMoreActionClicked() }
-
-        //  初始化相关参数
-        genTransferDefaultArgs(null)
-        refreshUI()
-
-        //  初始化事件
-        _tf_amount_watcher = UtilsDigitTextWatcher().set_tf(findViewById<EditText>(R.id.tf_amount)).set_precision(_transfer_args!!.getJSONObject("asset").getInt("precision"))
-        _binding.tfAmount.addTextChangedListener(_tf_amount_watcher!!)
-        _tf_amount_watcher!!.on_value_changed(::onAmountChanged)
-    }
-
-    /**
-     *  (private) 事件 - 高级功能
-     */
-    private fun onMoreActionClicked() {
-        ViewSelector.show(this, "", arrayOf(resources.getString(R.string.kVcStealthTransferEntryTitle))) { index: Int, _: String ->
-            //  隐私交易入口
-            if (index == 0) {
-                guardWalletExistWithWalletMode(resources.getString(R.string.kVcStealthTransferGuardWalletModeTips)) {
-                    goTo(ActivityStealthTransfer::class.java, true)
-                }
-            }
-        }
-    }
-
-    /**
-     * (private) 事件 - 发送按钮点击
-     */
-    private fun onSendButtonClicked() {
-        if (!_fee_item!!.getBoolean("sufficient")) {
-            showToast(resources.getString(R.string.kTipsTxFeeNotEnough))
-            return
-        }
-        val from = _transfer_args!!.getJSONObject("from")
-        val asset = _transfer_args!!.getJSONObject("asset")
-        val to = _transfer_args!!.optJSONObject("to")
-        if (to == null) {
-            showToast(resources.getString(R.string.kVcTransferTipSelectToAccount))
-            return
-        }
-
-        if (from.getString("id") == to.getString("id")) {
-            showToast(R.string.kVcTransferSubmitTipFromToIsSame.xmlstring(this))
-            return
-        }
-
-        val str_amount = findViewById<EditText>(R.id.tf_amount).text.toString()
-        if (str_amount == "") {
-            showToast(resources.getString(R.string.kVcTransferSubmitTipPleaseInputAmount))
-            return
-        }
-
-        val amount = Utils.auxGetStringDecimalNumberValue(str_amount).toDouble()
-        if (amount <= 0) {
-            showToast(resources.getString(R.string.kVcTransferTipInputSendAmount))
-            return
-        }
-
-        if (amount > _n_available) {
-            showToast(resources.getString(R.string.kVcTransferSubmitTipAmountNotEnough))
-            return
-        }
-
-        //  获取备注(memo)信息
-        val str = findViewById<EditText>(R.id.tf_memo).text.toString()
-        var str_memo: String? = null
-        if (str != "") {
-            str_memo = str
-        }
-
-        //  检测备注私钥相关信息
-        var from_public_memo: String? = null
-        if (str_memo != null) {
-            val walletMgr = WalletManager.sharedWalletManager()
-            val full_account_data = walletMgr.getWalletAccountInfo()!!
-            from_public_memo = full_account_data.getJSONObject("account").optJSONObject("options")?.optString("memo_key", null)
-            if (from_public_memo == null) {
-                showToast(resources.getString(R.string.kVcTransferSubmitTipAccountNoMemoKey))
-                return
-            }
-        }
-
-        //  --- 参数大部分检测合法 执行请求 ---
-        this.guardWalletUnlocked(false) { unlocked ->
-            if (unlocked) {
-                _processTransferCore(from, to, asset, amount, str_memo, from_public_memo)
-            }
-        }
-    }
-
-    private fun _processTransferCoreReal() {
-        val asset = _transfer_args!!.getJSONObject("asset")
-        val op_data = _transfer_args!!.getJSONObject("kOpData")
-        //  请求网络广播
-        val mask = ViewMask(R.string.kTipsBeRequesting.xmlstring(this), this)
-        mask.show()
-        BitsharesClientManager.sharedBitsharesClientManager().transfer(op_data).then {
-            mask.dismiss()
-            val tx_data = it as? JSONArray
-            //  [统计]
-            btsppLogCustom("txTransferFullOK", jsonObjectfromKVS("asset", asset.getString("symbol")))
-
-            //  转到结果界面。
-            val amount_string = String.format("%s %s", OrgUtils.formatFloatValue(_transfer_args!!.getDouble("kAmount"), asset.getInt("precision")),
-                    asset.getString("symbol"))
-            val self = this
-            goTo(ActivityScanResultPaySuccess::class.java, true, clear_navigation_stack = true, args = JSONObject().apply {
-                put("result", tx_data)
-                put("to_account", _full_account_data!!.getJSONObject("account"))
-                put("amount_string", amount_string)
-                put("success_tip_string", self.resources.getString(R.string.kVcTransferTipLabelTransferSuccess))
+        mBnding.qrScan.setOnClickListener {
+            val resultPromise = Promise()
+            goTo(ActivityQrScan::class.java, true, args = JSONObject().apply {
+                put("result_promise", resultPromise)
             })
-            return@then null
-        }.catch { err ->
-            mask.dismiss()
-            showGrapheneError(err)
-            //  [统计]
-            btsppLogCustom("txTransferFailed", jsonObjectfromKVS("asset", asset.getString("symbol")))
-        }
-    }
-
-    private fun _processTransferCore(from: JSONObject, to: JSONObject, asset: JSONObject, amount: Double, memo: String?, from_public_memo: String?) {
-        val mask = ViewMask(R.string.kTipsBeRequesting.xmlstring(this), this)
-        mask.show()
-
-        val promise_map = JSONObject()
-        if (memo != null) {
-            promise_map.put("to", ChainObjectManager.sharedChainObjectManager().queryFullAccountInfo(to.getString("id")))
-        }
-        Promise.map(promise_map).then {
-            //  生成 memo 对象。
-            val hashmap = it as JSONObject
-            var memo_object: JSONObject? = null
-            if (memo != null) {
-                val to_full_account_data = hashmap.getJSONObject("to")
-                val to_public = to_full_account_data.getJSONObject("account").getJSONObject("options").getString("memo_key")
-                memo_object = WalletManager.sharedWalletManager().genMemoObject(memo, from_public_memo!!, to_public)
-                if (memo_object == null) {
-                    mask.dismiss()
-                    showToast(R.string.kVcTransferSubmitTipWalletNoMemoKey.xmlstring(this))
-                    return@then null
-                }
-            }
-            //  --- 开始构造OP ---
-            //  TODO:ulong
-            val amount_pow = (amount * 10.0.pow(asset.getInt("precision"))).toLong()
-            val fee_asset_id = _fee_item!!.getString("fee_asset_id")
-            val fee = jsonObjectfromKVS("amount", 0, "asset_id", fee_asset_id)
-            val op_amount = jsonObjectfromKVS("amount", amount_pow.toString(), "asset_id", asset.getString("id"))
-            val op_data = jsonObjectfromKVS("fee", fee, "from", from.getString("id"), "to", to.getString("id"), "amount", op_amount)
-            if (memo_object != null) {
-                op_data.put("memo", memo_object)
-            }
-            //  --- 开始评估手续费 ---
-            BitsharesClientManager.sharedBitsharesClientManager().calcOperationFee(op_data, EBitsharesOperations.ebo_transfer).then {
-                mask.dismiss()
-                val fee_price_item = it as JSONObject
-                //  判断手续费是否足够。
-                val n_fee_cost = _isFeeSufficient(fee_price_item, fee_asset_id, asset, amount)
-                if (n_fee_cost == null) {
-                    showToast(resources.getString(R.string.kTipsTxFeeNotEnough))
-                    return@then null
-                }
-                //  --- 弹框确认转账行为 ---
-                //  弹确认框之前 设置参数
-                _transfer_args!!.put("kAmount", amount)
-                _transfer_args!!.put("kFeeCost", n_fee_cost)
-                _transfer_args!!.put("kOpData", op_data)        //  传递过去，避免再次构造。
-                if (memo != null) {
-                    _transfer_args!!.put("kMemo", memo)
-                } else {
-                    _transfer_args!!.remove("kMemo")
-                }
-                //  确保有权限发起普通交易，否则作为提案交易处理。
-                GuardProposalOrNormalTransaction(EBitsharesOperations.ebo_transfer, false, false,
-                        op_data, _full_account_data!!.getJSONObject("account")) { isProposal, _ ->
-                    assert(!isProposal)
-                    //  非提案交易：转转账确认界面
-                    val result_promise = Promise()
-                    _transfer_args!!.put("result_promise", result_promise)
-                    goTo(ActivityTransferConfirm::class.java, true, args = _transfer_args)
-                    result_promise.then {
-                        if (it != null && it as Boolean) {
-                            //  确认转账
-                            _processTransferCoreReal()
+            resultPromise.then {
+                (it as? String)?.let { scanData ->
+                    if (scanData.startsWith("btswallet")) {
+                       /* val splited: Array<String?> = scanData.substring(9).split("'".toRegex())
+                            .dropLastWhile { sp -> sp.isEmpty() }.toTypedArray()
+                       mBnding.editTextTo.setText(splited[0])
+                        mBnding.editTextQuantity.setText(splited[1])
+                        val index: Int = 0 // symbolList!.indexOf(splited[2])
+                        if (index >= 0) {
+                            mBnding.spinnerUnit.setSelection(index)
+                            mBnding.spinnerFeeUnit.setSelection(index)
+                        } else {
+                            Toast.makeText(this, R.string.no_req_token, Toast.LENGTH_SHORT).show()
+                        }*/
+                    } else {
+                       /* val invoice: Invoice = Invoice.fromQrCode(scanData)
+                        mBnding.editTextTo.setText(invoice.getTo())
+                        mBnding.editTextQuantity.setText(java.lang.String.valueOf(invoice.getLineItems()[0].getPrice()))
+                        var asset: String = invoice.getCurrency().toUpperCase()
+                        if (asset.startsWith("BIT")) asset = asset.substring(3)
+                        val index = symbolList.indexOf(asset)
+                        if (index >= 0) {
+                            mSpinner.setSelection(index)
+                            feeSpinner.setSelection(index)
+                        } else {
+                            Toast.makeText(this, R.string.no_req_token, Toast.LENGTH_SHORT).show()*/
                         }
                     }
                 }
-                return@then null
-            }.catch {
-                mask.dismiss()
-                showToast(resources.getString(R.string.tip_network_error))
             }
-            return@then null
-        }.catch {
-            mask.dismiss()
-            showToast(resources.getString(R.string.tip_network_error))
-        }
     }
 
-    /**
-     *  (private) 辅助 - 判断手续费是否足够，足够则返回需要消耗的手续费，不足则返回 nil。
-     *  fee_price_item      - 服务器返回的需要手续费值
-     *  fee_asset_id        - 当前手续费资产ID
-     *  asset               - 正在转账的资产
-     *  n_amount            - 正在转账的数量
-     */
-    private fun _isFeeSufficient(fee_price_item: JSONObject, fee_asset_id: String, asset: JSONObject, n_amount: Double): Double? {
-        assert(fee_price_item.getString("asset_id") == fee_asset_id)
-        //  1、转账消耗资产值（只有转账资产和手续费资产相同时候才设置）
-        var n_transfer_cost: Double = 0.0
-        if (asset.getString("id") == fee_asset_id) {
-            n_transfer_cost = n_amount
-        }
-
-        //  2、手续费消耗值
-        val fee_asset = _transfer_args!!.getJSONObject("fee_asset")
-        val n_fee_cost = fee_price_item.getString("amount").toDouble() / 10.0.pow(fee_asset.getInt("precision"))
-
-        //  3、总消耗值
-        val n_total_cost = n_transfer_cost + n_fee_cost
-
-        //  4、获取手续费资产总的可用余额
-        var n_available: Double = 0.0
-        for (balance_object in _full_account_data!!.getJSONArray("balances")) {
-            val asset_type = balance_object!!.getString("asset_type")
-            if (asset_type == fee_asset_id) {
-                n_available = balance_object.getString("balance").toDouble() / 10.0.pow(fee_asset.getInt("precision"))
-                break
-            }
-        }
-        //  5、判断：n_available < n_total_cost
-        if (n_available < n_total_cost) {
-            //  不足：返回 nil。
-            return null
-        }
-
-        //  足够（返回手续费值）
-        return n_fee_cost
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun loadWebView(webView: WebView, size: Int, encryptText: String?) {
+        val htmlShareAccountName =
+            "<html><head><style>body,html {margin:0; padding:0; text-align:center;}</style><meta name=viewport content=width=$size,user-scalable=no/></head><body><canvas width=$size height=$size data-jdenticon-hash=$encryptText></canvas><script src=https://cdn.jsdelivr.net/jdenticon/1.3.2/jdenticon.min.js async></script></body></html>"
+        val webSettings = webView.getSettings()
+        webSettings.javaScriptEnabled = true
+        webView.loadData(htmlShareAccountName, "text/html", "UTF-8")
     }
 
-    /**
-     * (private) 转账数量发生变化。
-     */
-    private fun onAmountChanged(str_amount: String) {
-        val asset = _transfer_args!!.getJSONObject("asset")
-        //  无效输入
-        val symbol = asset.getString("symbol")
-        val tf = findViewById<TextView>(R.id.txt_value_avaiable)
-        if (str_amount == "") {
-            tf.text = "${_s_available}${symbol}"
-            tf.setTextColor(resources.getColor(R.color.theme01_textColorMain))
-            return
-        }
-        val amount = Utils.auxGetStringDecimalNumberValue(str_amount).toDouble()
-        if (amount > _n_available) {
-            tf.text = "${_s_available}${symbol}(${resources.getString(R.string.kVcTransferSubmitTipAmountNotEnough)})"
-            tf.setTextColor(resources.getColor(R.color.theme01_tintColor))
-        } else {
-            tf.text = "${_s_available}${symbol}"
-            tf.setTextColor(resources.getColor(R.color.theme01_textColorMain))
-        }
-    }
+    private fun processSendClick() {
+        if (WalletManager.sharedWalletManager().isLocked()) {
+            val builder = AlertDialog.Builder(this)
+            val layoutInflater = layoutInflater
+            val viewGroup: View = layoutInflater.inflate(R.layout.dialog_password_confirm, null)
+            builder.setPositiveButton(
+                R.string.password_confirm_button_confirm,
+                null
+            )
 
-    private fun genTransferDefaultArgs(full_account_data: JSONObject?) {
-        //  保存当前帐号信息
-        if (full_account_data != null) {
-            _full_account_data = full_account_data
-        }
+            builder.setNegativeButton(
+                R.string.password_confirm_button_cancel
+            ) { _, _ -> }
+        builder.setView(viewGroup)
+            val dialog = builder.create()
+            dialog.show()
 
-        val chainMgr = ChainObjectManager.sharedChainObjectManager()
-
-        //  初始化余额Hash(原来的是Array)
-        _balances_hash = JSONObject()
-        for (balance_object in _full_account_data!!.getJSONArray("balances")) {
-            val asset_type = balance_object!!.getString("asset_type")
-            val balance = balance_object.getString("balance")
-            _balances_hash!!.put(asset_type, jsonObjectfromKVS("asset_id", asset_type, "amount", balance))
-        }
-        //  初始化默认值余额（从资产界面点击转账过来，该资产余额可能为0。）
-        if (_default_asset != null) {
-            val def_id = _default_asset!!.getString("id")
-            val def_balance_item = _balances_hash!!.optJSONObject(def_id)
-            if (def_balance_item == null) {
-                _balances_hash!!.put(def_id, jsonObjectfromKVS("asset_id", def_id, "amount", 0))
-            }
-        }
-        val balances_list = _balances_hash!!.values()
-        //  计算手续费对象（更新手续费资产的可用余额，即减去手续费需要的amount）
-        _fee_item = chainMgr.estimateFeeObject(EBitsharesOperations.ebo_transfer.value, balances_list)
-        val fee_asset_id = _fee_item!!.getString("fee_asset_id")
-        val fee_balance = _balances_hash!!.optJSONObject(fee_asset_id)
-        if (fee_balance != null) {
-            val fee = _fee_item!!.getString("amount").toDouble()
-            val old = fee_balance.getString("amount").toDouble()
-            val new_balance = JSONObject()
-            new_balance.put("asset_id", fee_asset_id)
-            if (old >= fee) {
-                new_balance.put("amount", (old - fee).toLong())
-            } else {
-                new_balance.put("amount", 0)
-            }
-            _balances_hash!!.put(fee_asset_id, new_balance)
-        }
-
-        //  获取余额不为0的资产列表
-        var none_zero_balances = JSONArray()
-        for (balance_item in balances_list) {
-            if (balance_item!!.getString("amount").toLong() != 0L) {
-                none_zero_balances.put(balance_item)
-            }
-        }
-        //  如果资产列表为空，则添加默认值。{BTS:0}
-        if (none_zero_balances.length() <= 0) {
-            val balance_object = jsonObjectfromKVS("asset_id", BTS_NETWORK_CORE_ASSET_ID, "amount", 0)
-            none_zero_balances = jsonArrayfrom(balance_object)
-            _balances_hash!!.put(balance_object.getString("asset_id"), balance_object)
-        }
-
-        //  获取资产详细信息列表
-        _asset_list = JSONArray()
-        for (balance_object in none_zero_balances) {
-            _asset_list!!.put(chainMgr.getChainObjectByID(balance_object!!.getString("asset_id")))
-        }
-        assert(_asset_list!!.length() > 0)
-
-        //  初始化转账默认参数：from、fee_asset
-        var last_asset: JSONObject? = null
-        if (_transfer_args != null) {
-            //  REMARK：第二次调用该方法时才存在 last_asset，上次转账的资产。
-            last_asset = _transfer_args!!.getJSONObject("asset")
-        }
-        _transfer_args = JSONObject()
-        val account_info = _full_account_data!!.getJSONObject("account")
-        _transfer_args!!.put("from", jsonObjectfromKVS("id", account_info.getString("id"), "name", account_info.getString("name")))
-        if (_default_to != null) {
-            _transfer_args!!.put("to", _default_to!!)
-        }
-        if (_default_asset == null) {
-            //  TODO:fowallet 默认值，优先选择CNY、没CNY选择BTS。TODO：USD呢？？
-            for (asset in _asset_list!!) {
-                if (asset!!.getString("id") == "1.3.113") {
-                    _default_asset = asset
-                    break
-                }
-            }
-            if (_default_asset == null) {
-                for (asset in _asset_list!!) {
-                    if (asset!!.getString("id") == "1.3.0") {
-                        _default_asset = asset
-                        break
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setOnClickListener {
+                    val editText =
+                        viewGroup.findViewById<View?>(R.id.editTextPassword) as EditText
+                    val strPassword = editText.getText().toString()
+                    val nRet = WalletManager.sharedWalletManager().unLock(strPassword, this)
+                    if (nRet.getString("err") == "ok") {
+                        dialog.dismiss()
+                        val strFrom = mBnding.editTextFrom.getText().toString()
+                        val strTo = mBnding.editTextTo.getText().toString()
+                        val strQuantity = mBnding.editTextQuantity.getText().toString()
+                        val strSymbol = mBnding.spinnerUnit.getSelectedItem() as String?
+                        val strFeeSymbol = mBnding.spinnerFeeUnit.getSelectedItem() as String?
+                        val strMemo = mBnding.editTextMemo.getText().toString()
+                        processTransfer(strFrom, strTo, strQuantity, strSymbol, strMemo, strFeeSymbol)
+                    } else {
+                        viewGroup.findViewById<View?>(R.id.textViewPasswordInvalid)?.visibility = View.VISIBLE
                     }
                 }
-            }
-            if (_default_asset == null) {
-                _default_asset = _asset_list!![0] as JSONObject
-            }
-        }
-        val fee_asset = chainMgr.getChainObjectByID(_fee_item!!.getString("fee_asset_id"))
-        _transfer_args!!.put("fee_asset", fee_asset)
+    } else {
+            val strFrom = mBnding.editTextFrom.getText().toString()
+            val strTo = mBnding.editTextTo.getText().toString()
+            val strQuantity = mBnding.editTextQuantity.getText().toString()
 
-        //  设置当前资产
-        setAsset(last_asset ?: _default_asset!!)
+            val strSymbol = mBnding.spinnerUnit.getSelectedItem() as String?
+            val strFeeSymbol = mBnding.spinnerFeeUnit.getSelectedItem() as String?
+            val strMemo = mBnding.editTextMemo.getText().toString()
+
+            processTransfer(strFrom, strTo, strQuantity, strSymbol, strMemo, strFeeSymbol)
+        }
     }
 
-    private fun refreshUI() {
-        findViewById<TextView>(R.id.txt_value_from_name).text = _transfer_args!!.getJSONObject("from").getString("name")
-        val to = _transfer_args!!.optJSONObject("to")
-        val to_txt = findViewById<TextView>(R.id.txt_value_to_name)
-        if (to != null) {
-            to_txt.text = to.getString("name")
-            to_txt.setTextColor(resources.getColor(R.color.theme01_buyColor))
-        } else {
-            to_txt.text = resources.getString(R.string.kVcTransferTipSelectToAccount)
-            to_txt.setTextColor(resources.getColor(R.color.theme01_textColorGray))
-        }
-        findViewById<TextView>(R.id.txt_value_asset_name).text = _transfer_args!!.getJSONObject("asset").getString("symbol")
+    private fun processTransfer(strFrom: String?, strTo: String?, strQuantity: String?, strSymbol: String?,  strMemo: String?,  strFeeSymbol: String?) {
+        print("")
     }
 
-    /**
-     * 设置待转账资产：更新可用余额等信息
-     */
-    private fun setAsset(new_asset: JSONObject) {
-        _transfer_args!!.put("asset", new_asset)
-        val new_asset_id = new_asset.getString("id")
-        val balance = _balances_hash!!.getJSONObject(new_asset_id).getString("amount")
+    private fun generateQR() {
+        mMask.show()
+        Thread(Runnable {
+            val accountName = mFull_account_data?.getJSONObject("account")?.getString("name") ?: ""
+            val data = "btswallet$accountName'0' "
+            val writer = QRCodeWriter()
+            try {
+                val bitMatrix = writer.encode(data, BarcodeFormat.QR_CODE, 1000, 1000)
+                val width = bitMatrix.width
+                val height = bitMatrix.height
+                val bmp = createBitmap(width, height, Bitmap.Config.RGB_565)
+                for (x in 0..<width) {
+                    for (y in 0..<height) {
+                        bmp[x, y] = if (bitMatrix.get(x, y)) 0xFF303F9F.toInt() else 0xFF000000.toInt()                    }
+                }
+                Handler(Looper.getMainLooper()).post(Runnable {
+                    val imageView = ImageView(this)
+                    imageView.setImageBitmap(bmp)
 
-        val precision = new_asset.getInt("precision")
-        _n_available = balance.toDouble() / 10.0.pow(precision)
-        _s_available = OrgUtils.formatAssetString(balance.toString(), precision, has_comma = false)
+                    val dialog: AlertDialog = AlertDialog.Builder(this)
+                        .setView(imageView)
+                        .setTitle("")
+                        .setNeutralButton(R.string.label_ok, null)
+                        .setPositiveButton(
+                            R.string.share
+                        ) { _: DialogInterface?, i: Int ->
+                            Utils.shareImage(this, bmp)
+                        }
+                        .create()
 
-        //  更新UI - 可用余额
-        val symbol = new_asset.getString("symbol")
-        findViewById<TextView>(R.id.txt_value_avaiable).text = "${_s_available}${symbol}"
+                    dialog.show()
+                    mMask.dismiss()
+                })
+            } catch (e: WriterException) {
+                e.printStackTrace()
+            }
+        }).start()
+    }
 
-        //  切换资产清除当前输入的数量
-        _tf_amount_watcher?.set_precision(precision)?.clear()
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onTouch(view: View?, motionEvent: MotionEvent?): Boolean {
+        if (view?.id == R.id.webViewAvatarFrom && motionEvent?.action == MotionEvent.ACTION_DOWN) {
+            mHandler.sendEmptyMessageDelayed(CLICK_ON_WEBVIEW, 500)
+        }
+        return false
+    }
+
+    override fun handleMessage(msg: Message): Boolean {
+        if (msg.what == CLICK_ON_URL) {
+            mHandler.removeMessages(CLICK_ON_WEBVIEW)
+            return true
+        }
+        if (msg.what == CLICK_ON_WEBVIEW) {
+            generateQR()
+            return true
+        }
+        return false
     }
 }
