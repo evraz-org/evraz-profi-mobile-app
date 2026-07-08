@@ -12,22 +12,41 @@ import android.text.TextWatcher
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
+import android.view.ViewGroup
 import android.webkit.WebView
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.set
+import bitshares.EBitsharesOperations
+import bitshares.OrgUtils
 import bitshares.Promise
 import bitshares.Utils
+import bitshares.bigDecimalfromAmount
+import bitshares.forin
+import bitshares.jsonObjectfromKVS
+import bitshares.multiplyByPowerOf10
+import bitshares.toJSONArray
+import bitshares.values
 import bitshares.xmlstring
 import com.btsplusplus.fowallet.databinding.ActivityIndexTransferBinding
+import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.WriterException
 import com.google.zxing.qrcode.QRCodeWriter
+import org.json.JSONArray
 import org.json.JSONObject
+import java.lang.Double.parseDouble
+import java.math.BigDecimal
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 
 class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback {
 
@@ -44,7 +63,9 @@ class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback
 
     private lateinit var mBnding: ActivityIndexTransferBinding
     private val mHandler: Handler = Handler(Looper.getMainLooper(),this)
-    private var symbolList: MutableList<String?>? = null
+    private var mAssetList: MutableList<Map<String, String>> = mutableListOf()
+    private lateinit var assetAdapter: ArrayAdapter<String>
+    private lateinit var feeAdapter: ArrayAdapter<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +73,7 @@ class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback
         mBnding = ActivityIndexTransferBinding.inflate(layoutInflater)
         setAutoLayoutContentView(mBnding.root)
         setFullScreen()
-        setBottomNavigationStyle(mBnding.bottomNav,2)
+        setBottomNavigationStyle(mBnding.bottomNav, 2)
 
         mMask = ViewMask(R.string.kTipsBeRequesting.xmlstring(this), this)
 
@@ -61,22 +82,32 @@ class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback
         mDefault_asset = args.optJSONObject("default_asset")
         mDefault_to = args.optJSONObject("default_to")
 
-        val accountName = mFull_account_data?.getJSONObject("account")?.getString("name") ?: ""
+        val accountName = mFull_account_data?.getJSONObject("account")?.optString("name") ?: ""
         mBnding.editTextFrom.setText(accountName)
 
         fun ByteArray.toHex(): String = joinToString("") { b -> "%02x".format(b) }
-        val sha256Name = NativeInterface.sharedNativeInterface().sha256(accountName.toByteArray(Charsets.UTF_8)).toHex()
+        val sha256Name =
+            NativeInterface.sharedNativeInterface().sha256(accountName.toByteArray(Charsets.UTF_8))
+                .toHex()
         loadWebView(mBnding.webViewAvatarFrom, 40, sha256Name)
 
         @SuppressLint("ClickableViewAccessibility")
         mBnding.webViewAvatarFrom.setOnTouchListener(this)
 
-        val id = mFull_account_data?.getJSONObject("account")?.getString("id")?.replace(".", "") ?: ""
+        val id =
+            mFull_account_data?.getJSONObject("account")?.optString("id")?.replace(".", "") ?: ""
         @SuppressLint("SetTextI18n")
         mBnding.textViewFromId.text = "#$id"
 
         mBnding.btnSend.setOnClickListener {
-             processSendClick()
+            processSendClick()
+        }
+
+        mBnding.editTextTo.onFocusChangeListener = { v, hasFocus ->
+            val strText = mBnding.editTextTo.getText().toString()
+            if (!hasFocus) {
+                processGetTransferToId(strText)
+            }
         }
 
         mBnding.editTextTo.addTextChangedListener(object : TextWatcher {
@@ -88,46 +119,146 @@ class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback
 
             override fun afterTextChanged(s: Editable) {
                 fun ByteArray.toHex(): String = joinToString("") { b -> "%02x".format(b) }
-                val sha256Name = NativeInterface.sharedNativeInterface().sha256(s.toString().toByteArray(Charsets.UTF_8)).toHex()
+                val sha256Name = NativeInterface.sharedNativeInterface()
+                    .sha256(s.toString().toByteArray(Charsets.UTF_8)).toHex()
                 loadWebView(mBnding.webViewAvatarTo, 40, sha256Name)
+                processGetTransferToId(mBnding.editTextTo.text.toString())
             }
         })
 
         mBnding.qrScan.setOnClickListener {
-            val resultPromise = Promise()
-            goTo(ActivityQrScan::class.java, true, args = JSONObject().apply {
-                put("result_promise", resultPromise)
-            })
-            resultPromise.then {
-                (it as? String)?.let { scanData ->
-                    if (scanData.startsWith("btswallet")) {
-                       /* val splited: Array<String?> = scanData.substring(9).split("'".toRegex())
-                            .dropLastWhile { sp -> sp.isEmpty() }.toTypedArray()
-                       mBnding.editTextTo.setText(splited[0])
-                        mBnding.editTextQuantity.setText(splited[1])
-                        val index: Int = 0 // symbolList!.indexOf(splited[2])
-                        if (index >= 0) {
-                            mBnding.spinnerUnit.setSelection(index)
-                            mBnding.spinnerFeeUnit.setSelection(index)
-                        } else {
-                            Toast.makeText(this, R.string.no_req_token, Toast.LENGTH_SHORT).show()
-                        }*/
+            processQrScanClick()
+        }
+
+        mBnding.editTextQuantity.onFocusChangeListener = { _, hasFocus ->
+            if (!hasFocus) {
+                val strQuantity = mBnding.editTextQuantity.text?.toString().orEmpty()
+                if (strQuantity.isNotEmpty()) {
+                    val quantity = Utils.parseDouble(strQuantity, -1.0)
+                    if (quantity >= 0.0) {
+                        processCalculateFee()
                     } else {
-                       /* val invoice: Invoice = Invoice.fromQrCode(scanData)
-                        mBnding.editTextTo.setText(invoice.getTo())
-                        mBnding.editTextQuantity.setText(java.lang.String.valueOf(invoice.getLineItems()[0].getPrice()))
-                        var asset: String = invoice.getCurrency().toUpperCase()
-                        if (asset.startsWith("BIT")) asset = asset.substring(3)
-                        val index = symbolList.indexOf(asset)
-                        if (index >= 0) {
-                            mSpinner.setSelection(index)
-                            feeSpinner.setSelection(index)
-                        } else {
-                            Toast.makeText(this, R.string.no_req_token, Toast.LENGTH_SHORT).show()*/
-                        }
+                        mBnding.editTextQuantity.setText("0")
                     }
                 }
             }
+        }
+
+        val symbols = DecimalFormatSymbols(Locale.US)
+        val decimalFormat = DecimalFormat("#.#####", symbols)
+
+        val chainMgr = ChainObjectManager.sharedChainObjectManager()
+        val userAssetDetailInfos = OrgUtils.calcUserAssetDetailInfos(mFull_account_data ?: JSONObject())
+        val validBalancesHash = userAssetDetailInfos.getJSONObject("validBalancesHash").keys().toJSONArray()
+        chainMgr.queryAllAssetsInfo(validBalancesHash).then {
+            val bitasset_data_id_list = JSONArray()
+            for (asset_id in validBalancesHash.forin<String>()) {
+                val bitasset_data_id = chainMgr.getChainObjectByID(asset_id!!).optString("bitasset_data_id")
+                if (bitasset_data_id.isNotEmpty()) {
+                    bitasset_data_id_list.put(bitasset_data_id)
+                }
+            }
+            return@then chainMgr.queryAllGrapheneObjects(bitasset_data_id_list).then {
+                val balancesHash = userAssetDetailInfos.getJSONObject("validBalancesHash")
+                for (k in balancesHash.keys()) {
+                    val balanceItem = balancesHash.getJSONObject(k)
+                    val asset_type = balanceItem.getString("asset_type")
+                    val balance = balanceItem.get("balance")
+                    val asset_detail = chainMgr.getChainObjectByID(asset_type)
+                    val asset = mutableMapOf<String, String>()
+                    asset["symbol"] = asset_detail.getString("symbol")
+                    asset["balance"] = balance.toString()
+                    asset["precision"] = asset_detail.getString("precision")
+                    mAssetList.add(asset)
+                }
+                var selectedItem = mBnding.spinnerUnit.getSelectedItem() as String?
+                selectedItem = selectedItem ?: getString(R.string.label_evraz)
+
+                assetAdapter = object : ArrayAdapter<String>(
+                    this,
+                    R.layout.new_custom_spinner_item,
+                    mAssetList.map {it["symbol"]}.toTypedArray()
+                ) {
+                    override fun getView(
+                        position: Int,
+                        convertView: View?,
+                        parent: ViewGroup
+                    ): View {
+                        val view = super.getView(position, convertView, parent)
+                        view.findViewById<View>(R.id.text1).isSelected = true
+                        return view
+                    }
+                }
+
+                assetAdapter.setDropDownViewResource(R.layout.new_spinner_style)
+                mBnding.spinnerUnit.setAdapter(assetAdapter)
+
+                var position = assetAdapter.getPosition(selectedItem)
+                mBnding.spinnerUnit.setSelection(position)
+
+                processCalculateFee()
+                val item = mAssetList[position]
+                val str = decimalFormat.format(parseDouble(item["balance"]) / parseDouble(item["precision"]))
+                mBnding.editTextAvailable.text = str
+
+                feeAdapter = object : ArrayAdapter<String>(
+                    this,
+                    R.layout.new_custom_spinner_item,
+                    mAssetList.map {it["symbol"]}.toTypedArray()
+                ) {}
+
+                selectedItem = mBnding.spinnerFeeUnit.getSelectedItem() as String?
+                selectedItem = selectedItem ?: getString(R.string.label_evraz)
+
+                feeAdapter.setDropDownViewResource(R.layout.new_spinner_style)
+                mBnding.spinnerFeeUnit.setAdapter(feeAdapter)
+
+                position = feeAdapter.getPosition(selectedItem)
+                mBnding.spinnerFeeUnit.setSelection(position)
+
+                return@then null
+            }
+        }
+
+        mBnding.spinnerUnit.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                adapterView: AdapterView<*>?,
+                view: View?,
+                i: Int,
+                l: Long
+            ) {
+                processCalculateFee()
+                val item = mAssetList[i]
+                val str = decimalFormat.format(parseDouble(item["balance"]) / parseDouble(item["precision"]))
+                mBnding.editTextAvailable.text = str
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {
+            }
+        })
+
+        mBnding.spinnerFeeUnit.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                adapterView: AdapterView<*>?,
+                view: View?,
+                i: Int,
+                l: Long
+            ) {
+                processCalculateFee()
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {
+            }
+        }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (mBnding.editTextTo.text.isNotEmpty()) {
+            processGetTransferToId(mBnding.editTextTo.text.toString())
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -137,6 +268,97 @@ class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback
         val webSettings = webView.getSettings()
         webSettings.javaScriptEnabled = true
         webView.loadData(htmlShareAccountName, "text/html", "UTF-8")
+    }
+
+    private fun processLock() {
+        mBnding.btnSend.setEnabled(getSendAvailable())
+
+        if (getSendAvailable()) {
+            mBnding.editTextAvailable.setTextColor(ContextCompat.getColor(this, R.color.beige_color))
+            mBnding.btnSend.background = ContextCompat.getDrawable(this, R.drawable.btn_green_background)
+        } else {
+            mBnding.editTextAvailable.setTextColor(ContextCompat.getColor(this, R.color.label_red))
+            mBnding.btnSend.background = ContextCompat.getDrawable(this, R.drawable.btn_red_background)
+        }
+    }
+
+    private fun getSendAvailable(): Boolean {
+        val available: Double = getAvailable()
+        val amount: Double = getAmount()
+        val fee: Double = getFee()
+        if (mBnding.spinnerUnit.getSelectedItem() === mBnding.spinnerFeeUnit.getSelectedItem()) {
+            val diff: Double = available - Utils.sumDouble(amount, fee)
+            return diff >= 0.0
+        } else {
+            val diff = available - amount
+            return diff >= 0.0
+        }
+    }
+
+    private fun getAvailable(): Double {
+        return parseDouble( mBnding.editTextAvailable.text.toString())
+    }
+
+    private fun getFee(): Double {
+        return parseDouble(mBnding.editTextFee.text.toString())
+    }
+
+    private fun getAmount(): Double {
+        return parseDouble(mBnding.editTextQuantity.text.toString())
+    }
+
+    private fun transfer_calculate_fee(strAmount: String,
+                                       strAssetSymbol: String,
+                                       strFeeAssetSymbol: String,
+                                       strMemo: String) {
+
+        val chainMgr = ChainObjectManager.sharedChainObjectManager()
+        val asset = chainMgr.getAssetBySymbol(strAssetSymbol)
+
+        val pay_asset_id = asset.getString("id")
+        val pay_asset_precision = asset.getInt("precision")
+
+        val balances_hash = JSONObject()
+        for (it in mFull_account_data!!.getJSONArray("balances").forin<JSONObject>()) {
+            val balance_object = it!!
+            val asset_type = balance_object.getString("asset_type")
+            val balance = balance_object.getString("balance")
+            if (pay_asset_id == asset_type) {
+                val n_balance = bigDecimalfromAmount(balance, pay_asset_precision)
+                if (n_balance < BigDecimal.ZERO) {
+                    showToast(resources.getString(R.string.kVcScanResultPaySubmitTipsNotEnough))
+                    return
+                }
+                var n_balanse = parseDouble(strAmount)
+                val n_left = n_balance.subtract(BigDecimal.valueOf(n_balanse))
+                val n_left_pow = n_left.multiplyByPowerOf10(pay_asset_precision)
+                balances_hash.put(asset_type, jsonObjectfromKVS("asset_id", asset_type, "amount", n_left_pow.toPlainString()))
+            } else {
+                balances_hash.put(asset_type, jsonObjectfromKVS("asset_id", asset_type, "amount", balance))
+            }
+        }
+        val balancesList = balances_hash.values()
+        val feeItem = ChainObjectManager.sharedChainObjectManager().estimateFeeObject(EBitsharesOperations.ebo_transfer.value, balancesList)
+        ChainObjectManager.sharedChainObjectManager().queryAssetData(strFeeAssetSymbol).then { data ->
+            if(data is JSONObject) {
+                processDisplayFee(feeItem.getString("amount_real"), data.getString("precision"))
+            }
+        }
+    }
+
+    private fun processCalculateFee() {
+        val strQuantity = mBnding.editTextQuantity.getText().toString()
+        val strSymbol = mBnding.spinnerUnit.getSelectedItem() as String? ?: ""
+        val strFeeSymbol = mBnding.spinnerFeeUnit.getSelectedItem() as String? ?: ""
+        val strMemo = mBnding.editTextMemo.getText().toString()
+        transfer_calculate_fee(strQuantity, strSymbol, strFeeSymbol, strMemo)
+    }
+
+    private fun processDisplayFee(fee: String, precision: String) {
+        val symbols = DecimalFormatSymbols(Locale.US)
+        val decimalFormat = DecimalFormat("#.#####", symbols)
+        val str = decimalFormat.format(parseDouble(fee) / parseDouble(precision))
+        mBnding.editTextFee.setText(str)
     }
 
     private fun processSendClick() {
@@ -162,7 +384,7 @@ class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback
                         viewGroup.findViewById<View?>(R.id.editTextPassword) as EditText
                     val strPassword = editText.getText().toString()
                     val nRet = WalletManager.sharedWalletManager().unLock(strPassword, this)
-                    if (nRet.getString("err") == "ok") {
+                    if (nRet.optString("err") == "ok") {
                         dialog.dismiss()
                         val strFrom = mBnding.editTextFrom.getText().toString()
                         val strTo = mBnding.editTextTo.getText().toString()
@@ -188,14 +410,67 @@ class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback
         }
     }
 
+    private fun processQrScanClick() {
+        val resultPromise = Promise()
+        goTo(ActivityQrScan::class.java, true, args = JSONObject().apply {
+            put("result_promise", resultPromise)
+        })
+        resultPromise.then {
+            (it as? String)?.let { scanData ->
+                if (scanData.startsWith("btswallet")) {
+                    val splited: Array<String?> = scanData.substring(9).split("'".toRegex())
+                        .dropLastWhile { sp -> sp.isEmpty() }.toTypedArray()
+                    mBnding.editTextTo.setText(splited[0])
+                    mBnding.editTextQuantity.setText(splited[1])
+                    val index = mAssetList.map { m -> m["symbol"] }.toTypedArray().indexOf(splited[2]) ?: -1
+                    if (index >= 0) {
+                        mBnding.spinnerUnit.setSelection(index)
+                        mBnding.spinnerFeeUnit.setSelection(index)
+                    } else {
+                        Toast.makeText(this, R.string.no_req_token, Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    val invoice = OrgUtils.merchantInvoiceDecode(scanData)
+                    mBnding.editTextTo.setText(invoice?.optString("to"))
+                    mBnding.editTextQuantity.setText(
+                        invoice?.optJSONArray("line_items")?.optJSONObject(0)
+                            ?.optString("price")
+                    )
+                    var asset = invoice?.optString("currency")?.uppercase() ?: ""
+                    if (asset.startsWith("BIT")) asset = asset.substring(3)
+                    val index = mAssetList.map { m -> m["symbol"] }.toTypedArray().indexOf(asset) ?: -1
+                    if (index >= 0) {
+                        mBnding.spinnerUnit.setSelection(index)
+                        mBnding.spinnerFeeUnit.setSelection(index)
+                    } else {
+                        Toast.makeText(this, R.string.no_req_token, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
     private fun processTransfer(strFrom: String?, strTo: String?, strQuantity: String?, strSymbol: String?,  strMemo: String?,  strFeeSymbol: String?) {
         print("")
     }
 
+    private fun processGetTransferToId(strAccount: String) {
+        @SuppressLint("SetTextI18n")
+        ChainObjectManager.sharedChainObjectManager().queryAccountData(strAccount)
+            .then { accountObject ->
+                if (accountObject is JSONObject) {
+                    val id = accountObject?.optString("id")?.replace(".", "") ?: ""
+                    mBnding.textViewToId.text = "#$id"
+                } else {
+                    mBnding.textViewToId.text = "#none"
+                }
+            }
+    }
+
     private fun generateQR() {
         mMask.show()
-        Thread(Runnable {
-            val accountName = mFull_account_data?.getJSONObject("account")?.getString("name") ?: ""
+        Thread {
+            val accountName = mFull_account_data?.optJSONObject("account")?.optString("name") ?: ""
             val data = "btswallet$accountName'0' "
             val writer = QRCodeWriter()
             try {
@@ -205,7 +480,9 @@ class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback
                 val bmp = createBitmap(width, height, Bitmap.Config.RGB_565)
                 for (x in 0..<width) {
                     for (y in 0..<height) {
-                        bmp[x, y] = if (bitMatrix.get(x, y)) 0xFF303F9F.toInt() else 0xFF000000.toInt()                    }
+                        bmp[x, y] =
+                            if (bitMatrix.get(x, y)) 0xFF303F9F.toInt() else 0xFF000000.toInt()
+                    }
                 }
                 Handler(Looper.getMainLooper()).post(Runnable {
                     val imageView = ImageView(this)
@@ -228,7 +505,7 @@ class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback
             } catch (e: WriterException) {
                 e.printStackTrace()
             }
-        }).start()
+        }.start()
     }
 
     @SuppressLint("ClickableViewAccessibility")

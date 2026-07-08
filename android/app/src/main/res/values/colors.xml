@@ -72,6 +72,8 @@
     <color name="table_gray_color">#ededed</color>
     <color name="quotation_top_green">#009933</color>
     <color name="light_green_color">#7fe478</color>
+    <color name="label_red">#ff0000</color>
+    <color name="light_red_color">#f07777</color>
 
     <!--
         navigationBarBackColor: '131f30', # => done! 同 appBackColor

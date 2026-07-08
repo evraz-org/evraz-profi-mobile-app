@@ -1841,4 +1841,6 @@
     <string name="password_confirm_button_confirm">CONFIRM</string>
     <string name="password_confirm_button_cancel">CANCEL</string>
     <string name="password_invalid">Invalid password.</string>
+    <string name="no_req_token">You do not have the requested token!</string>
+    <string name="label_evraz">EVRAZ</string>
 </resources>

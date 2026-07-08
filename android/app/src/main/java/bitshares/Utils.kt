@@ -9,11 +9,11 @@ import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.net.ConnectivityManager
-import android.net.Uri
 import android.net.wifi.WifiManager
 import android.os.Environment
 import android.os.Looper
 import android.telephony.TelephonyManager
+import android.text.TextUtils
 import android.util.TypedValue
 import androidx.core.content.FileProvider
 import com.btsplusplus.fowallet.BuildConfig
@@ -31,7 +31,10 @@ import java.io.FileOutputStream
 import java.io.InputStreamReader
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.GregorianCalendar
+import java.util.Locale
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
@@ -783,6 +786,43 @@ class Utils {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
             context.startActivity(Intent.createChooser(intent, "Sharing something"))
+        }
+
+        fun sumDouble(value1: Double, value2: Double): Double {
+            var sum = 0.0
+            val value1Str = value1.toString()
+            var decimalIndex = value1Str.indexOf(".")
+            var value1Precision = 0
+            if (decimalIndex != -1) {
+                value1Precision = (value1Str.length - 1) - decimalIndex
+            }
+
+            val value2Str = value2.toString()
+            decimalIndex = value2Str.indexOf(".")
+            var value2Precision = 0
+            if (decimalIndex != -1) {
+                value2Precision = (value2Str.length - 1) - decimalIndex
+            }
+
+            val maxPrecision =
+                if (value1Precision > value2Precision) value1Precision else value2Precision
+            sum = value1 + value2
+            val s = String.format(Locale.ENGLISH, "%." + maxPrecision + "f", sum)
+            sum = s.toDouble()
+            return sum
+        }
+
+        fun parseDouble(value: String?, defaultVal: Double): Double {
+            if (TextUtils.isEmpty(value)) {
+                return defaultVal
+            }
+
+            try {
+                return value!!.toDouble()
+            } catch (e: NumberFormatException) {
+                e.printStackTrace()
+            }
+            return defaultVal
         }
     }
 }
