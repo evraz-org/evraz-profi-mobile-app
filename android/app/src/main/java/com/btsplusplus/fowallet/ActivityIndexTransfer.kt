@@ -27,12 +27,10 @@ import bitshares.EBitsharesOperations
 import bitshares.OrgUtils
 import bitshares.Promise
 import bitshares.Utils
-import bitshares.bigDecimalfromAmount
 import bitshares.forin
 import bitshares.jsonObjectfromKVS
 import bitshares.multiplyByPowerOf10
 import bitshares.toJSONArray
-import bitshares.values
 import bitshares.xmlstring
 import com.btsplusplus.fowallet.databinding.ActivityIndexTransferBinding
 import com.fowallet.walletcore.bts.BitsharesClientManager
@@ -44,8 +42,6 @@ import com.google.zxing.qrcode.QRCodeWriter
 import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.Double.parseDouble
-import java.lang.Math.pow
-import java.math.BigDecimal
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
@@ -444,7 +440,44 @@ class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback
     }
 
     private fun processTransfer(strFrom: String?, strTo: String?, strQuantity: String?, strSymbol: String?,  strMemo: String?,  strFeeSymbol: String?) {
-        print("")
+        val chainMgr = ChainObjectManager.sharedChainObjectManager()
+        val asset = chainMgr.getAssetBySymbol(strSymbol!!)
+        val feeAsset = chainMgr.getAssetBySymbol(strFeeSymbol!!)
+        val quantity = Utils.auxGetStringDecimalNumberValue(strQuantity!!).multiplyByPowerOf10(asset.getInt("precision")).toPlainString()
+
+        val fromID = mFull_account_data?.getJSONObject("account")?.optString("id")
+        mMask.show()
+        ChainObjectManager.sharedChainObjectManager().queryAccountData(strTo!!)
+            .then { accountObject ->
+                if (accountObject is JSONObject) {
+                    val toID = accountObject.optString("id")
+
+                    val op = JSONObject().apply {
+                        put("fee", jsonObjectfromKVS("amount", "0", "asset_id", feeAsset.getString("id")))
+                        put("from", fromID)
+                        put("to", toID)
+                        put("amount", jsonObjectfromKVS("amount", quantity, "asset_id", asset.getString("id")))
+                        put("memo", null)
+                    }
+
+                    BitsharesClientManager.sharedBitsharesClientManager().transfer(op).then {
+                        val txData = it as? JSONArray
+                        mMask.dismiss()
+                        if (txData != null) {
+                            Toast.makeText(this, R.string.kVcTransferTipTxTransferFullOK.xmlstring(this), Toast.LENGTH_LONG)
+                                .show()
+                        } else {
+                            Toast.makeText(this, R.string.transfer_fail.xmlstring(this), Toast.LENGTH_LONG).show()
+                        }
+                        return@then null
+                    }.catch { err ->
+                        mMask.dismiss()
+                        showGrapheneError(err)
+                    }
+                } else {
+                    mMask.dismiss()
+                }
+            }
     }
 
     private fun processGetTransferToId(strAccount: String) {

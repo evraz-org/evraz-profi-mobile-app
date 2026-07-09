@@ -1843,4 +1843,5 @@
     <string name="password_invalid">Invalid password.</string>
     <string name="no_req_token">You do not have the requested token!</string>
     <string name="label_evraz">EVRAZ</string>
+    <string name="transfer_fail">Fail to send</string>
 </resources>
