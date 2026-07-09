@@ -35,6 +35,7 @@ import bitshares.toJSONArray
 import bitshares.values
 import bitshares.xmlstring
 import com.btsplusplus.fowallet.databinding.ActivityIndexTransferBinding
+import com.fowallet.walletcore.bts.BitsharesClientManager
 import com.fowallet.walletcore.bts.ChainObjectManager
 import com.fowallet.walletcore.bts.WalletManager
 import com.google.zxing.BarcodeFormat
@@ -43,10 +44,12 @@ import com.google.zxing.qrcode.QRCodeWriter
 import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.Double.parseDouble
+import java.lang.Math.pow
 import java.math.BigDecimal
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
+import kotlin.math.pow
 
 class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback {
 
@@ -144,9 +147,6 @@ class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback
             }
         }
 
-        val symbols = DecimalFormatSymbols(Locale.US)
-        val decimalFormat = DecimalFormat("#.#####", symbols)
-
         val chainMgr = ChainObjectManager.sharedChainObjectManager()
         val userAssetDetailInfos = OrgUtils.calcUserAssetDetailInfos(mFull_account_data ?: JSONObject())
         val validBalancesHash = userAssetDetailInfos.getJSONObject("validBalancesHash").keys().toJSONArray()
@@ -165,11 +165,13 @@ class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback
                     val asset_type = balanceItem.getString("asset_type")
                     val balance = balanceItem.get("balance")
                     val asset_detail = chainMgr.getChainObjectByID(asset_type)
-                    val asset = mutableMapOf<String, String>()
-                    asset["symbol"] = asset_detail.getString("symbol")
-                    asset["balance"] = balance.toString()
-                    asset["precision"] = asset_detail.getString("precision")
-                    mAssetList.add(asset)
+                    if(parseDouble(balance.toString()) > 0) {
+                        val asset = mutableMapOf<String, String>()
+                        asset["symbol"] = asset_detail.getString("symbol")
+                        asset["balance"] = balance.toString()
+                        asset["precision"] = asset_detail.getString("precision")
+                        mAssetList.add(asset)
+                    }
                 }
                 var selectedItem = mBnding.spinnerUnit.getSelectedItem() as String?
                 selectedItem = selectedItem ?: getString(R.string.label_evraz)
@@ -194,12 +196,11 @@ class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback
                 mBnding.spinnerUnit.setAdapter(assetAdapter)
 
                 var position = assetAdapter.getPosition(selectedItem)
+                position = if (position < 0) 0 else position
                 mBnding.spinnerUnit.setSelection(position)
 
-                processCalculateFee()
                 val item = mAssetList[position]
-                val str = decimalFormat.format(parseDouble(item["balance"]) / parseDouble(item["precision"]))
-                mBnding.editTextAvailable.text = str
+                mBnding.editTextAvailable.text = calcBalance(item["balance"], item["precision"])
 
                 feeAdapter = object : ArrayAdapter<String>(
                     this,
@@ -214,7 +215,10 @@ class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback
                 mBnding.spinnerFeeUnit.setAdapter(feeAdapter)
 
                 position = feeAdapter.getPosition(selectedItem)
+                position = if (position < 0) 0 else position
                 mBnding.spinnerFeeUnit.setSelection(position)
+
+                processCalculateFee()
 
                 return@then null
             }
@@ -229,8 +233,7 @@ class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback
             ) {
                 processCalculateFee()
                 val item = mAssetList[i]
-                val str = decimalFormat.format(parseDouble(item["balance"]) / parseDouble(item["precision"]))
-                mBnding.editTextAvailable.text = str
+                mBnding.editTextAvailable.text = calcBalance(item["balance"], item["precision"])
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>?) {
@@ -259,6 +262,14 @@ class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback
         if (mBnding.editTextTo.text.isNotEmpty()) {
             processGetTransferToId(mBnding.editTextTo.text.toString())
         }
+    }
+
+    fun calcBalance(balance: String?, precision: String?): String {
+        val symbols = DecimalFormatSymbols(Locale.US)
+        val decimalFormat = DecimalFormat("#.#####", symbols)
+
+        val p = parseDouble(precision!!)
+        return decimalFormat.format(parseDouble(balance!!) / 10.0.pow(p))
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -307,57 +318,39 @@ class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback
         return parseDouble(mBnding.editTextQuantity.text.toString())
     }
 
-    private fun transfer_calculate_fee(strAmount: String,
-                                       strAssetSymbol: String,
-                                       strFeeAssetSymbol: String,
-                                       strMemo: String) {
+    private fun processCalculateFee() {
+        var strQuantity = mBnding.editTextQuantity.getText().toString()
+        val strAssetSymbol = mBnding.spinnerUnit.getSelectedItem() as String? ?: ""
+        val strFeeAssetSymbol = mBnding.spinnerFeeUnit.getSelectedItem() as String? ?: ""
+        //val strMemo = mBnding.editTextMemo.getText().toString()
 
         val chainMgr = ChainObjectManager.sharedChainObjectManager()
         val asset = chainMgr.getAssetBySymbol(strAssetSymbol)
+        val feeAsset = chainMgr.getAssetBySymbol(strFeeAssetSymbol)
 
-        val pay_asset_id = asset.getString("id")
-        val pay_asset_precision = asset.getInt("precision")
+        strQuantity = Utils.auxGetStringDecimalNumberValue(strQuantity).multiplyByPowerOf10(asset.getInt("precision")).toPlainString()
 
-        val balances_hash = JSONObject()
-        for (it in mFull_account_data!!.getJSONArray("balances").forin<JSONObject>()) {
-            val balance_object = it!!
-            val asset_type = balance_object.getString("asset_type")
-            val balance = balance_object.getString("balance")
-            if (pay_asset_id == asset_type) {
-                val n_balance = bigDecimalfromAmount(balance, pay_asset_precision)
-                if (n_balance < BigDecimal.ZERO) {
-                    showToast(resources.getString(R.string.kVcScanResultPaySubmitTipsNotEnough))
-                    return
-                }
-                var n_balanse = parseDouble(strAmount)
-                val n_left = n_balance.subtract(BigDecimal.valueOf(n_balanse))
-                val n_left_pow = n_left.multiplyByPowerOf10(pay_asset_precision)
-                balances_hash.put(asset_type, jsonObjectfromKVS("asset_id", asset_type, "amount", n_left_pow.toPlainString()))
-            } else {
-                balances_hash.put(asset_type, jsonObjectfromKVS("asset_id", asset_type, "amount", balance))
-            }
+        val id = mFull_account_data?.getJSONObject("account")?.optString("id")
+
+        val op = JSONObject().apply {
+            put("fee", jsonObjectfromKVS("amount", "0", "asset_id", feeAsset.getString("id")))
+            put("from", id)
+            put("to", id)
+            put("amount", jsonObjectfromKVS("amount", strQuantity, "asset_id", asset.getString("id")))
+            put("memo", null)
         }
-        val balancesList = balances_hash.values()
-        val feeItem = ChainObjectManager.sharedChainObjectManager().estimateFeeObject(EBitsharesOperations.ebo_transfer.value, balancesList)
-        ChainObjectManager.sharedChainObjectManager().queryAssetData(strFeeAssetSymbol).then { data ->
+
+        BitsharesClientManager.sharedBitsharesClientManager().calcOperationFee(op, EBitsharesOperations.ebo_transfer).then { data ->
             if(data is JSONObject) {
-                processDisplayFee(feeItem.getString("amount_real"), data.getString("precision"))
+                processDisplayFee(data.getString("amount"), feeAsset.getString("precision"))
             }
         }
-    }
-
-    private fun processCalculateFee() {
-        val strQuantity = mBnding.editTextQuantity.getText().toString()
-        val strSymbol = mBnding.spinnerUnit.getSelectedItem() as String? ?: ""
-        val strFeeSymbol = mBnding.spinnerFeeUnit.getSelectedItem() as String? ?: ""
-        val strMemo = mBnding.editTextMemo.getText().toString()
-        transfer_calculate_fee(strQuantity, strSymbol, strFeeSymbol, strMemo)
     }
 
     private fun processDisplayFee(fee: String, precision: String) {
         val symbols = DecimalFormatSymbols(Locale.US)
         val decimalFormat = DecimalFormat("#.#####", symbols)
-        val str = decimalFormat.format(parseDouble(fee) / parseDouble(precision))
+        val str = decimalFormat.format(parseDouble(fee) / 10.0.pow(parseDouble(precision)))
         mBnding.editTextFee.setText(str)
     }
 
