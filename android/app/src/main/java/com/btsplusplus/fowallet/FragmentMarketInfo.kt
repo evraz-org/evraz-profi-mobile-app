@@ -13,7 +13,6 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import bitshares.*
-import com.btsplusplus.fowallet.utils.VcUtils
 import com.fowallet.walletcore.bts.ChainObjectManager
 import org.json.JSONArray
 import org.json.JSONObject
@@ -172,42 +171,9 @@ class FragmentMarketInfo : BtsppFragment() {
             for (i in 0 until group_list.length()) {
                 val group = group_list.getJSONObject(i)
 
-                //  分组名称
-                val flmain = FrameLayout(_context!!).apply {
-                    layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, toDp(32f))
-                }
-                val tvmain = TextView(_context).apply {
-                    layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT).apply {
-                        setMargins(toDp(10f), 0, 0, 0)
-                        gravity = Gravity.CENTER_VERTICAL
-                    }
-                }
-                tvmain.gravity = Gravity.CENTER_VERTICAL
-                tvmain.setTextColor(resources.getColor(R.color.theme01_textColorHighlight))
-                tvmain.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 13f)
+                //  获取分组信息
                 val group_key = group.getString("group_key")
-                val group_info = ChainObjectManager.sharedChainObjectManager().getGroupInfoFromGroupKey(group_key)
-                tvmain.text = resources.getString(resources.getIdentifier(group_info.getString("name_key"), "string", context!!.packageName))
-                flmain.addView(tvmain)
-
-                //  介绍按钮
-                if (group_info.optBoolean("intro", false)) {
-                    val inmain = TextView(_context).apply {
-                        layoutParams = FrameLayout.LayoutParams(toDp(100f), FrameLayout.LayoutParams.MATCH_PARENT).apply {
-                            setMargins(0, 0, toDp(10f), 0)
-                            gravity = Gravity.RIGHT
-                        }
-                        gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
-                        text = resources.getString(R.string.kLabelGroupIntroduction)
-                        setTextColor(resources.getColor(R.color.theme01_textColorGray))
-                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12f)
-                        setOnClickListener {
-                            VcUtils.gotoQaView(activity!!, "qa_gateway", resources.getString(R.string.kVcTitleWhatIsGateway))
-                        }
-                    }
-                    flmain.addView(inmain)
-                }
-                container.addView(flmain)
+                val group_info = chainMgr.getGroupInfoFromGroupKey(group_key)
 
                 //  描绘单个分组下的所有交易对
                 val quote_list = group.getJSONArray("quote_list")
@@ -339,18 +305,6 @@ class FragmentMarketInfo : BtsppFragment() {
                 setPadding(4.dp, 0, 4.dp, 0)
             }
             addView(tv2)
-
-            //  UI - 默认交易对中【非内置】交易对，添加【自定义】标签。【自选市场】不用显示。
-            if (group_info != null && !chainMgr.isDefaultPair(quote_asset, base_asset)) {
-                addView(TextView(ctx).apply {
-                    text = resources.getString(R.string.kSettingApiCellCustomFlag)
-                    setTextSize(TypedValue.COMPLEX_UNIT_DIP, 10.0f)
-                    setTextColor(resources.getColor(R.color.theme01_textColorMain))
-                    background = resources.getDrawable(R.drawable.border_text_view)
-                    gravity = Gravity.CENTER.or(Gravity.CENTER_VERTICAL)
-                    setPadding(4.dp, 1.dp, 4.dp, 1.dp)
-                })
-            }
         }
 
         //  24H量
