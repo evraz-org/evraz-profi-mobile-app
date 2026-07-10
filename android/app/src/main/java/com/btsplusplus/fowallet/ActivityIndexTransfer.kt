@@ -102,7 +102,7 @@ class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback
             processSendClick()
         }
 
-        mBnding.editTextTo.onFocusChangeListener = { v, hasFocus ->
+        mBnding.editTextTo.onFocusChangeListener = { _, hasFocus ->
             val strText = mBnding.editTextTo.getText().toString()
             if (!hasFocus) {
                 processGetTransferToId(strText)
@@ -330,11 +330,19 @@ class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback
     }
 
     private fun getFee(): Double {
-        return parseDouble(mBnding.editTextFee.text.toString())
+        return try {
+            return parseDouble(mBnding.editTextFee.text.toString())
+        } catch(_: Exception) {
+            0.0
+        }
     }
 
     private fun getAmount(): Double {
-        return parseDouble(mBnding.editTextQuantity.text.toString())
+        return try {
+            parseDouble(mBnding.editTextQuantity.text.toString())
+        } catch(_: Exception) {
+            0.0
+        }
     }
 
     private fun processCalculateFee() {
@@ -489,6 +497,7 @@ class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback
                         if (txData != null) {
                             Toast.makeText(this, R.string.kVcTransferTipTxTransferFullOK.xmlstring(this), Toast.LENGTH_LONG)
                                 .show()
+                            mBnding.editTextAvailable.text = calcBalance(asset.getString("balance"), asset.getString("precision"))
                         } else {
                             Toast.makeText(this, R.string.transfer_fail.xmlstring(this), Toast.LENGTH_LONG).show()
                         }
