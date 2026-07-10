@@ -691,6 +691,7 @@
     <string name="kLabelKLineTotalAmount">Total</string>
     <string name="kLabelKLineAvgPrice">AvgPrice</string>
     <string name="kLabelBtnDepth">Depth</string>
+    <string name="kLabelBtnOrders">Orders</string>
     <string name="kLabelBtnMarketTrades">Market Trades</string>
     <string name="kLabelDepthSideBuy">Buy</string>
     <string name="kLabelDepthSideSell">Sell</string>
@@ -1844,4 +1845,6 @@
     <string name="no_req_token">You do not have the requested token!</string>
     <string name="label_evraz">EVRAZ</string>
     <string name="transfer_fail">Fail to send</string>
+    <string name="price_chart">Price chart</string>
+    <string name="all">All</string>
 </resources>

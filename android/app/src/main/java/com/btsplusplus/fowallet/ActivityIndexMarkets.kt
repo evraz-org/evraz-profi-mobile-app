@@ -31,7 +31,6 @@ class ActivityIndexMarkets : BtsppActivity() {
         AppCacheManager.sharedAppCacheManager().saveToFile()
     }
 
-    //  事件：已经进入前台
     override fun onResume() {
         super.onResume()
         GrapheneConnectionManager.sharedGrapheneConnectionManager().reconnect_all()
@@ -50,7 +49,7 @@ class ActivityIndexMarkets : BtsppActivity() {
                 this.icon =  ContextCompat.getDrawable(this@ActivityIndexMarkets, R.drawable.ic_btn_star)
             })
             tab.addTab(tab.newTab().apply {
-                text = "All"
+                text = R.string.all.xmlstring(this@ActivityIndexMarkets)
             })
             ChainObjectManager.sharedChainObjectManager().getMergedMarketInfos().forEach { market ->
                 tab.addTab(tab.newTab().apply {
@@ -84,9 +83,6 @@ class ActivityIndexMarkets : BtsppActivity() {
         }
     }
 
-    /**
-     * 停止定时器
-     */
     private fun stopTickerRefreshTimer() {
         if (_tickerRefreshTimer != null) {
             _tickerRefreshTimer!!.cancel()

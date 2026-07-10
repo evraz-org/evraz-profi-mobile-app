@@ -85,6 +85,33 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tablayout_chart_of_kline"
+                    app:tabPaddingBottom="0dp"
+                    app:tabPaddingEnd="0dp"
+                    app:tabPaddingStart="0dp"
+                    app:tabPaddingTop="0dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    app:tabIndicatorColor="@color/theme01.tintColor"
+                    app:tabRippleColor="#aaaaaa"
+                    app:tabTextAppearance="@style/KLineTabTextStyle"
+                    app:tabSelectedTextColor="@color/theme01.textColorHighlight"
+                    app:tabTextColor="@color/theme01.textColorGray">
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/price_chart" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/kLabelBtnDepth" />
+
+
+                </com.google.android.material.tabs.TabLayout>
+
                 <!-- 顶部基本信息 -->
                 <LinearLayout
                     android:id="@+id/layout_currency_from_setting"
@@ -248,6 +275,7 @@
 
                 <!-- K线周期选择 & 更多 & 指标 -->
                 <LinearLayout
+                    android:id="@+id/chartTabsArea"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
@@ -316,6 +344,7 @@
 
                 <!-- K线 -->
                 <FrameLayout
+                    android:id="@+id/chartArea"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
                     <LinearLayout
@@ -331,35 +360,6 @@
                         android:orientation="vertical">
                     </LinearLayout>
                 </FrameLayout>
-
-                <!-- 深度和成交 -->
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/tablayout_depth_of_kline"
-                    app:tabPaddingBottom="0dp"
-                    app:tabPaddingEnd="0dp"
-                    app:tabPaddingStart="0dp"
-                    app:tabPaddingTop="0dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    app:tabIndicatorColor="@color/theme01.tintColor"
-                    app:tabRippleColor="#aaaaaa"
-                    app:tabTextAppearance="@style/KLineTabTextStyle"
-                    app:tabSelectedTextColor="@color/theme01.textColorHighlight"
-                    app:tabTextColor="@color/theme01.textColorGray">
-
-                    <com.google.android.material.tabs.TabItem
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/kLabelBtnDepth" />
-
-                    <com.google.android.material.tabs.TabItem
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/kLabelBtnMarketTrades" />
-
-
-                </com.google.android.material.tabs.TabLayout>
-
 
                 <LinearLayout
                     android:id="@+id/layout_depth_area_title_from_kline"
@@ -433,6 +433,35 @@
                     android:orientation="vertical">
                 </LinearLayout>
 
+                <!-- 深度和成交 -->
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tablayout_depth_of_kline"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    app:tabIndicatorColor="@color/theme01.tintColor"
+                    app:tabPaddingBottom="0dp"
+                    app:tabPaddingEnd="0dp"
+                    app:tabPaddingStart="0dp"
+                    app:tabPaddingTop="0dp"
+                    app:tabRippleColor="#aaaaaa"
+                    app:tabSelectedTextColor="@color/theme01.textColorHighlight"
+                    app:tabTextAppearance="@style/KLineTabTextStyle"
+                    app:tabTextColor="@color/theme01.textColorGray">
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/kLabelBtnOrders" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/kLabelBtnMarketTrades" />
+
+
+                </com.google.android.material.tabs.TabLayout>
+
                 <LinearLayout
                     android:id="@+id/layout_order_book_from_kline"
                     android:layout_width="match_parent"
@@ -448,7 +477,6 @@
                     android:visibility="gone"
                     android:orientation="vertical">
                 </LinearLayout>
-
 
             </LinearLayout>
 

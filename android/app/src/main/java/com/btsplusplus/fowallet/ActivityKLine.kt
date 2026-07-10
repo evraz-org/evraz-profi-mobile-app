@@ -346,17 +346,13 @@ class ActivityKLine : BtsppActivity() {
         })
 
         //  深度和成交tab
-        _binding.tablayoutDepthOfKline!!.setOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        _binding.tablayoutDepthOfKline.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 if (tab.position == 0) {
-                    _binding.layoutDepthAreaTitleFromKline.visibility = View.VISIBLE
-                    _binding.layoutDepthAreaFromKline.visibility = View.VISIBLE
                     _binding.layoutOrderBookFromKline.visibility = View.VISIBLE
                     _binding.layoutVolumeFromKline.visibility = View.GONE
                 }
                 if (tab.position == 1) {
-                    _binding.layoutDepthAreaTitleFromKline.visibility = View.GONE
-                    _binding.layoutDepthAreaFromKline.visibility = View.GONE
                     _binding.layoutOrderBookFromKline.visibility = View.GONE
                     _binding.layoutVolumeFromKline.visibility = View.VISIBLE
                 }
@@ -368,6 +364,39 @@ class ActivityKLine : BtsppActivity() {
 
             override fun onTabReselected(tab: TabLayout.Tab) {
                 //tab重新选择的时候回调
+            }
+        })
+
+        _binding.layoutDepthAreaTitleFromKline.visibility = View.GONE
+        _binding.layoutDepthAreaFromKline.visibility = View.GONE
+        _binding.layoutCurrencyFromSetting.visibility = View.VISIBLE
+        _binding.chartTabsArea.visibility = View.VISIBLE
+        _binding.chartArea.visibility = View.VISIBLE
+
+        _binding.tablayoutChartOfKline.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                if (tab.position == 0) {
+                    _binding.layoutDepthAreaTitleFromKline.visibility = View.GONE
+                    _binding.layoutDepthAreaFromKline.visibility = View.GONE
+
+                    _binding.layoutCurrencyFromSetting.visibility = View.VISIBLE
+                    _binding.chartTabsArea.visibility = View.VISIBLE
+                    _binding.chartArea.visibility = View.VISIBLE
+                }
+                if (tab.position == 1) {
+                    _binding.layoutDepthAreaTitleFromKline.visibility = View.VISIBLE
+                    _binding.layoutDepthAreaFromKline.visibility = View.VISIBLE
+
+                    _binding.layoutCurrencyFromSetting.visibility = View.GONE
+                    _binding.chartTabsArea.visibility = View.GONE
+                    _binding.chartArea.visibility = View.GONE
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
             }
         })
     }

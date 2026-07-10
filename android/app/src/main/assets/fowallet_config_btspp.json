@@ -179,7 +179,7 @@
     "trade_query_callorder_number": 50,
     "trade_query_limitorder_number": 20,
     "trade_query_fillorder_number": 20,
-    "kline_period_default": 2,
+    "kline_period_default": 4,
     "display_precision": 5,
     "display_min_fraction": 2,
     "num_price_total_max_precision": 10,
