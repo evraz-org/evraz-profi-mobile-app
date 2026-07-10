@@ -478,9 +478,13 @@ class ChainObjectManager {
      *  根据名字、符号、ID等获取各种区块链对象。
      */
     fun getAssetBySymbol(symbol: String): JSONObject {
-        assert(_cacheAssetSymbol2ObjectHash != null)
-        assert(symbol != null)
-        return _cacheAssetSymbol2ObjectHash[symbol]!!
+        try {
+            assert(_cacheAssetSymbol2ObjectHash != null)
+            assert(symbol != null)
+            return _cacheAssetSymbol2ObjectHash[symbol]!!
+        } catch (e: Exception) {
+            return JSONObject()
+        }
     }
 
     fun getChainObjectByID(oid: String): JSONObject {

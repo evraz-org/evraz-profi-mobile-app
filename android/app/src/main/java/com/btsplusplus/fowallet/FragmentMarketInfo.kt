@@ -1,5 +1,6 @@
 package com.btsplusplus.fowallet
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -19,7 +20,7 @@ import org.json.JSONObject
 
 /**
  * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
+ * Activities that contain this fragment must implement this
  * [FragmentMarketInfo.OnFragmentInteractionListener] interface
  * to handle interaction events.
  * Use the [FragmentMarketInfo.newInstance] factory method to
@@ -33,6 +34,7 @@ class FragmentMarketInfo : BtsppFragment() {
     private var _context: Context? = null
 
     private var _favorites_market: Boolean = false                          //  是否是自选市场
+    private var _is_all_market: Boolean = false                             //  是否是All市场（显示所有交易对）
     private var _favorites_asset_list: JSONArray? = null                    //  自选列表（非自选市场该变量为nil。）
     private var _marketInfos: JSONObject? = null                            //  市场信息配置（基本资产、引用资产、分组信息等）
     private var _label_arrays = mutableListOf<JSONArray>()                  //  数组(base, quote, price, percent, 24volume)
@@ -41,13 +43,19 @@ class FragmentMarketInfo : BtsppFragment() {
 
     override fun onInitParams(args: Any?) {
         val market_config_info = args as? JSONObject
-        if (market_config_info != null) {
+        if (market_config_info != null && market_config_info.optString("type", "") == "all") {
+            //  All市场模式 - 显示所有交易对
+            _is_all_market = true
+            _favorites_market = false
+            _marketInfos = null
+        } else if (market_config_info != null) {
             _favorites_market = false
             _favorites_asset_list = null
             _marketInfos = market_config_info
             refreshCustomMarket()
         } else {
             _favorites_market = true
+            _is_all_market = false
             _marketInfos = null
             _favorites_asset_list = null
             loadAllFavoritesMarkets()
@@ -82,8 +90,13 @@ class FragmentMarketInfo : BtsppFragment() {
      *  (public) 刷新自选市场
      */
     fun onRefreshFavoritesMarket() {
-        refreshCustomMarket()
-        loadAllFavoritesMarkets()
+        if (_is_all_market) {
+            //  All市场模式下，如果自选市场发生变化，重新加载所有数据
+            _refreshUI()
+        } else {
+            refreshCustomMarket()
+            loadAllFavoritesMarkets()
+        }
     }
 
     /**
@@ -108,8 +121,8 @@ class FragmentMarketInfo : BtsppFragment() {
      *  (private) 刷新自定义交易对
      */
     private fun refreshCustomMarket() {
-        //  自选列表不处理
-        if (_favorites_market) {
+        //  All市场和自选列表不处理
+        if (_is_all_market || _favorites_market) {
             return
         }
 
@@ -162,6 +175,29 @@ class FragmentMarketInfo : BtsppFragment() {
             } else {
                 //  没有自选交易对
                 container.addView(ViewUtils.createEmptyCenterLabel(_context!!, _context!!.resources.getString(R.string.kLabelNoFavMarket)))
+            }
+        } else if (_is_all_market) {
+            //  All市场模式 - 遍历所有市场的所有交易对
+            val mergedMarkets = chainMgr.getMergedMarketInfos()
+            for (market in mergedMarkets) {
+                val base_symbol = market.getJSONObject("base").getString("symbol")
+                val base_asset = chainMgr.getAssetBySymbol(base_symbol)
+
+                //  遍历所有分组
+                val group_list = market.getJSONArray("group_list")
+                for (i in 0 until group_list.length()) {
+                    val group = group_list.getJSONObject(i)
+                    val group_key = group.getString("group_key")
+                    val group_info = chainMgr.getGroupInfoFromGroupKey(group_key)
+
+                    //  遍历该分组下的所有quote资产
+                    val quote_list = group.getJSONArray("quote_list")
+                    for (j in 0 until quote_list.length()) {
+                        val quote_symbol = quote_list.getString(j)
+                        val quote_asset = chainMgr.getAssetBySymbol(quote_symbol)
+                        _refreshDrawOnCell(group_info, _context!!, container, quote_asset, base_asset)
+                    }
+                }
             }
         } else {
             //  普通市场
@@ -240,6 +276,7 @@ class FragmentMarketInfo : BtsppFragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun _refreshDrawOnCell(group_info: JSONObject?, ctx: Context, container: LinearLayout, quote_asset: JSONObject, base_asset: JSONObject) {
         //  -- 准备数据
         val chainMgr = ChainObjectManager.sharedChainObjectManager()
@@ -289,22 +326,12 @@ class FragmentMarketInfo : BtsppFragment() {
             }
             orientation = LinearLayout.HORIZONTAL
 
-            //  QUOTE 名
             val tv1 = TextView(ctx).apply {
                 setTextColor(resources.getColor(R.color.theme01_textColorMain))
                 setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15f)
-                text = quote_name
+                text = "$quote_name / $base_name"
             }
             addView(tv1)
-
-            //  BASE 名
-            val tv2 = TextView(ctx).apply {
-                setTextColor(resources.getColor(R.color.theme01_textColorGray))
-                setTextSize(TypedValue.COMPLEX_UNIT_DIP, 10f)
-                text = String.format("/ %s", base_name)
-                setPadding(4.dp, 0, 4.dp, 0)
-            }
-            addView(tv2)
         }
 
         //  24H量

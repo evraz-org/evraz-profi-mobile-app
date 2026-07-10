@@ -287,58 +287,6 @@
   "markets": [
     {
       "base": {
-        "symbol": "CNY",
-        "name": "BitCNY"
-      },
-      "group_list": [
-        {
-          "group_key": "MAIN",
-          "quote_list": [
-            "BTS",
-            "USD"
-          ]
-        },
-        {
-          "group_key": "GDEX",
-          "quote_list": [
-            "GDEX.BTC",
-            "GDEX.ETH",
-            "GDEX.EOS",
-            "GDEX.SEER"
-          ]
-        },
-        {
-          "group_key": "COMMUNITY",
-          "quote_list": [
-            "CNVOTE"
-          ]
-        }
-      ]
-    },
-    {
-      "base": {
-        "symbol": "USD",
-        "name": "BitUSD"
-      },
-      "group_list": [
-        {
-          "group_key": "MAIN",
-          "quote_list": [
-            "BTS",
-            "CNY"
-          ]
-        },
-        {
-          "group_key": "GDEX",
-          "quote_list": [
-            "GDEX.BTC",
-            "GDEX.EOS"
-          ]
-        }
-      ]
-    },
-    {
-      "base": {
         "symbol": "BTS",
         "name": "BTS"
       },
@@ -346,45 +294,90 @@
         {
           "group_key": "MAIN",
           "quote_list": [
-            "CNY",
-            "USD"
-          ]
-        },
-        {
-          "group_key": "GDEX",
-          "quote_list": [
-            "GDEX.EOS"
-          ]
-        },
-        {
-          "group_key": "COMMUNITY",
-          "quote_list": [
-            "CNVOTE",
-            "BEOS"
+            "EVRAZ",
+            "LEPTA",
+            "EUROLUX",
+            "USDIGI",
+            "ALTIN.RUB",
+            "ALTIN",
+            "ALTIN.TRY",
+            "EUR",
+            "GBP",
+            "JPY",
+            "RUBLE",
+            "CHF"
           ]
         }
       ]
     },
     {
       "base": {
-        "symbol": "GDEX.USDT",
-        "name": "USDTⒼ"
+        "symbol": "USDIGI",
+        "name": "USDIGI"
       },
       "group_list": [
         {
           "group_key": "MAIN",
           "quote_list": [
-            "BTS",
-            "CNY",
-            "USD"
+            "EVRAZ",
+            "LEPTA",
+            "EUROLUX",
+            "ALTIN.RUB",
+            "ALTIN",
+            "ALTIN.TRY",
+            "EUR",
+            "GBP",
+            "JPY",
+            "RUBLE",
+            "CHF"
           ]
-        },
+        }
+      ]
+    },
+    {
+      "base": {
+        "symbol": "EUROLUX",
+        "name": "EUROLUX"
+      },
+      "group_list": [
         {
-          "group_key": "GDEX",
+          "group_key": "MAIN",
           "quote_list": [
-            "GDEX.BTC",
-            "GDEX.ETH",
-            "GDEX.EOS"
+            "EVRAZ",
+            "LEPTA",
+            "USDIGI",
+            "ALTIN.RUB",
+            "ALTIN",
+            "ALTIN.TRY",
+            "EUR",
+            "GBP",
+            "JPY",
+            "RUBLE",
+            "CHF"
+          ]
+        }
+      ]
+    },
+    {
+      "base": {
+        "symbol": "ALTIN.RUB",
+        "name": "ALTIN.RUB"
+      },
+      "group_list": [
+        {
+          "group_key": "MAIN",
+          "quote_list": [
+            "EVRAZ",
+            "LEPTA",
+            "EUROLUX",
+            "USDIGI",
+            "ALTIN",
+            "ALTIN.TRY",
+            "EUR",
+            "GBP",
+            "JPY",
+            "RUBLE",
+            "CHF"
           ]
         }
       ]

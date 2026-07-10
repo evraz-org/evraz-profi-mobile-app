@@ -1,14 +1,14 @@
 package com.btsplusplus.fowallet
 
 import android.os.Bundle
-import com.google.android.material.tabs.TabLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import bitshares.*
 import com.btsplusplus.fowallet.databinding.ActivityIndexMarketsBinding
 import com.fowallet.walletcore.bts.ChainObjectManager
 import org.json.JSONObject
 import java.util.*
-import kotlin.collections.ArrayList
+
 
 class ActivityIndexMarkets : BtsppActivity() {
 
@@ -25,23 +25,17 @@ class ActivityIndexMarkets : BtsppActivity() {
         goHome()
     }
 
-    //  事件：将要进入后台
     override fun onPause() {
         super.onPause()
-        //  停止计时器
         stopTickerRefreshTimer()
-        //  处理逻辑
         AppCacheManager.sharedAppCacheManager().saveToFile()
     }
 
     //  事件：已经进入前台
     override fun onResume() {
         super.onResume()
-        //  回到前台检测是否需要重新连接。
         GrapheneConnectionManager.sharedGrapheneConnectionManager().reconnect_all()
-        //  自选市场可能发生变化，重新加载。
         onRefreshFavoritesMarket()
-        //  添加Ticker刷新定时器
         startTickerRefreshTimer()
     }
 
@@ -51,10 +45,12 @@ class ActivityIndexMarkets : BtsppActivity() {
         _binding = ActivityIndexMarketsBinding.inflate(layoutInflater)
         setAutoLayoutContentView(_binding.root, navigationBarColor = R.color.theme01_tabBarColor)
 
-        //  动态初始化TabItem
         _binding.tablayout.let { tab ->
             tab.addTab(tab.newTab().apply {
-                text = resources.getString(R.string.kLabelMarketFavorites)
+                this.icon =  ContextCompat.getDrawable(this@ActivityIndexMarkets, R.drawable.ic_btn_star)
+            })
+            tab.addTab(tab.newTab().apply {
+                text = "All"
             })
             ChainObjectManager.sharedChainObjectManager().getMergedMarketInfos().forEach { market ->
                 tab.addTab(tab.newTab().apply {
@@ -62,18 +58,13 @@ class ActivityIndexMarkets : BtsppActivity() {
                 })
             }
         }
-        //  设置 fragment
+
         setFragments()
         setViewPager(1, R.id.view_pager, R.id.tablayout, fragmens)
         setTabListener(R.id.tablayout, R.id.view_pager)
 
-        // 监听 + 按钮事件
         setAddBtnListener()
-
-        // 设置全屏(隐藏状态栏和虚拟导航栏)
         setFullScreen()
-
-        // 设置底部导航栏样式
         setBottomNavigationStyle(_binding.bottomNav, 1)
     }
 
@@ -121,44 +112,25 @@ class ActivityIndexMarkets : BtsppActivity() {
      */
     private fun onRefreshFavoritesMarket() {
         if (TempManager.sharedTempManager().favoritesMarketDirty) {
-            //  重新构建各市场分组信息
             ChainObjectManager.sharedChainObjectManager().buildAllMarketsInfos()
-            //  清除标记
             TempManager.sharedTempManager().favoritesMarketDirty = false
-            //  刷新
             for (fragment in fragmens) {
                 val fr = fragment as FragmentMarketInfo
                 fr.onRefreshFavoritesMarket()
             }
-            //  自定义交易对发生变化，重新刷新ticker更新任务。
             ScheduleManager.sharedScheduleManager().autoRefreshTickerScheduleByMergedMarketInfos()
         }
     }
-
-//    fun getTitleStringArray(): MutableList<String> {
-//        var ary = mutableListOf<String>(resources.getString(R.string.kLabelMarketFavorites))
-//        ary.addAll(ChainObjectManager.sharedChainObjectManager().getMergedMarketInfos().map { market: JSONObject ->
-//            market.getJSONObject("base").getString("name")
-//        })
-//        return ary
-//    }
-//
-//    fun getTitleDefaultSelectedIndex(): Int {
-//        //  REMARK：默认选中第二个市场（第一个是自选市场）
-//        return 2
-//    }
 
     private fun setAddBtnListener() {
        _binding.buttonAdd.setOnClickListener { goTo(ActivityTradingPairMgr::class.java, true) }
     }
 
     private fun setFragments() {
-        //  REMARK：marketInfo 参数为 nil，说明为自选市场。
         fragmens.add(FragmentMarketInfo().initialize(null))
-        //  非自选市场
+        fragmens.add(FragmentMarketInfo().initialize(JSONObject().apply { put("type", "all") }))
         ChainObjectManager.sharedChainObjectManager().getMergedMarketInfos().forEach { market: JSONObject ->
             fragmens.add(FragmentMarketInfo().initialize(market))
         }
     }
-
 }

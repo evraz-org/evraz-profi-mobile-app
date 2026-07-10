@@ -43,7 +43,7 @@
     <!--<android.support.design.widget.AppBarLayout-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="wrap_content"-->
-        <!--android:theme="@style/AppTheme.AppBarOverlay">-->
+        <!--android:theme="@style/AppTheme.AppBarLayout">-->
 
         <!--<FrameLayout-->
             <!--android:layout_marginTop="20dp"-->
@@ -65,7 +65,7 @@
             <!--<TextView-->
                 <!--android:id="@+id/title"-->
                 <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
+                <!--android:layout_height="100%"-->
                 <!--android:gravity="center"-->
                 <!--android:text="行情"-->
                 <!--style="@style/kNavigationBarTextStyle" />-->
@@ -93,10 +93,13 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="52dp"
+        app:tabMode="scrollable"
         app:tabTextAppearance="@style/KPageTabTextStyle"
         app:tabIndicatorColor="#ff0000"
         app:tabRippleColor="#aaaaaa"
         app:tabTextColor="#ffffff"
+        app:tabIconTint="@color/colorWhite"
+        app:tabIconTintMode="src_in"
         app:layout_constraintTop_toTopOf="parent">
 
         <!-- <com.google.android.material.tabs.TabItem
