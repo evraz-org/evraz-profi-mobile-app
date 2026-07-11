@@ -887,12 +887,15 @@ class ActivityCollateral : BtsppActivity() {
      */
     private fun _asyncQueryFeedPrice(debtAsset: JSONObject?): Promise {
         val asset = debtAsset ?: _debtPair!!._baseAsset
-        val bitasset_data_id = asset.getString("bitasset_data_id")
-        assert(bitasset_data_id.isNotEmpty())
-        return ChainObjectManager.sharedChainObjectManager().queryAllGrapheneObjectsSkipCache(jsonArrayfrom(bitasset_data_id)).then {
-            val resultHash = it as JSONObject
-            return@then resultHash.getJSONObject(bitasset_data_id)
+        val bitasset_data_id = asset.optString("bitasset_data_id", "")
+        if(bitasset_data_id.isNotEmpty()) {
+            return ChainObjectManager.sharedChainObjectManager()
+                .queryAllGrapheneObjectsSkipCache(jsonArrayfrom(bitasset_data_id)).then {
+                val resultHash = it as JSONObject
+                return@then resultHash.getJSONObject(bitasset_data_id)
+            }
         }
+        return Promise._resolve(JSONObject())
     }
 
     /**
@@ -925,10 +928,12 @@ class ActivityCollateral : BtsppActivity() {
     private fun _refreshUI(bLogined: Boolean, new_feed_price_data: JSONObject?) {
         //  更新喂价 和 MCR。
         if (new_feed_price_data != null) {
-            _nCurrFeedPrice = _debtPair!!.calcShowFeedInfo(jsonArrayfrom(new_feed_price_data))
-            _currAssetIsPredictionmarket = new_feed_price_data.isTrue("is_prediction_market")
-            val mcr = new_feed_price_data.getJSONObject("current_feed").getString("maintenance_collateral_ratio")
-            _nMaintenanceCollateralRatio = bigDecimalfromAmount(mcr, 3)
+            try {
+                _nCurrFeedPrice = _debtPair!!.calcShowFeedInfo(jsonArrayfrom(new_feed_price_data))
+                _currAssetIsPredictionmarket = new_feed_price_data.isTrue("is_prediction_market")
+                val mcr = new_feed_price_data.getJSONObject("current_feed").getString("maintenance_collateral_ratio")
+                _nMaintenanceCollateralRatio = bigDecimalfromAmount(mcr, 3)
+            } catch (_: Exception) {}
         }
 
         //  生成新的债仓信息

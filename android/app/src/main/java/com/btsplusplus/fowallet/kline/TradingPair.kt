@@ -196,14 +196,18 @@ class TradingPair {
             }
         } else {
             //  3、base 或 quote 是智能资产
-            val first = bitasset_data_id_data_array.getJSONObject(0)
-            val first_sba = first.getJSONObject("options").getString("short_backing_asset")
-            val first_id = first.getString("asset_id")
+            try {
+                val first = bitasset_data_id_data_array.getJSONObject(0)
+                val first_sba = first.getJSONObject("options").getString("short_backing_asset")
+                val first_id = first.getString("asset_id")
 
-            //  base 背书 或者 quote 背书。
-            if ((first_id == _baseId && first_sba == _quoteId) || (first_id == _quoteId && first_sba == _baseId)) {
-                current_feed = first.getJSONObject("current_feed")
-            } else {
+                //  base 背书 或者 quote 背书。
+                if ((first_id == _baseId && first_sba == _quoteId) || (first_id == _quoteId && first_sba == _baseId)) {
+                    current_feed = first.getJSONObject("current_feed")
+                } else {
+                    return null
+                }
+            } catch (_: Exception) {
                 return null
             }
         }

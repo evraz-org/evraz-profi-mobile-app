@@ -28,7 +28,9 @@ class ActivityIndexMarkets : BtsppActivity() {
     override fun onPause() {
         super.onPause()
         stopTickerRefreshTimer()
-        AppCacheManager.sharedAppCacheManager().saveToFile()
+        try {
+            AppCacheManager.sharedAppCacheManager().saveToFile()
+        } catch (_: Exception) {}
     }
 
     override fun onResume() {
