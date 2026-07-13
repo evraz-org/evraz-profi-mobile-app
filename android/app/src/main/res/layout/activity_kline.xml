@@ -116,23 +116,24 @@
                 <LinearLayout
                     android:id="@+id/layout_currency_from_setting"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="0dp"
                     android:orientation="horizontal"
+                    android:gravity="center|left"
                     android:paddingLeft="10dp">
 
-
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:gravity="center|left"
                         android:orientation="vertical">
 
 
                         <LinearLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:orientation="horizontal"
+                            android:gravity="top|left"
                             android:layout_marginTop="0dp">
 
                             <TextView
@@ -140,7 +141,6 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="4dp"
-                                android:layout_marginTop="6dp"
                                 android:textStyle="bold"
                                 android:text="--"
                                 android:textColor="@color/theme01.buyColor"
@@ -151,20 +151,18 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="4dp"
-                                android:layout_marginTop="4dp"
                                 android:text="--%"
                                 android:textColor="@color/theme01.buyColor"
                                 android:textSize="12dp" />
 
                         </LinearLayout>
 
-
                         <LinearLayout
                             android:id="@+id/field_feedprice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
                             android:orientation="horizontal"
-                            android:visibility="invisible"
+                            android:visibility="gone"
                             android:layout_marginTop="4dp">
 
                             <TextView
@@ -184,60 +182,73 @@
                                 android:textSize="12dp" />
 
                         </LinearLayout>
-                        
+
                     </LinearLayout>
 
+                    <Space
+                        android:layout_width="5dp"
+                        android:layout_height="match_parent"/>
+
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:layout_marginTop="5dp"
                         android:paddingRight="10dp"
-                        android:layout_weight="1.5"
+                        android:gravity="center|left"
                         android:orientation="vertical">
 
                         <LinearLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="20dp"
                             android:orientation="horizontal">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1.2"
                                 android:gravity="left|center_vertical"
                                 android:text="@string/kLabelHeaderHigh"
                                 android:textColor="@color/theme01.textColorNormal"
                                 android:textSize="12dp" />
 
+                            <Space
+                                android:layout_width="5dp"
+                                android:layout_height="wrap_content"/>
+
                             <TextView
                                 android:id="@+id/label_txt_high_value"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1"
                                 android:gravity="right|center_vertical"
                                 android:text="--"
                                 android:textColor="@color/theme01.textColorMain"
                                 android:textSize="12dp" />
                         </LinearLayout>
 
+                        <Space
+                            android:layout_width="10dp"
+                            android:layout_height="wrap_content"/>
+
                         <LinearLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="20dp"
                             android:orientation="horizontal">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1"
                                 android:gravity="left|center_vertical"
                                 android:text="@string/kLabelHeaderLow"
                                 android:textColor="@color/theme01.textColorNormal"
                                 android:textSize="12dp" />
 
+                            <Space
+                                android:layout_width="5dp"
+                                android:layout_height="wrap_content"/>
+
                             <TextView
                                 android:id="@+id/label_txt_low_value"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1"
                                 android:gravity="right|center_vertical"
                                 android:text="--"
                                 android:textColor="@color/theme01.textColorMain"
@@ -245,25 +256,31 @@
 
                         </LinearLayout>
 
+                        <Space
+                            android:layout_width="10dp"
+                            android:layout_height="wrap_content"/>
+
                         <LinearLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="20dp"
                             android:orientation="horizontal">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1"
                                 android:gravity="left|center_vertical"
                                 android:text="24H"
                                 android:textColor="@color/theme01.textColorNormal"
                                 android:textSize="12dp" />
 
+                            <Space
+                                android:layout_width="5dp"
+                                android:layout_height="wrap_content"/>
+
                             <TextView
                                 android:id="@+id/label_txt_24h_value"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1"
                                 android:gravity="right|center_vertical"
                                 android:text="--"
                                 android:textColor="@color/theme01.textColorMain"
@@ -433,6 +450,34 @@
                 </LinearLayout>
 
                 <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tablayout_buy_and_sell"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="#000000"
+                    app:tabTextAppearance="@style/KPageTabTextStyle"
+                    app:tabIndicatorColor="#ff0000"
+                    app:tabRippleColor="#aaaaaa"
+                    app:tabTextColor="#ffffff">
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/kLabelTitleBuy" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/kLabelTitleSell" />
+
+                </com.google.android.material.tabs.TabLayout>
+
+                <FrameLayout
+                    android:id="@+id/layout_fragment_trade"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                </FrameLayout>
+
+                <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tablayout_depth_of_kline"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
@@ -465,7 +510,6 @@
                     android:orientation="vertical">
                 </LinearLayout>
 
-                <!-- 成交 -->
                 <LinearLayout
                     android:id="@+id/layout_volume_from_kline"
                     android:layout_width="match_parent"
@@ -474,7 +518,6 @@
                     android:orientation="vertical">
                 </LinearLayout>
 
-                <!-- 当前订单容器 -->
                 <FrameLayout
                     android:id="@+id/layout_fragment_order_current_from_kline"
                     android:layout_width="match_parent"
@@ -496,28 +539,10 @@
         android:background="@color/theme01.tabBarColor"
         app:layout_constraintBottom_toBottomOf="@+id/linearLayout">
 
-        <Button
-            android:id="@+id/btn_buy_of_kline"
+        <Space
             android:layout_width="wrap_content"
-            android:layout_height="56dp"
-            android:layout_gravity="center_vertical|center"
-            android:layout_marginRight="12dp"
-            android:layout_weight="1"
-            android:background="@color/theme01.buyColor"
-            android:gravity="center_vertical|center"
-            android:text="@string/kBtnBuy"
-            android:textColor="@color/theme01.textColorPercent" />
-
-        <Button
-            android:id="@+id/btn_sell_of_kline"
-            android:layout_width="wrap_content"
-            android:layout_height="56dp"
-            android:layout_gravity="center_vertical|center"
-            android:layout_weight="1"
-            android:background="@color/theme01.sellColor"
-            android:gravity="center_vertical|center"
-            android:text="@string/kBtnSell"
-            android:textColor="@color/theme01.textColorPercent" />
+            android:layout_height="match_parent"
+            android:layout_weight="9" />
 
         <ImageButton
             android:id="@+id/img_btn_fav_of_kline"
@@ -525,7 +550,6 @@
             android:layout_height="56dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="1.5"
-
             android:background="@null"
             android:scaleX="0.8"
             android:scaleY="0.8"

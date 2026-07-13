@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import bitshares.*
 import com.btsplusplus.fowallet.databinding.ActivityKlineBinding
 import com.btsplusplus.fowallet.kline.MKlineItemData
@@ -45,6 +46,8 @@ class ActivityKLine : BtsppActivity() {
     private lateinit var _viewDeepGraph: ViewDeepGraph
     private lateinit var _viewTradeHistory: ViewTradeHistory
     private lateinit var _viewBidAsk: ViewBidAsk
+    private lateinit var _fragmentTrade: FragmentTradeBuyOrSell
+
     private var _notify_handler: Handler? = null
 
     private lateinit var _binding: ActivityKlineBinding
@@ -55,7 +58,7 @@ class ActivityKLine : BtsppActivity() {
         _refreshFavButtonStatus()
     }
 
-    override fun onPause() {
+    override fun onPause() {    super.onPause()
         NotificationCenter.sharedNotificationCenter().removeObserver(kBtsSubMarketNotifyNewData, _notify_handler!!)
         super.onPause()
     }
@@ -134,14 +137,12 @@ class ActivityKLine : BtsppActivity() {
         _viewTradeHistory = ViewTradeHistory(this).initView(24f, 20, _tradingPair)
         _binding.layoutVolumeFromKline.addView(_viewTradeHistory)
 
-        //  买
-        _binding.btnBuyOfKline.setOnClickListener {
-            goTo(ActivityTradeMain::class.java, true, args = jsonArrayfrom(_tradingPair, true))
-        }
-        //  卖
-        _binding.btnSellOfKline.setOnClickListener {
-            goTo(ActivityTradeMain::class.java, true, args = jsonArrayfrom(_tradingPair, false))
-        }
+        _fragmentTrade = FragmentTradeBuyOrSell().initialize(jsonArrayfrom(true, _tradingPair)) as FragmentTradeBuyOrSell
+
+        supportFragmentManager.beginTransaction()
+            .add(R.id.layout_fragment_trade, _fragmentTrade)
+            .commit()
+
         //  收藏
         _refreshFavButtonStatus()
         _binding.imgBtnFavOfKline.setOnClickListener {
@@ -428,6 +429,21 @@ class ActivityKLine : BtsppActivity() {
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
         })
+
+        _binding.tablayoutBuyAndSell.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                _fragmentTrade = FragmentTradeBuyOrSell().initialize(jsonArrayfrom(tab.position == 0, _tradingPair)) as FragmentTradeBuyOrSell
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.layout_fragment_trade, _fragmentTrade)
+                    .commit()
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+        })
     }
 
     /**
@@ -463,7 +479,7 @@ class ActivityKLine : BtsppActivity() {
             _binding.fieldFeedprice.visibility = View.VISIBLE
             _binding.labelTxtFeedPriceValue.text = _feedPriceInfo!!.toPlainString()
         } else {
-            _binding.fieldFeedprice.visibility = View.INVISIBLE
+            _binding.fieldFeedprice.visibility = View.GONE
         }
     }
 
