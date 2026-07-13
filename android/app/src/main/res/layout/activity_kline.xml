@@ -425,15 +425,12 @@
 
                 </LinearLayout>
 
-                <!-- 深度 -->
                 <LinearLayout
                     android:id="@+id/layout_depth_area_from_kline"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                 </LinearLayout>
-
-                <!-- 深度和成交 -->
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tablayout_depth_of_kline"
@@ -459,7 +456,6 @@
                         android:layout_height="wrap_content"
                         android:text="@string/kLabelBtnMarketTrades" />
 
-
                 </com.google.android.material.tabs.TabLayout>
 
                 <LinearLayout
@@ -477,6 +473,14 @@
                     android:visibility="gone"
                     android:orientation="vertical">
                 </LinearLayout>
+
+                <!-- 当前订单容器 -->
+                <FrameLayout
+                    android:id="@+id/layout_fragment_order_current_from_kline"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+                </FrameLayout>
 
             </LinearLayout>
 

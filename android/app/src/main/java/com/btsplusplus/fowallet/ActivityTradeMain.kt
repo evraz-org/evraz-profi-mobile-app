@@ -86,12 +86,6 @@ class ActivityTradeMain : BtsppActivity() {
             tab.addTab(tab.newTab().apply {
                 text = resources.getString(R.string.kLabelTitleSell)
             })
-            if (!SettingManager.sharedSettingManager().isEnableHorTradeUI()) {
-                //  当前委托 - 竖版界面才存在
-                tab.addTab(tab.newTab().apply {
-                    text = resources.getString(R.string.kLabelOpenOrders)
-                })
-            }
             if (_tradingPair._isCoreMarket) {
                 tab.addTab(tab.newTab().apply {
                     text = resources.getString(R.string.kVcOrderPageSettleOrders)
@@ -105,9 +99,7 @@ class ActivityTradeMain : BtsppActivity() {
         //  监听 tab 并设置选中 item
         setTabListener(_binding.tablayoutOfMainBuyAndSell.id, _binding.viewPagerOfMainBuyAndSell.id) { pos ->
             fragmens[pos].let {
-                if (it is FragmentOrderCurrent) {
-                    it.onControllerPageChanged()
-                } else if (it is FragmentOrderHistory) {
+                if (it is FragmentOrderHistory) {
                     it.querySettlementOrders(tradingPair = _tradingPair)
                 }
             }
@@ -315,11 +307,6 @@ class ActivityTradeMain : BtsppActivity() {
             //  竖版 买卖界面 + 委托界面
             fragmens.add(FragmentTradeBuyOrSell().initialize(jsonArrayfrom(true, _tradingPair)))
             fragmens.add(FragmentTradeBuyOrSell().initialize(jsonArrayfrom(false, _tradingPair)))
-            fragmens.add(FragmentOrderCurrent().initialize(JSONObject().apply {
-                put("full_account_data", null)
-                put("tradingPair", _tradingPair)
-                put("filter", true)
-            }))
         } else {
             //  横板 买卖界面
             fragmens.add(FragmentTradeMainPage().initialize(jsonArrayfrom(true, _tradingPair)))

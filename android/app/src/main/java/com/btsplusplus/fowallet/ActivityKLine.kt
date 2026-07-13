@@ -38,6 +38,7 @@ class ActivityKLine : BtsppActivity() {
 
     private var _dataArrayHistory = JSONArray()             //  成交历史
     private var _feedPriceInfo: BigDecimal? = null          //  喂价信息（有的交易对没有喂价）
+    private var _fragmentOrderCurrent: FragmentOrderCurrent? = null
 
     private lateinit var _viewKLine: ViewKLine
     private lateinit var _viewCrss: ViewKLineCross
@@ -345,16 +346,42 @@ class ActivityKLine : BtsppActivity() {
             }
         })
 
-        //  深度和成交tab
+        if (!SettingManager.sharedSettingManager().isEnableHorTradeUI()) {
+            _binding.tablayoutDepthOfKline.addTab(_binding.tablayoutDepthOfKline.newTab().apply {
+                text = resources.getString(R.string.kLabelMyOrders)
+            })
+        }
+
         _binding.tablayoutDepthOfKline.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 if (tab.position == 0) {
                     _binding.layoutOrderBookFromKline.visibility = View.VISIBLE
                     _binding.layoutVolumeFromKline.visibility = View.GONE
+                    _binding.layoutFragmentOrderCurrentFromKline.visibility = View.GONE
+                    _fragmentOrderCurrent = null
                 }
                 if (tab.position == 1) {
                     _binding.layoutOrderBookFromKline.visibility = View.GONE
                     _binding.layoutVolumeFromKline.visibility = View.VISIBLE
+                    _binding.layoutFragmentOrderCurrentFromKline.visibility = View.GONE
+                    _fragmentOrderCurrent = null
+                }
+                if (tab.position == 2) {
+                    _binding.layoutOrderBookFromKline.visibility = View.GONE
+                    _binding.layoutVolumeFromKline.visibility = View.GONE
+                    _binding.layoutFragmentOrderCurrentFromKline.visibility = View.VISIBLE
+                    if (_fragmentOrderCurrent == null) {
+                        _fragmentOrderCurrent = FragmentOrderCurrent().apply {
+                            initialize(JSONObject().apply {
+                                put("full_account_data", null)
+                                put("tradingPair", _tradingPair)
+                                put("filter", true)
+                            })
+                        }
+                        supportFragmentManager.beginTransaction()
+                            .add(R.id.layout_fragment_order_current_from_kline, _fragmentOrderCurrent!!)
+                            .commit()
+                    }
                 }
             }
 
@@ -378,10 +405,12 @@ class ActivityKLine : BtsppActivity() {
                 if (tab.position == 0) {
                     _binding.layoutDepthAreaTitleFromKline.visibility = View.GONE
                     _binding.layoutDepthAreaFromKline.visibility = View.GONE
+                    _binding.layoutFragmentOrderCurrentFromKline.visibility = View.GONE
 
                     _binding.layoutCurrencyFromSetting.visibility = View.VISIBLE
                     _binding.chartTabsArea.visibility = View.VISIBLE
                     _binding.chartArea.visibility = View.VISIBLE
+                    _fragmentOrderCurrent = null
                 }
                 if (tab.position == 1) {
                     _binding.layoutDepthAreaTitleFromKline.visibility = View.VISIBLE

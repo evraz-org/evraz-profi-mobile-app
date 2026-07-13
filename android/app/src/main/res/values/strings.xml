@@ -735,6 +735,7 @@
     <string name="kLableBidAmount">Amount</string>
     <string name="kLableBidPrice">Price</string>
     <string name="kLabelOpenOrders">Open Orders</string>
+    <string name="kLabelMyOrders">My Orders</string>
     <string name="kLabelNoOrder">No order</string>
     <string name="kLabelAllOrders">All</string>
     <string name="kVcTradeTipTxCreateFullOK">The limit order was created successfully.</string>
