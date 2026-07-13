@@ -223,7 +223,7 @@ class FragmentTradeBuyOrSell : BtsppFragment() {
         if (!isAdded) {
             return
         }
-        draw_ui_ticker_price_and_percent(true)
+        draw_ui_ticker_price_and_percent(_isbuy)
     }
 
     /**
@@ -242,7 +242,7 @@ class FragmentTradeBuyOrSell : BtsppFragment() {
             draw_ui_history(data_array)
 
             //  更新最新成交价
-            draw_ui_ticker_price_and_percent(!data_array.first<JSONObject>()!!.getBoolean("issell"))
+            draw_ui_ticker_price_and_percent(_isbuy)
         }
     }
 
@@ -289,132 +289,15 @@ class FragmentTradeBuyOrSell : BtsppFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
 
         _view = inflater.inflate(R.layout.fragment_trade_buy_or_sell, container, false)
         _ctx = inflater.context
 
-
         refreshUI()
-
-//        bindUIEvents()
 
         return _view
 
-    }
-//
-//    private fun bindUIEvents() {
-//        // 买入或卖出 提交事件
-//        _btn_submit.setOnClickListener {
-//
-//        }
-//
-//        // 买卖数量滑动条滑动事件
-//
-//        // 价格输入框onChange事件
-//
-//        // 数量输入框onChange事件
-//
-//        // 交易额输入框onChange事件
-//    }
-
-    // 生成交易历史左右结构的 价格 数量 视图
-    private fun createHistoryCell(): SimpleHistoryViews {
-        val layout = LinearLayout(_ctx)
-        layout.orientation = LinearLayout.HORIZONTAL
-        layout.layoutParams = SHARED_LAYOUT_PARAMS
-        layout.gravity = Gravity.CENTER_VERTICAL
-
-        val tv_price = TextView(_ctx)
-        tv_price.text = ""// OrgUtils.formatFloatValue(item.getString("price").toDouble(), _tradingPair._displayPrecision)
-        tv_price.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 11.0f)
-
-        val tv_quantity = TextView(_ctx)
-        tv_quantity.text = ""// OrgUtils.formatFloatValue(item.getString("amount").toDouble(), _tradingPair._numPrecision)
-        tv_quantity.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 11.0f)
-        tv_quantity.setTextColor(_ctx.resources.getColor(R.color.theme01_textColorNormal))
-        tv_quantity.gravity = Gravity.RIGHT
-        tv_quantity.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-
-        layout.addView(tv_price)
-        layout.addView(tv_quantity)
-
-        return SimpleHistoryViews(tv_price, tv_quantity, layout)
-    }
-
-    // 生成买卖挂单列表的 Cell
-    private fun createBuyOrSellOrderCell(index: Int, is_buy: Boolean, item: JSONObject?): OrderBookViews {
-        val layout_wrap = FrameLayout(_ctx)
-
-        val layout = LinearLayout(_ctx)
-        layout.orientation = LinearLayout.HORIZONTAL
-        layout.layoutParams = SHARED_LAYOUT_PARAMS
-        layout.gravity = Gravity.CENTER_VERTICAL
-
-        val tv_dot = TextView(_ctx)
-        tv_dot.layoutParams = LinearLayout.LayoutParams(12.dp, LinearLayout.LayoutParams.WRAP_CONTENT)
-
-        tv_dot.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 11.0f)
-        tv_dot.setTextColor(_ctx.resources.getColor(R.color.theme01_textColorNormal))
-//        if (isMyOrder){
-        tv_dot.text = "●"
-//        }
-        tv_dot.visibility = View.INVISIBLE
-
-        val tv_index = TextView(_ctx)
-        tv_index.layoutParams = LinearLayout.LayoutParams(16.dp, LinearLayout.LayoutParams.WRAP_CONTENT)
-        tv_index.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 11.0f)
-        tv_index.text = index.toString()
-        tv_index.setTextColor(_ctx.resources.getColor(R.color.theme01_textColorNormal))
-
-
-        val tv_price = TextView(_ctx)
-        tv_price.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        tv_price.text = if (item != null) OrgUtils.formatFloatValue(item.getString("price").toDouble(), _tradingPair._displayPrecision, false) else "--"
-        tv_price.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 11.0f)
-        if (is_buy) {
-            tv_price.setTextColor(_ctx.resources.getColor(R.color.theme01_buyColor))
-        } else {
-            tv_price.setTextColor(_ctx.resources.getColor(R.color.theme01_sellColor))
-        }
-
-        val tv_quantity = TextView(_ctx)
-        tv_quantity.setPadding(0, 0, 5.dp, 0)
-        tv_quantity.layoutParams = LinearLayout.LayoutParams(16.dp, LinearLayout.LayoutParams.WRAP_CONTENT)
-        tv_quantity.text = if (item != null) OrgUtils.formatFloatValue(item.getString("quote").toDouble(), _tradingPair._numPrecision, false) else "--"
-        tv_quantity.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 11.0f)
-        tv_quantity.setTextColor(_ctx.resources.getColor(R.color.theme01_textColorNormal))
-        tv_quantity.gravity = Gravity.RIGHT
-        tv_quantity.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-
-        layout.addView(tv_dot)
-        layout.addView(tv_index)
-        layout.addView(tv_price)
-        layout.addView(tv_quantity)
-
-
-        val layout_view_block = LinearLayout(_ctx)
-        layout_view_block.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 26.dp).apply {
-            gravity = Gravity.RIGHT
-        }
-        layout_view_block.gravity = Gravity.RIGHT
-        val view_block = View(_ctx)
-        view_block.layoutParams = LinearLayout.LayoutParams((index * 5).dp, 26.dp).apply {
-            gravity = Gravity.RIGHT
-        }
-        if (is_buy) {
-            view_block.setBackgroundColor(_ctx.resources.getColor(R.color.theme01_buyColor))
-        } else {
-            view_block.setBackgroundColor(_ctx.resources.getColor(R.color.theme01_sellColor))
-        }
-        view_block.background.alpha = 50
-        view_block.visibility = View.INVISIBLE
-
-        layout_view_block.addView(view_block)
-        layout_wrap.addView(layout_view_block)
-        layout_wrap.addView(layout)
-
-        return OrderBookViews(tv_index, tv_price, tv_quantity, tv_dot, view_block, layout_wrap)
     }
 
     /**
@@ -552,80 +435,6 @@ class FragmentTradeBuyOrSell : BtsppFragment() {
         }
     }
 
-    private fun init_fill_history_view() {
-        _view.findViewById<LinearLayout>(R.id.layout_history_list).let { layout ->
-            layout.removeAllViews()
-            _viewFillHistory.clear()
-            for (i in 0 until _showOrderMaxNumber) {
-                val item = createHistoryCell()
-                _viewFillHistory.add(item)
-                layout.addView(item.layout)
-            }
-        }
-        _currFillOrders?.let { draw_ui_history(it) }
-    }
-
-    private fun init_order_book() {
-        val layout_bid_list: LinearLayout = _view.findViewById(R.id.layout_bid_list)
-        val layout_ask_list: LinearLayout = _view.findViewById(R.id.layout_ask_list)
-        layout_bid_list.removeAllViews()
-        layout_ask_list.removeAllViews()
-        _viewBidList.clear()
-        _viewAskList.clear()
-        for (i in 0 until _showOrderMaxNumber) {
-            val item = createBuyOrSellOrderCell(i + 1, true, null)
-            layout_bid_list.addView(item.layout)
-            _viewBidList.add(item)
-        }
-        for (i in 0 until _showOrderMaxNumber) {
-            val item = createBuyOrSellOrderCell(_showOrderMaxNumber - i, false, null)
-            layout_ask_list.addView(item.layout)
-            _viewAskList.add(item)
-        }
-        //  已有数据：直接刷新
-        _currLimitOrders?.let { draw_ask_bid_list(it) }
-    }
-
-    private fun draw_ask_bid_core(viewList: ArrayList<OrderBookViews>, dataList: JSONArray, half_width: Int, maxQuoteValue: Double, isask: Boolean) {
-        viewList.forEachIndexed { index, orderBookViews ->
-            //  REMARK：卖盘，数据倒序显示。
-            val order = if (isask) dataList.optJSONObject(_showOrderMaxNumber - index - 1) else dataList.optJSONObject(index)
-            if (order != null) {
-                if (order.optBoolean("iscall")) {
-                    orderBookViews.id.setTextColor(resources.getColor(R.color.theme01_callOrderColor))
-                    orderBookViews.amount.setTextColor(resources.getColor(R.color.theme01_callOrderColor))
-                    orderBookViews.price.setTextColor(resources.getColor(R.color.theme01_callOrderColor))
-                    orderBookViews.currentOrderdot.visibility = View.INVISIBLE
-                } else {
-                    orderBookViews.id.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
-                    orderBookViews.amount.setTextColor(resources.getColor(R.color.theme01_textColorNormal))
-                    val color = if (isask) R.color.theme01_sellColor else R.color.theme01_buyColor
-                    orderBookViews.price.setTextColor(resources.getColor(color))
-                    if (_userOrderDataHash.containsKey(order.getString("oid"))) {
-                        orderBookViews.currentOrderdot.visibility = View.VISIBLE
-                        orderBookViews.currentOrderdot.setTextColor(resources.getColor(color))
-                    } else {
-                        orderBookViews.currentOrderdot.visibility = View.INVISIBLE
-                    }
-                }
-                orderBookViews.amount.text = OrgUtils.formatFloatValue(order.getString("quote").toDouble(), _tradingPair._numPrecision, false)
-                orderBookViews.price.text = OrgUtils.formatFloatValue(order.getString("price").toDouble(), _tradingPair._displayPrecision, false)
-                //  买盘 背景
-                orderBookViews.bar.visibility = View.VISIBLE
-                orderBookViews.bar.layoutParams = LinearLayout.LayoutParams(max(min(order.getDouble("quote") * half_width / maxQuoteValue, half_width.toDouble()), 1.0).roundToInt(), 26.dp).apply {
-                    gravity = Gravity.RIGHT
-                }
-                //  点击事件
-                orderBookViews.layout.setOnClickListener { onOrderBookCellClicked(order) }
-            } else {
-                orderBookViews.price.text = "--"
-                orderBookViews.amount.text = "--"
-                orderBookViews.bar.visibility = View.INVISIBLE
-                orderBookViews.layout.setOnClickListener(null)
-            }
-        }
-    }
-
     /**
      *  （private) 盘口CELL点击
      */
@@ -662,11 +471,6 @@ class FragmentTradeBuyOrSell : BtsppFragment() {
                 break
             }
         }
-
-        val half_width = (Utils.screen_width / 2).toInt()
-
-        draw_ask_bid_core(_viewBidList, bids, half_width, _fMaxQuoteValue, isask = false)
-        draw_ask_bid_core(_viewAskList, asks, half_width, _fMaxQuoteValue, isask = true)
     }
 
     private fun refreshUI() {
@@ -677,23 +481,8 @@ class FragmentTradeBuyOrSell : BtsppFragment() {
         SHARED_LAYOUT_PARAMS = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, toDp(26f))
         SHARED_LAYOUT_PARAMS.gravity = Gravity.CENTER_VERTICAL
 
-        //  配置滑动条颜色和图标
-        val seek_color = if (_isbuy) {
-            R.color.theme01_buyColor
-        } else {
-            R.color.theme01_sellColor
-        }
-
-        // REMARK seekbar 已经删除了
-//        _view.findViewById<SeekBar>(R.id.id_slider_amount_percent).let { seek ->
-//            seek.progressDrawable.setColorFilter(resources.getColor(seek_color), PorterDuff.Mode.SRC_ATOP)
-//        }
-
-        // 计算右侧列表ScrollView高度
-        calcOrderScrollViewHeight()
-
         //  第一排涨跌文字
-        draw_ui_ticker_price_and_percent(true)
+        draw_ui_ticker_price_and_percent(_isbuy)
 
         //  输入框标题栏
         _view.findViewById<TextView>(R.id.tf_price_title).text = String.format(resources.getString(R.string.kVcVerTradeLabelPrice), base_symbol)
@@ -763,15 +552,6 @@ class FragmentTradeBuyOrSell : BtsppFragment() {
         _view.findViewById<Button>(R.id.button_percent50).setOnClickListener { onPercentButtonClicked(BigDecimal.valueOf(0.5)) }
         _view.findViewById<Button>(R.id.button_percent75).setOnClickListener { onPercentButtonClicked(BigDecimal.valueOf(0.75)) }
         _view.findViewById<Button>(R.id.button_percent100).setOnClickListener { onPercentButtonClicked(BigDecimal.ONE) }
-
-        //  初始化UI - 盘口
-        init_order_book()
-
-        //  初始化UI - 成交历史
-        init_fill_history_view()
-
-        //  REMARK：延迟滚动到最底部
-        Utils.delay { _view.findViewById<ScrollView>(R.id.sv_ask_listview).fullScroll(ScrollView.FOCUS_DOWN) }
     }
 
     private fun _processTouchEvents(event: MotionEvent): Boolean {
@@ -877,7 +657,7 @@ class FragmentTradeBuyOrSell : BtsppFragment() {
         if (WalletManager.sharedWalletManager().isWalletExist()) {
             return
         }
-        activity!!.goTo(ActivityLogin::class.java, true)
+        activity?.goTo(ActivityLogin::class.java, true)
     }
 
     private fun onSubmitClicked() {
@@ -954,7 +734,7 @@ class FragmentTradeBuyOrSell : BtsppFragment() {
         }
 
         //  --- 参数校验完毕开始执行请求 ---
-        activity!!.guardWalletUnlocked(false) { unlocked ->
+        requireActivity().guardWalletUnlocked(false) { unlocked ->
             if (unlocked) {
                 processBuyOrSellActionCore(n_price, n_amount, n_total)
             }
@@ -1005,11 +785,11 @@ class FragmentTradeBuyOrSell : BtsppFragment() {
                 "fill_or_kill", false)
 
         //  确保有权限发起普通交易，否则作为提案交易处理。
-        activity!!.GuardProposalOrNormalTransaction(EBitsharesOperations.ebo_limit_order_create, false, false,
+        requireActivity().GuardProposalOrNormalTransaction(EBitsharesOperations.ebo_limit_order_create, false, false,
                 op, account_data) { isProposal, _ ->
             assert(!isProposal)
             //  请求网络广播
-            val mask = ViewMask(R.string.kTipsBeRequesting.xmlstring(this.activity!!), this.activity!!)
+            val mask = ViewMask(R.string.kTipsBeRequesting.xmlstring(this.requireActivity()), this.requireActivity())
             mask.show()
             BitsharesClientManager.sharedBitsharesClientManager().createLimitOrder(op).then {
                 //  刷新UI（清除输入框）
@@ -1060,23 +840,6 @@ class FragmentTradeBuyOrSell : BtsppFragment() {
                         "base", _tradingPair._baseAsset.getString("symbol"), "quote", _tradingPair._quoteAsset.getString("symbol")))
             }
         }
-    }
-
-    private fun calcOrderScrollViewHeight() {
-        // 左边固定区域(用于计算历史订单view的高度)
-        val scale = _ctx.resources.getDisplayMetrics().density
-        val dm = DisplayMetrics()
-        activity!!.windowManager.defaultDisplay.getMetrics(dm)
-        val pix_height = dm.heightPixels.toFloat()
-
-        // 状态栏(需计算) 标题栏(40px) tab(40px) 价格百分比(48px) 总margin(25dp + 20dp + 26dp = 71dp)
-        val right_scroll_height_pix = ((pix_height - (40 + 40 + 48 + 71) * scale) / 2).toInt()
-        val right_scroll_height_dp = (right_scroll_height_pix / scale)
-
-        val sv_sell_list = _view.findViewById<ScrollView>(R.id.sv_ask_listview)
-        val layout_params_sell_list = sv_sell_list.layoutParams
-        layout_params_sell_list.height = right_scroll_height_dp.dp.toInt()
-        sv_sell_list.layoutParams = layout_params_sell_list
     }
 
     fun getStatusBarHeight(context: Context): Int {

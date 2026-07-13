@@ -14,6 +14,36 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <LinearLayout
+                android:id="@+id/frame_zf"
+                android:layout_width="match_parent"
+                android:layout_height="28dp"
+                android:orientation="horizontal"
+                android:background="@color/colorPrimary">
+
+                <TextView
+                    android:id="@+id/label_txt_curr_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:gravity="bottom"
+                    android:text="--"
+                    android:textColor="@color/theme01.buyColor"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/label_txt_curr_price_percent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="bottom"
+                    android:text="--%"
+                    android:textColor="@color/theme01.buyColor"
+                    android:textSize="12dp"
+                    tools:ignore="MissingConstraints" />
+
+            </LinearLayout>
+
             <!-- 左右结构） -->
             <LinearLayout
                 android:orientation="horizontal"
@@ -77,21 +107,6 @@
                         style="@style/kTextFieldDecimalPad"
                         android:hint="--"/>
 
-                    <!-- 数量滑动条 -->
-                    <!--<SeekBar-->
-                        <!--android:thumbOffset="0dp"-->
-                        <!--android:paddingLeft="0dp"-->
-                        <!--android:paddingRight="0dp"-->
-                        <!--android:paddingEnd="0dp"-->
-                        <!--android:paddingStart="0dp"-->
-                        <!--android:thumb="@drawable/icon_slider"-->
-                        <!--android:layout_marginTop="5dp"-->
-                        <!--android:id="@+id/id_slider_amount_percent"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="32dp"-->
-                        <!--android:max="400"-->
-                        <!--android:progress="0" />-->
-
                     <!-- 百分比买/卖 按钮 -->
                     <LinearLayout
                         android:orientation="horizontal"
@@ -147,9 +162,6 @@
                             android:layout_height="23dp" />
 
                     </LinearLayout>
-
-
-                    <!-- 交易额 -->
                     <TextView
                         android:id="@+id/tf_total_title"
                         android:layout_marginTop="5dp"
@@ -202,7 +214,6 @@
 
                     </LinearLayout>
 
-
                     <!-- 手续费 -->
                     <LinearLayout
                         android:layout_marginTop="10dp"
@@ -250,188 +261,7 @@
                         android:padding="5dp"
                         android:textAllCaps="false"
                         android:text="@string/kTabBarNameCollateral" />
-
-                    <!-- 交易历史 -->
-                    <TextView
-                        android:layout_marginTop="10dp"
-                        android:textStyle="bold"
-                        android:textSize="15dp"
-                        android:textColor="@color/theme01.textColorMain"
-                        android:text="@string/kVcVerTradeLabelTradeHistory"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent" />
-
-                    <ScrollView
-                        android:id="@+id/sv_trade_histroy_from_trade_buy_or_sell"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-                        <LinearLayout
-                            android:id="@+id/layout_history_list"
-                            android:orientation="vertical"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"></LinearLayout>
-                    </ScrollView>
-
-                </LinearLayout>
-
-
-                <!-- 右边区域 -->
-                <LinearLayout
-                    android:layout_marginLeft="10dp"
-                    android:orientation="vertical"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content">
-
-                    <!-- 卖出区域 -->
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <LinearLayout
-                            android:layout_gravity="center_vertical"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="28dp">
-
-                            <!-- 是否自己的挂单（占位） -->
-                            <TextView
-                                android:text=""
-                                android:textSize="11dp"
-                                android:layout_width="12dp"
-                                android:layout_height="wrap_content" />
-
-                            <TextView
-                                android:textSize="11dp"
-                                android:textColor="@color/theme01.textColorGray"
-                                android:text="@string/kVcVerTradeLabelOrderBookID"
-                                android:layout_width="16dp"
-                                android:layout_height="wrap_content" />
-
-                            <TextView
-                                android:textSize="11dp"
-                                android:textColor="@color/theme01.textColorGray"
-                                android:text="@string/kLableBidPrice"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-
-                            <TextView
-                                android:paddingRight="5dp"
-                                android:textSize="11dp"
-                                android:textColor="@color/theme01.textColorGray"
-                                android:text="@string/kLableBidAmount"
-                                android:gravity="right"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
-
-                        </LinearLayout>
-
-                        <ScrollView
-                            android:id="@+id/sv_ask_listview"
-                            android:layout_width="match_parent"
-                            android:layout_height="260dp">
-
-                            <LinearLayout
-                                android:id="@+id/layout_ask_list"
-                                android:orientation="vertical"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent">
-
-                            </LinearLayout>
-                        </ScrollView>
-
-                    </LinearLayout>
-
-
-
-
-
-
-                    <!-- 价格 涨跌幅百分比 -->
-                    <LinearLayout
-                        android:layout_marginLeft="12dp"
-                        android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_gravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:layout_height="48dp">
-
-                        <TextView
-                            android:id="@+id/label_txt_curr_price"
-                            android:textSize="17dp"
-                            android:text="0.00000"
-                            android:textStyle="bold"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-
-                        <TextView
-                            android:id="@+id/label_txt_curr_price_percent"
-                            android:textSize="12dp"
-                            android:text="0.00%"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-
-                    </LinearLayout>
-
-                    <!-- 买入区域 -->
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <ScrollView
-                            android:id="@+id/sv_bid_listview"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <LinearLayout
-                                android:id="@+id/layout_bid_list"
-                                android:orientation="vertical"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"></LinearLayout>
-
-
-                        </ScrollView>
-                    </FrameLayout>
-
-
                 </LinearLayout>
             </LinearLayout>
-
-
-
-
-            <!-- （已取消这布局）下部分（交易历史区域 和 买单区域） -->
-            <!--<LinearLayout-->
-                <!--android:orientation="horizontal"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content">-->
-
-                <!--&lt;!&ndash; 交易历史区域 &ndash;&gt;-->
-                <!--<LinearLayout-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:orientation="vertical"-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_height="wrap_content"></LinearLayout>-->
-
-                <!--&lt;!&ndash; 买单列表区域 &ndash;&gt;-->
-                <!--<LinearLayout-->
-                    <!--android:orientation="vertical"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_height="wrap_content">-->
-
-                <!--</LinearLayout>-->
-            <!--</LinearLayout>-->
-
-
-
-
-
-
-        </LinearLayout>
-
-
-
+       </LinearLayout>
 </FrameLayout>

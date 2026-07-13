@@ -303,15 +303,8 @@ class ActivityTradeMain : BtsppActivity() {
     }
 
     private fun setFragments() {
-        if (!SettingManager.sharedSettingManager().isEnableHorTradeUI()) {
-            //  竖版 买卖界面 + 委托界面
-            fragmens.add(FragmentTradeBuyOrSell().initialize(jsonArrayfrom(true, _tradingPair)))
-            fragmens.add(FragmentTradeBuyOrSell().initialize(jsonArrayfrom(false, _tradingPair)))
-        } else {
-            //  横板 买卖界面
-            fragmens.add(FragmentTradeMainPage().initialize(jsonArrayfrom(true, _tradingPair)))
-            fragmens.add(FragmentTradeMainPage().initialize(jsonArrayfrom(false, _tradingPair)))
-        }
+        fragmens.add(FragmentTradeBuyOrSell().initialize(jsonArrayfrom(true, _tradingPair)))
+        fragmens.add(FragmentTradeBuyOrSell().initialize(jsonArrayfrom(false, _tradingPair)))
 
         //  清算单界面（横板竖版都有）
         if (_tradingPair._isCoreMarket) {
