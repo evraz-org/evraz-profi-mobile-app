@@ -33,14 +33,13 @@
                     android:layout_width="0dp"
                     android:layout_height="80dp"
                     android:layout_weight="10"
+                    android:gravity="center"
                     android:orientation="horizontal">
-                    <!-- 左边头像 -->
-                    <ImageView
+
+                    <WebView
                         android:id="@+id/img_icon_avatar"
                         android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:layout_weight="1"
-                        android:src="@drawable/avatar" />
+                        android:layout_height="64dp" />
 
                     <!-- 中间文字 -->
                     <LinearLayout

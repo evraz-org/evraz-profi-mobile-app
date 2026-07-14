@@ -1,6 +1,8 @@
 package com.btsplusplus.fowallet
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.webkit.WebView
 import androidx.core.content.ContextCompat
 import bitshares.*
 import com.btsplusplus.fowallet.databinding.ActivityIndexMyBinding
@@ -37,7 +39,6 @@ class ActivityIndexMy : BtsppActivity() {
 
         //  设置图标颜色
         val iconcolor = ContextCompat.getColor(applicationContext,R.color.theme01_textColorNormal)
-        _binding.imgIconAvatar.setColorFilter(iconcolor)
         _binding.imgIconAssets.setColorFilter(iconcolor)
         _binding.imgIconOrders.setColorFilter(iconcolor)
         _binding.imgIconWallet.setColorFilter(iconcolor)
@@ -128,6 +129,13 @@ class ActivityIndexMy : BtsppActivity() {
             val account = walletMgr.getWalletAccountInfo()!!.getJSONObject("account")
             //  第一行
             val name = account.getString("name")
+
+            fun ByteArray.toHex(): String = joinToString("") { b -> "%02x".format(b) }
+            val sha256Name =
+                NativeInterface.sharedNativeInterface().sha256(name.toByteArray(Charsets.UTF_8))
+                    .toHex()
+            loadWebView(_binding.imgIconAvatar, 64, sha256Name)
+
             if (walletMgr.isLocked()) {
                 _binding.labelTxtAccoutname.text = "${name}(${R.string.kLblAccountLocked.xmlstring(this)})"
             } else {
@@ -143,5 +151,14 @@ class ActivityIndexMy : BtsppActivity() {
             _binding.labelTxtAccoutname.text = R.string.kAccountManagement.xmlstring(this)
             _binding.labelTxtStatus.text = R.string.tip_click_to_login.xmlstring(this)
         }
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun loadWebView(webView: WebView, size: Int, encryptText: String?) {
+        val htmlShareAccountName =
+            "<html><head><style>body,html {margin:0; padding:0; text-align:center;}</style><meta name=viewport content=width=$size,user-scalable=no/></head><body><canvas width=$size height=$size data-jdenticon-hash=$encryptText></canvas><script src=https://cdn.jsdelivr.net/jdenticon/1.3.2/jdenticon.min.js async></script></body></html>"
+        val webSettings = webView.getSettings()
+        webSettings.javaScriptEnabled = true
+        webView.loadData(htmlShareAccountName, "text/html", "UTF-8")
     }
 }

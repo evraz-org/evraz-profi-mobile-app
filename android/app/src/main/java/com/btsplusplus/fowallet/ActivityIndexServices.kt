@@ -120,8 +120,7 @@ class ActivityIndexServices : BtsppActivity() {
         }
 
         _binding.layoutBtsExplorer.setOnClickListener {
-            //  TODO:插件配置url
-            openURL("https://bts.ai?lang=${resources.getString(R.string.btsaiLangKey)}")
+            openURL("https://evrazdex.org/explorer/blocks")
         }
     }
 
