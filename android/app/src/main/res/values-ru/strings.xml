@@ -377,7 +377,6 @@
     <string name="kProposalTipsAskMissingOwner">У аккаунта %s отсутствуют права Owner. Создать предложение?</string>
     <string name="kProposalTipsSelectFeePayingAccount">Выберите создателя предложения</string>
     <string name="kProposalLabelCellProposalCreator">Создатель предложения</string>
-    <string name="kProposalLabelApprovalPeriod">Период одобрения</string>
     <string name="kProposalLabelReviewPeriod">Период проверки</string>
     <string name="kProposalLabel1Days">%s день</string>
     <string name="kProposalLabelNDays">%s дней</string>
