@@ -42,6 +42,14 @@ class LangManager {
             put("langCode", "ja")
             put("langLocale", Locale.JAPANESE)
         })
+        data_array.put(JSONObject().apply {
+            put("langNameKey", R.string.kLangKeyRu)
+            put("langCode", "ru")
+            put("langLocale", Locale.Builder().apply {
+                setLanguage("ru")
+                setRegion("RU")
+            }.build())
+        })
     }
 
     fun onAttach(ctx: Context): Context {

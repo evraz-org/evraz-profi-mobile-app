@@ -191,7 +191,6 @@
                 android:layout_gravity="center_vertical"
                 android:gravity="center_vertical"
                 android:textSize="16dp"
-                android:layout_weight="9"
                 android:textColor="@color/theme01.textColorMain"
                 android:text="@string/setting_hor_trade_ui"/>
 
