@@ -15,8 +15,8 @@ android {
         applicationId "org.evrazcoin.app"
         minSdkVersion 23
         targetSdkVersion 37
-        versionCode 202009132
-        versionName "6.4"
+        versionCode 202607133
+        versionName "7.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
