@@ -297,7 +297,18 @@ class FragmentTradeBuyOrSell : BtsppFragment() {
         refreshUI()
 
         return _view
+    }
 
+    override fun onResume() {
+        super.onResume()
+        if ((getOwner<ActivityTradeMain>() == null) && WalletManager.sharedWalletManager().isWalletExist()) {
+            val account_id = WalletManager.sharedWalletManager().getWalletAccountInfo()!!.getJSONObject("account").getString("id")
+            val full_account_data = ChainObjectManager.sharedChainObjectManager().getFullAccountDataFromCache(account_id)
+            if (full_account_data != null) {
+                onFullAccountDataResponsed(full_account_data)
+                refreshUI()
+            }
+        }
     }
 
     /**
@@ -306,7 +317,7 @@ class FragmentTradeBuyOrSell : BtsppFragment() {
     private fun onPercentButtonClicked(n_percent: BigDecimal) {
         if (_balanceData == null) {
             showToast(resources.getString(R.string.kVcTradeTipPleaseLoginFirst))
-//            _gotoLogin()
+            _gotoLogin()
             return
         }
 
@@ -559,6 +570,7 @@ class FragmentTradeBuyOrSell : BtsppFragment() {
             if (_balanceData == null) {
                 showToast(resources.getString(R.string.kVcTradeTipPleaseLoginFirst))
                 endInput()
+                _gotoLogin()
                 return true
             }
         }
@@ -799,7 +811,11 @@ class FragmentTradeBuyOrSell : BtsppFragment() {
                 ChainObjectManager.sharedChainObjectManager().queryFullAccountInfo(seller).then {
                     mask.dismiss()
                     //  刷新（调用owner的方法刷新、买/卖界面都需要刷新。）
-                    getOwner<ActivityTradeMain>()?.onFullAccountInfoResponsed(it as JSONObject)
+                    if(getOwner<ActivityTradeMain>() == null) {
+                        onFullAccountDataResponsed(it as JSONObject)
+                    } else {
+                        getOwner<ActivityTradeMain>()?.onFullAccountInfoResponsed(it as JSONObject)
+                    }
                     //  获取刚才新创建的限价单
                     var new_order: JSONObject? = null
                     if (new_order_id != null && _userOrderDataHash.containsKey(new_order_id)) {

@@ -91,6 +91,10 @@ class ActivityLogin: BtsppActivity() {
 
         mBinding.layoutBackFromLogin.setOnClickListener { finish() }
 
+        mBinding.buttonRegister.setOnClickListener {
+            goTo(SignUpInfoActivity::class.java)
+        }
+
         mBinding.editTextAccountName.addTextChangedListener(mAccountNameWatcher)
 
         mAccauntPasswordCondition = ViewFormatConditons(this).apply {
