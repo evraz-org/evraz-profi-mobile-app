@@ -42,10 +42,16 @@ android {
         btspp {
             //  0:iOS企业版 1:AppStore版 10:btspp 20:community(bbf) 100:baichenglian
             buildConfigField "int", "kAppChannelID", "10"
-            buildConfigField "boolean", "kUseCommunityFaucet", "false"
             buildConfigField "String", "kAppConfigFile", "\"fowallet_config_btspp.json\""
             buildConfigField "boolean", "kUseCommunityFaucet", "true"
             buildConfigField "String", "kAppCommunityFaucetAddress", "\"https://faucet.evrazcoin.org/api/v1/accounts\""
+        }
+        btspp_testnet {
+            //  0:iOS企业版 1:AppStore版 10:btspp 20:community(bbf) 100:baichenglian
+            buildConfigField "int", "kAppChannelID", "10"
+            buildConfigField "String", "kAppConfigFile", "\"fowallet_config_testnet.json\""
+            buildConfigField "boolean", "kUseCommunityFaucet", "true"
+            buildConfigField "String", "kAppCommunityFaucetAddress", "\"https://testnet-faucet.xbts.io\""
         }
     }
     buildTypes {
