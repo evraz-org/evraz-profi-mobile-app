@@ -146,7 +146,7 @@ class ActivityKLine : BtsppActivity() {
         //  收藏
         _refreshFavButtonStatus()
         _binding.imgBtnFavOfKline.setOnClickListener {
-            onButtomFavButtonClicked(it)
+            VcUtils.processMyFavPairStateChanged(this, _tradingPair._quoteAsset, _tradingPair._baseAsset, associated_view = it as ImageButton)
         }
 
         setTabListener()
@@ -611,15 +611,6 @@ class ActivityKLine : BtsppActivity() {
         } else {
             _binding.imgBtnFavOfKline.setColorFilter(resources.getColor(R.color.theme01_textColorGray))
         }
-    }
-
-    /**
-     *  (private) 事件 - 收藏按钮点击（参考交易界面右上角按钮对应逻辑）
-     */
-    private fun onButtomFavButtonClicked(sender: View) {
-        val v = sender as ImageButton
-        assert(v.tag == KBottomButtonTag.kBottomButtonTagFav.value)
-        VcUtils.processMyFavPairStateChanged(this, _tradingPair._quoteAsset, _tradingPair._baseAsset, associated_view = v)
     }
 
     private fun px2dip(pxValue: Float): Int {

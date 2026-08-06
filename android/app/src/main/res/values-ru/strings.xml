@@ -689,7 +689,7 @@
     <string name="kLabelKLinePrice">Цена</string>
     <string name="kLabelKLineTotalAmount">Итого</string>
     <string name="kLabelKLineAvgPrice">Ср. цена</string>
-    <string name="kLabelBtnDepth">Депс</string>
+    <string name="kLabelBtnDepth">Глубина</string>
     <string name="kLabelBtnOrders">Ордера</string>
     <string name="kLabelBtnMarketTrades">Торги рынка</string>
     <string name="kLabelDepthSideBuy">Покупка</string>
