@@ -56,6 +56,21 @@ class ViewBidAsk : FrameLayout {
         table_layout.layoutParams = table_layout_params
         table_layout.isStretchAllColumns = true
 
+        val tableTitle = TableRow(ctx)
+        val tableTitleParams = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, Utils.toDp(line_height, res))
+        tableTitleParams.gravity = Gravity.CENTER_VERTICAL
+        tableTitle.orientation = TableRow.HORIZONTAL
+        tableTitle.layoutParams = tableTitleParams
+        tableTitle.gravity = Gravity.CENTER_VERTICAL
+
+        val tvBuy = ViewUtils.createTextViewForOrderBook(ctx, ctx.resources.getString(R.string.kLableBidBuy), Gravity.LEFT, R.color.theme01_textColorGray, 2f, layout_view_height)
+        val tvShell = ViewUtils.createTextViewForOrderBook(ctx, ctx.resources.getString(R.string.kLableAskSell), Gravity.RIGHT, R.color.theme01_textColorGray, 2f, layout_view_height)
+
+        tableTitle.addView(tvBuy)
+        tableTitle.addView(tvShell)
+
+        table_layout.addView(tableTitle)
+
         val table_row = TableRow(ctx)
         val table_row_params = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, Utils.toDp(line_height, res))
         table_row_params.gravity = Gravity.CENTER_VERTICAL
@@ -63,22 +78,18 @@ class ViewBidAsk : FrameLayout {
         table_row.layoutParams = table_row_params
         table_row.gravity = Gravity.CENTER_VERTICAL
 
-        val tv1 = ViewUtils.createTextViewForOrderBook(ctx, ctx.resources.getString(R.string.kLableBidBuy), Gravity.LEFT, R.color.theme01_textColorGray, 2f, layout_view_height)
         val tv2 = ViewUtils.createTextViewForOrderBook(ctx, ctx.resources.getString(R.string.kLableBidAmount), Gravity.LEFT, R.color.theme01_textColorGray, 6f, layout_view_height)
         val tv3 = ViewUtils.createTextViewForOrderBook(ctx, ctx.resources.getString(R.string.kLableBidPrice), Gravity.RIGHT, R.color.theme01_textColorGray, 6f, layout_view_height)
         val tv4 = ViewUtils.createTextViewForOrderBook(ctx, ctx.resources.getString(R.string.kLableBidPrice), Gravity.LEFT, R.color.theme01_textColorGray, 6f, layout_view_height)
         val tv5 = ViewUtils.createTextViewForOrderBook(ctx, ctx.resources.getString(R.string.kLableBidAmount), Gravity.RIGHT, R.color.theme01_textColorGray, 6f, layout_view_height)
-        val tv6 = ViewUtils.createTextViewForOrderBook(ctx, ctx.resources.getString(R.string.kLableAskSell), Gravity.RIGHT, R.color.theme01_textColorGray, 2f, layout_view_height)
 
         tv3.setPadding(0, 0, Utils.toDp(5f, res), 0)
         tv4.setPadding(Utils.toDp(5f, res), 0, 0, 0)
 
-        table_row.addView(tv1)
         table_row.addView(tv2)
         table_row.addView(tv3)
         table_row.addView(tv4)
         table_row.addView(tv5)
-        table_row.addView(tv6)
 
         table_layout.addView(table_row)
 
@@ -94,7 +105,7 @@ class ViewBidAsk : FrameLayout {
             val idnum = (1 + i).toString()
             val tv1 = ViewUtils.createTextViewForOrderBook(ctx, idnum, Gravity.LEFT, R.color.theme01_textColorNormal, 2f, layout_view_height)
             val tv2 = ViewUtils.createTextViewForOrderBook(ctx, "--", Gravity.LEFT, R.color.theme01_textColorNormal, 6f, layout_view_height)
-            val tv3 = ViewUtils.createTextViewForOrderBook(ctx, "--", Gravity.RIGHT, R.color.theme01_buyColor, 6f, layout_view_height)
+            val tv3 = ViewUtils.createTextViewForOrderBook(ctx, "--", Gravity.RIGHT, R.color.theme01_buyColorBlue, 6f, layout_view_height)
             val tv4 = ViewUtils.createTextViewForOrderBook(ctx, "--", Gravity.LEFT, R.color.theme01_sellColor, 6f, layout_view_height)
             val tv5 = ViewUtils.createTextViewForOrderBook(ctx, "--", Gravity.RIGHT, R.color.theme01_textColorNormal, 6f, layout_view_height)
             val tv6 = ViewUtils.createTextViewForOrderBook(ctx, idnum, Gravity.RIGHT, R.color.theme01_textColorNormal, 2f, layout_view_height)
@@ -203,7 +214,7 @@ class ViewBidAsk : FrameLayout {
                 } else {
                     jsonArray[0].setTextColor(resources.getColor(R.color.theme01_textColorNormal))
                     jsonArray[1].setTextColor(resources.getColor(R.color.theme01_textColorNormal))
-                    jsonArray[2].setTextColor(resources.getColor(R.color.theme01_buyColor))
+                    jsonArray[2].setTextColor(resources.getColor(R.color.theme01_buyColorBlue))
                 }
                 jsonArray[1].text = OrgUtils.formatFloatValue(order.getString("quote").toDouble(), _tradingPair._numPrecision, false)
                 jsonArray[2].text = OrgUtils.formatFloatValue(order.getString("price").toDouble(), _tradingPair._displayPrecision, false)

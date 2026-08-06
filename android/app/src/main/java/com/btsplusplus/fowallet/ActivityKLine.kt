@@ -41,6 +41,7 @@ class ActivityKLine : BtsppActivity() {
     private var _dataArrayHistory = JSONArray()             //  成交历史
     private var _feedPriceInfo: BigDecimal? = null          //  喂价信息（有的交易对没有喂价）
     private var _fragmentOrderCurrent: FragmentOrderCurrent? = null
+    private var _fragmentMarketTrades: FragmentOrderHistory? = null
 
     private lateinit var _viewKLine: ViewKLine
     private lateinit var _viewCrss: ViewKLineCross
@@ -53,6 +54,7 @@ class ActivityKLine : BtsppActivity() {
 
     private lateinit var _binding: ActivityKlineBinding
     private var _full_account_data: JSONObject? = null
+    private var _tradeHistory: JSONArray? = null
 
     override fun onResume() {
         super.onResume()
@@ -83,13 +85,6 @@ class ActivityKLine : BtsppActivity() {
         val base = params.getJSONObject(0)
         val quote = params.getJSONObject(1)
 
-        val accId = WalletManager.sharedWalletManager().getWalletAccountInfo()?.getJSONObject("account")?.getString("id")
-        if(accId != null) {
-            ChainObjectManager.sharedChainObjectManager().queryFullAccountInfo(accId).then {
-                _full_account_data = it as JSONObject
-            }
-        }
-
         //  Custom initialization
         _tradingPair = TradingPair().initWithBaseAsset(base, quote)
         _dataArrayHistory = JSONArray()
@@ -97,6 +92,33 @@ class ActivityKLine : BtsppActivity() {
             override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
                 onSubMarketNotifyNewData(msg)
+            }
+        }
+
+        _tradeHistory = JSONArray()
+        val accId = WalletManager.sharedWalletManager().getWalletAccountInfo()?.getJSONObject("account")?.getString("id")
+        if(accId != null) {
+            ChainObjectManager.sharedChainObjectManager().queryFullAccountInfo(accId).then {
+                _full_account_data = it as JSONObject
+            }
+
+            val conn = GrapheneConnectionManager.sharedGrapheneConnectionManager().any_connection()
+            val stop = "1.${EBitsharesObjectType.ebot_operation_history.value}.0"
+            val start = "1.${EBitsharesObjectType.ebot_operation_history.value}.0"
+            conn.async_exec_history("get_account_history", jsonArrayfrom(accId, stop, 100, start)).then {
+                for (history in it as JSONArray) {
+                    val op = history!!.getJSONArray("op")
+                    if (op.getInt(0) == EBitsharesOperations.ebo_fill_order.value) {
+                        val opData = op.getJSONObject(1)
+                        val paysAssetId = opData.getJSONObject("pays").getString("asset_id")
+                        val receivesAssetId = opData.getJSONObject("receives").getString("asset_id")
+                        val isMatch = (paysAssetId == _tradingPair._baseId && receivesAssetId == _tradingPair._quoteId) ||
+                                (paysAssetId == _tradingPair._quoteId && receivesAssetId == _tradingPair._baseId)
+                        if (isMatch) {
+                            _tradeHistory?.put(history)
+                        }
+                    }
+                }
             }
         }
 
@@ -360,6 +382,9 @@ class ActivityKLine : BtsppActivity() {
             _binding.tablayoutDepthOfKline.addTab(_binding.tablayoutDepthOfKline.newTab().apply {
                 text = resources.getString(R.string.kLabelMyOrders)
             })
+            _binding.tablayoutDepthOfKline.addTab(_binding.tablayoutDepthOfKline.newTab().apply {
+                text = resources.getString(R.string.kLabelMyMarketTrades)
+            })
         }
 
         _binding.tablayoutDepthOfKline.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -368,28 +393,49 @@ class ActivityKLine : BtsppActivity() {
                     _binding.layoutOrderBookFromKline.visibility = View.VISIBLE
                     _binding.layoutVolumeFromKline.visibility = View.GONE
                     _binding.layoutFragmentOrderCurrentFromKline.visibility = View.GONE
+                    _binding.layoutFragmentMarketTradesFromKline.visibility = View.GONE
                     _fragmentOrderCurrent = null
                 }
                 if (tab.position == 1) {
                     _binding.layoutOrderBookFromKline.visibility = View.GONE
                     _binding.layoutVolumeFromKline.visibility = View.VISIBLE
                     _binding.layoutFragmentOrderCurrentFromKline.visibility = View.GONE
+                    _binding.layoutFragmentMarketTradesFromKline.visibility = View.GONE
                     _fragmentOrderCurrent = null
                 }
                 if (tab.position == 2) {
                     _binding.layoutOrderBookFromKline.visibility = View.GONE
                     _binding.layoutVolumeFromKline.visibility = View.GONE
                     _binding.layoutFragmentOrderCurrentFromKline.visibility = View.VISIBLE
+                    _binding.layoutFragmentMarketTradesFromKline.visibility = View.GONE
                     if (_fragmentOrderCurrent == null) {
                         _fragmentOrderCurrent = FragmentOrderCurrent().apply {
                             initialize(JSONObject().apply {
                                 put("full_account_data", _full_account_data)
                                 put("tradingPair", _tradingPair)
-                                put("filter", true)
+                                put("filter", false)
                             })
                         }
                         supportFragmentManager.beginTransaction()
                             .add(R.id.layout_fragment_order_current_from_kline, _fragmentOrderCurrent!!)
+                            .commit()
+                    }
+                }
+
+                if (tab.position == 3) {
+                    _binding.layoutOrderBookFromKline.visibility = View.GONE
+                    _binding.layoutVolumeFromKline.visibility = View.GONE
+                    _binding.layoutFragmentOrderCurrentFromKline.visibility = View.GONE
+                    _binding.layoutFragmentMarketTradesFromKline.visibility = View.VISIBLE
+
+                    if (_fragmentMarketTrades == null) {
+                        _fragmentMarketTrades = FragmentOrderHistory().apply {
+                            initialize(JSONObject().apply {
+                                put("data", _tradeHistory)
+                            })
+                        }
+                        supportFragmentManager.beginTransaction()
+                            .add(R.id.layout_fragment_market_trades_from_kline, _fragmentMarketTrades!!)
                             .commit()
                     }
                 }

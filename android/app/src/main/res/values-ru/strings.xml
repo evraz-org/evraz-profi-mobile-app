@@ -1848,4 +1848,6 @@
     <string name="transfer_fail">Ошибка отправки</string>
     <string name="price_chart">График цены</string>
     <string name="all">Все</string>
+    <string name="kVcVerTradeLabelChainFee">Комиссия</string>
+    <string name="kLabelMyMarketTrades">Мои рыночные сделки</string>
 </resources>

@@ -1849,4 +1849,6 @@
     <string name="transfer_fail">Fail to send</string>
     <string name="price_chart">Price chart</string>
     <string name="all">All</string>
+    <string name="kVcVerTradeLabelChainFee">Fee</string>
+    <string name="kLabelMyMarketTrades">My market trades</string>
 </resources>

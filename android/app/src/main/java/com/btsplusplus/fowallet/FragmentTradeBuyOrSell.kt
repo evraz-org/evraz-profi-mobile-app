@@ -63,7 +63,7 @@ class FragmentTradeBuyOrSell : BtsppFragment() {
     private var _currFillOrders: JSONArray? = null          //  当前成交历史数据（可能不存在）
 
     private var _userOrderDataHash = LinkedHashMap<String, JSONObject>()
-    //    private var _dataArrayHistory = arrayListOf<JSONObject>()
+//    private var _dataArrayHistory = arrayListOf<JSONObject>()
     private var _viewBidList = arrayListOf<OrderBookViews>()
     private var _viewAskList = arrayListOf<OrderBookViews>()
     private var _viewFillHistory = arrayListOf<SimpleHistoryViews>()
@@ -193,6 +193,7 @@ class FragmentTradeBuyOrSell : BtsppFragment() {
 
         //  刷新手续费信息
         _draw_market_fee(if (_isbuy) _tradingPair._quoteAsset else _tradingPair._baseAsset, full_account_data.getJSONObject("account"))
+        _draw_chain_fee()
 
         //  2、刷新交易额、可用余额等
         _onPriceOrAmountChanged()
@@ -533,6 +534,7 @@ class FragmentTradeBuyOrSell : BtsppFragment() {
         //  可用
         _draw_ui_available(null, true, _isbuy)
         _draw_market_fee(if (_isbuy) _tradingPair._quoteAsset else _tradingPair._baseAsset)
+        _draw_chain_fee()
 
         //  登录 or 买入 or 卖出
         val _confirmation_btn_of_buy = _view.findViewById<Button>(R.id.btn_submit_core)
@@ -600,6 +602,35 @@ class FragmentTradeBuyOrSell : BtsppFragment() {
             _view.findViewById<TextView>(R.id.label_txt_market_fee).text = String.format("%s%%", n_market_fee_percent.toPlainString())
         } else {
             _view.findViewById<TextView>(R.id.label_txt_market_fee).text = "0%"
+        }
+    }
+
+    private fun _draw_chain_fee() {
+        val chainFeeTextView = _view.findViewById<TextView>(R.id.label_txt_chain_fee)
+        if (_balanceData == null) {
+            chainFeeTextView.text = "--"
+            return
+        }
+
+        val feeItem = _balanceData!!.getJSONObject("fee_item")
+        if (!feeItem.has("amount_real") || !feeItem.has("fee_asset_id")) {
+            chainFeeTextView.text = "--"
+            return
+        }
+
+        try {
+            val feeAmountReal = feeItem.getString("amount")
+            val feeAssetId = feeItem.getString("fee_asset_id")
+
+            val feeAsset = ChainObjectManager.sharedChainObjectManager().getAssetBySymbol(
+                ChainObjectManager.sharedChainObjectManager().getChainObjectByID(feeAssetId).getString("symbol")
+            )
+            val precision = BigDecimal.valueOf(10.0.pow(feeAsset.getInt("precision").toDouble()))
+            val formattedFee = BigDecimal(feeAmountReal).divide(precision, feeAsset.getInt("precision"), BigDecimal.ROUND_DOWN)
+
+            chainFeeTextView.text = String.format("%s %s", OrgUtils.formatFloatValue(formattedFee.toDouble(), feeAsset.getInt("precision"), false), feeAsset.getString("symbol"))
+        } catch (e: Exception) {
+            chainFeeTextView.text = "--"
         }
     }
 

@@ -241,6 +241,33 @@
 
                     </LinearLayout>
 
+                    <!-- 区块链手续费 -->
+                    <LinearLayout
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_marginTop="5dp"
+                            android:textSize="12dp"
+                            android:textColor="@color/theme01.textColorNormal"
+                            android:text="@string/kVcVerTradeLabelChainFee"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:id="@+id/label_txt_chain_fee"
+                            android:gravity="right"
+                            android:layout_marginTop="5dp"
+                            android:textSize="12dp"
+                            android:textColor="@color/theme01.textColorNormal"
+                            android:text="--"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+
                     <!-- 提交按钮 -->
                     <Button
                         android:layout_marginTop="5dp"

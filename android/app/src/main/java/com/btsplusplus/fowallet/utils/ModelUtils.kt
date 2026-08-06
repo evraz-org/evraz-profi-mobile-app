@@ -242,8 +242,8 @@ class ModelUtils {
                         continue
                     }
                 }
-                val base_asset = chainMgr.getChainObjectByID(base_id)
-                val quote_asset = chainMgr.getChainObjectByID(quote_id)
+                val base_asset = chainMgr.getChainObjectByID(base_id, true)!!
+                val quote_asset = chainMgr.getChainObjectByID(quote_id, true)!!
                 val base_precision = base_asset.getInt("precision")
                 val quote_precision = quote_asset.getInt("precision")
                 val base_value = OrgUtils.calcAssetRealPrice(base.getString("amount"), base_precision)
