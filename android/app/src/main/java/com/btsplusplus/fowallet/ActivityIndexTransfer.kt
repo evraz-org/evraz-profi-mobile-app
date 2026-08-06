@@ -94,7 +94,7 @@ class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback
         mBnding.webViewAvatarFrom.setOnTouchListener(this)
 
         val id =
-            mFull_account_data?.getJSONObject("account")?.optString("id")?.replace(".", "") ?: ""
+            mFull_account_data?.getJSONObject("account")?.optString("id")?.replace(".", "")?.drop(2) ?: ""
         @SuppressLint("SetTextI18n")
         mBnding.textViewFromId.text = "#$id"
 
@@ -517,7 +517,7 @@ class ActivityIndexTransfer : BtsppActivity(), OnTouchListener, Handler.Callback
         ChainObjectManager.sharedChainObjectManager().queryAccountData(strAccount)
             .then { accountObject ->
                 if (accountObject is JSONObject) {
-                    val id = accountObject?.optString("id")?.replace(".", "") ?: ""
+                    val id = accountObject?.optString("id")?.replace(".", "")?.drop(2) ?: ""
                     mBnding.textViewToId.text = "#$id"
                 } else {
                     mBnding.textViewToId.text = "#none"

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -67,7 +68,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                     <EditText
-                        android:background="@drawable/rectangle_border_drawable"
+                        android:background="@drawable/rectangle_border_input_light"
                         android:id="@+id/tf_price"
                         android:textSize="14dp"
                         android:maxLength="24"
@@ -92,7 +93,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                     <EditText
-                        android:background="@drawable/rectangle_border_drawable"
+                        android:background="@drawable/rectangle_border_input_light"
                         android:id="@+id/tf_amount"
                         android:textSize="14dp"
                         android:maxLength="24"
@@ -171,7 +172,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                     <EditText
-                        android:background="@drawable/rectangle_border_drawable"
+                        android:background="@drawable/rectangle_border_input_light"
                         android:id="@+id/tf_total"
                         android:textSize="14dp"
                         android:maxLength="24"
