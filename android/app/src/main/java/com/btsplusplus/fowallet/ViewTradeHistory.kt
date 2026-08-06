@@ -9,6 +9,7 @@ import android.widget.TableRow
 import android.widget.TextView
 import bitshares.OrgUtils
 import bitshares.Utils
+import bitshares.dp
 import bitshares.jsonArrayfrom
 import bitshares.xmlstring
 import com.btsplusplus.fowallet.kline.TradingPair
@@ -59,14 +60,16 @@ class ViewTradeHistory : TableLayout {
         val quote_symbol = _tradingPair._quoteAsset.getString("symbol")
 
         val tv1 = ViewUtils.createTextViewForOrderBook(ctx, R.string.kLabelTradeHisTitleTime.xmlstring(ctx), Gravity.LEFT, R.color.theme01_textColorGray, 25f, layout_view_height)
-        val tv2 = ViewUtils.createTextViewForOrderBook(ctx, R.string.kLabelTradeHisTitleType.xmlstring(ctx), Gravity.LEFT, R.color.theme01_textColorGray, 15f, layout_view_height)
-        val tv3 = ViewUtils.createTextViewForOrderBook(ctx, "${R.string.kLabelTradeHisTitlePrice.xmlstring(ctx)}($base_symbol)", Gravity.RIGHT, R.color.theme01_textColorGray, 30f, layout_view_height)
-        val tv4 = ViewUtils.createTextViewForOrderBook(ctx, "${R.string.kLabelTradeHisTitleAmount.xmlstring(ctx)}($quote_symbol)", Gravity.RIGHT, R.color.theme01_textColorGray, 30f, layout_view_height)
+        val tv2 = ViewUtils.createTextViewForOrderBook(ctx, R.string.kLabelTradeHisTitleType.xmlstring(ctx), Gravity.LEFT, R.color.theme01_textColorGray, 20f, layout_view_height)
+        val tv3 = ViewUtils.createTextViewForOrderBook(ctx, "${R.string.kLabelTradeHisTitlePrice.xmlstring(ctx)}\n($base_symbol)", Gravity.RIGHT, R.color.theme01_textColorGray, 25f, layout_view_height + 8.dp)
+        val tv4 = ViewUtils.createTextViewForOrderBook(ctx, "${R.string.kLabelTradeHisTitleAmount.xmlstring(ctx)}\n($quote_symbol)", Gravity.RIGHT, R.color.theme01_textColorGray, 25f, layout_view_height + 8.dp)
 
         tv1.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 11f)
         tv2.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 11f)
         tv3.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 11f)
         tv4.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 11f)
+        tv3.maxLines = 2
+        tv4.maxLines = 2
 
         table_row.addView(tv1)
         table_row.addView(tv2)
@@ -85,10 +88,12 @@ class ViewTradeHistory : TableLayout {
             val tv1 = ViewUtils.createTextViewForOrderBook(ctx, "--", Gravity.LEFT, R.color.theme01_textColorMain, 25f, layout_view_height)
 
             val color = R.color.theme01_buyColor
-            val tv2 = ViewUtils.createTextViewForOrderBook(ctx, "--", Gravity.LEFT, color, 15f, layout_view_height)
+            val tv2 = ViewUtils.createTextViewForOrderBook(ctx, "--", Gravity.LEFT, color, 20f, layout_view_height)
 
-            val tv3 = ViewUtils.createTextViewForOrderBook(ctx, "--", Gravity.RIGHT, R.color.theme01_textColorMain, 30f, layout_view_height)
-            val tv4 = ViewUtils.createTextViewForOrderBook(ctx, "--", Gravity.RIGHT, R.color.theme01_textColorMain, 30f, layout_view_height)
+            val tv3 = ViewUtils.createTextViewForOrderBook(ctx, "--", Gravity.RIGHT, R.color.theme01_textColorMain, 25f, layout_view_height)
+            val tv4 = ViewUtils.createTextViewForOrderBook(ctx, "--", Gravity.RIGHT, R.color.theme01_textColorMain, 25f, layout_view_height)
+            tv3.maxLines = 2
+            tv4.maxLines = 2
 
             table_row.addView(tv1)
             table_row.addView(tv2)

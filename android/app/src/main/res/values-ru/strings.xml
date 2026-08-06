@@ -691,7 +691,7 @@
     <string name="kLabelKLineAvgPrice">Ср. цена</string>
     <string name="kLabelBtnDepth">Глубина</string>
     <string name="kLabelBtnOrders">Ордера</string>
-    <string name="kLabelBtnMarketTrades">Торги рынка</string>
+    <string name="kLabelBtnMarketTrades">Рыночные сделки</string>
     <string name="kLabelDepthSideBuy">Покупка</string>
     <string name="kLabelDepthSideSell">Продажа</string>
     <string name="kLabelTradeHisNdayAgo">%d дн. назад</string>

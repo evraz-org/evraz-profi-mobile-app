@@ -18,6 +18,7 @@ import com.btsplusplus.fowallet.kline.MKlineItemData
 import com.btsplusplus.fowallet.kline.TradingPair
 import com.btsplusplus.fowallet.utils.VcUtils
 import com.fowallet.walletcore.bts.ChainObjectManager
+import com.fowallet.walletcore.bts.WalletManager
 import org.json.JSONArray
 import org.json.JSONObject
 import java.math.BigDecimal
@@ -51,6 +52,7 @@ class ActivityKLine : BtsppActivity() {
     private var _notify_handler: Handler? = null
 
     private lateinit var _binding: ActivityKlineBinding
+    private var _full_account_data: JSONObject? = null
 
     override fun onResume() {
         super.onResume()
@@ -81,6 +83,13 @@ class ActivityKLine : BtsppActivity() {
         val base = params.getJSONObject(0)
         val quote = params.getJSONObject(1)
 
+        val accId = WalletManager.sharedWalletManager().getWalletAccountInfo()?.getJSONObject("account")?.getString("id")
+        if(accId != null) {
+            ChainObjectManager.sharedChainObjectManager().queryFullAccountInfo(accId).then {
+                _full_account_data = it as JSONObject
+            }
+        }
+
         //  Custom initialization
         _tradingPair = TradingPair().initWithBaseAsset(base, quote)
         _dataArrayHistory = JSONArray()
@@ -105,13 +114,13 @@ class ActivityKLine : BtsppActivity() {
         //  UI - 子界面 K线主界面
 
         //  初始化 K线视图
-        _viewKLine = ViewKLine(this, sw, _tradingPair)
-        _viewKLine.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, toDp(px2dip(sw + 16f.dp).toFloat()))
+        _viewKLine = ViewKLine(this, sw - 16f.dp, _tradingPair)
+        _viewKLine.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, toDp(px2dip(sw - 16f.dp).toFloat()))
         _binding.layoutKlineAreaFromKline.addView(_viewKLine)
 
         //  十字叉
-        _viewCrss = ViewKLineCross(this, sw, _tradingPair)
-        _viewCrss.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, toDp(px2dip(sw + 16f.dp).toFloat()))
+        _viewCrss = ViewKLineCross(this, sw - 16f.dp, _tradingPair)
+        _viewCrss.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, toDp(px2dip(sw - 16f.dp).toFloat()))
         _binding.layoutViewCross.addView(_viewCrss)
         //  TODO:交叉引用 是否能释放，测试后删除TODO
         _viewKLine.crossView = _viewCrss
@@ -374,7 +383,7 @@ class ActivityKLine : BtsppActivity() {
                     if (_fragmentOrderCurrent == null) {
                         _fragmentOrderCurrent = FragmentOrderCurrent().apply {
                             initialize(JSONObject().apply {
-                                put("full_account_data", null)
+                                put("full_account_data", _full_account_data)
                                 put("tradingPair", _tradingPair)
                                 put("filter", true)
                             })
