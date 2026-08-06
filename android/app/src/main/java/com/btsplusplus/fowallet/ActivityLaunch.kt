@@ -78,7 +78,8 @@ class ActivityLaunch : BtsppActivity() {
             startActivity(intent)
         }
 
-        findViewById<View>(R.id.bottomBar).visibility = View.GONE
+        findViewById<View>(R.id.buttonBar).visibility = View.GONE
+        findViewById<View>(R.id.imageView).visibility = View.VISIBLE
         findViewById<View>(R.id.loadingIndicator).visibility = View.VISIBLE
 
         startInit(true)
@@ -140,7 +141,8 @@ class ActivityLaunch : BtsppActivity() {
             startActivity(intent)
         }
         else {
-            findViewById<View>(R.id.bottomBar).visibility = View.VISIBLE
+            findViewById<View>(R.id.imageView).visibility = View.GONE
+            findViewById<View>(R.id.buttonBar).visibility = View.VISIBLE
         }
     }
 
