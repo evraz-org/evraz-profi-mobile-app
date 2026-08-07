@@ -42,7 +42,7 @@
     <color name="theme01.contentBackColor">#333333</color>
     <color name="theme01.bottomLineColor">#1a273a</color>
     <color name="theme01.buyColor">#03c087</color>
-    <color name="theme01.buyColorBlue">#417CC2</color>
+    <color name="theme01.myOrderColor">#417CC2</color>
     <color name="theme01.sellColor">#e76d42</color>
     <color name="theme01.zeroColor">#8c9fad</color>
     <color name="theme01.callOrderColor">#ffff00</color>

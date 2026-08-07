@@ -4,9 +4,14 @@ import android.content.Context
 import android.view.Gravity
 import android.view.View
 import android.widget.*
+import bitshares.EBitsharesObjectType
+import bitshares.GrapheneConnectionManager
 import bitshares.OrgUtils
 import bitshares.Utils
+import bitshares.jsonArrayfrom
 import com.btsplusplus.fowallet.kline.TradingPair
+import com.fowallet.walletcore.bts.ChainObjectManager
+import com.fowallet.walletcore.bts.WalletManager
 import org.json.JSONObject
 import kotlin.math.max
 import kotlin.math.min
@@ -18,6 +23,7 @@ class ViewBidAsk : FrameLayout {
     private var _label_arrays = mutableListOf<Array<TextView>>()
     lateinit var _tradingPair: TradingPair
     private var _line_height: Float = 0.0f
+    private var myOrders  = mutableSetOf<String>()
 
     constructor(context: Context) : super(context)
 
@@ -105,7 +111,7 @@ class ViewBidAsk : FrameLayout {
             val idnum = (1 + i).toString()
             val tv1 = ViewUtils.createTextViewForOrderBook(ctx, idnum, Gravity.LEFT, R.color.theme01_textColorNormal, 2f, layout_view_height)
             val tv2 = ViewUtils.createTextViewForOrderBook(ctx, "--", Gravity.LEFT, R.color.theme01_textColorNormal, 6f, layout_view_height)
-            val tv3 = ViewUtils.createTextViewForOrderBook(ctx, "--", Gravity.RIGHT, R.color.theme01_buyColorBlue, 6f, layout_view_height)
+            val tv3 = ViewUtils.createTextViewForOrderBook(ctx, "--", Gravity.RIGHT, R.color.theme01_buyColor, 6f, layout_view_height)
             val tv4 = ViewUtils.createTextViewForOrderBook(ctx, "--", Gravity.LEFT, R.color.theme01_sellColor, 6f, layout_view_height)
             val tv5 = ViewUtils.createTextViewForOrderBook(ctx, "--", Gravity.RIGHT, R.color.theme01_textColorNormal, 6f, layout_view_height)
             val tv6 = ViewUtils.createTextViewForOrderBook(ctx, idnum, Gravity.RIGHT, R.color.theme01_textColorNormal, 2f, layout_view_height)
@@ -173,6 +179,22 @@ class ViewBidAsk : FrameLayout {
         this.addView(color_block_layout)
         this.addView(table_layout)
 
+        val wallet_account_info = WalletManager.sharedWalletManager().getWalletAccountInfo()
+        val account_id = wallet_account_info?.optJSONObject("account")?.getString("id") ?: ""
+        myOrders.clear()
+
+        ChainObjectManager.sharedChainObjectManager().queryFullAccountInfo(account_id).then {
+            val account = it as JSONObject
+            val orders = account.optJSONArray("limit_orders")
+            val len = orders?.length() ?: 0
+            for (i in 0 until len) {
+               val id = orders?.optJSONObject(i)?.optString("id")
+                if (id != null) {
+                    myOrders.add(id)
+                }
+            }
+        }
+
         return this
     }
 
@@ -214,7 +236,12 @@ class ViewBidAsk : FrameLayout {
                 } else {
                     jsonArray[0].setTextColor(resources.getColor(R.color.theme01_textColorNormal))
                     jsonArray[1].setTextColor(resources.getColor(R.color.theme01_textColorNormal))
-                    jsonArray[2].setTextColor(resources.getColor(R.color.theme01_buyColorBlue))
+                    if(myOrders.contains(order.getString("oid"))) {
+                        jsonArray[2].setTextColor(resources.getColor(R.color.theme01_myOrderColor))
+                    }
+                    else {
+                        jsonArray[2].setTextColor(resources.getColor(R.color.theme01_buyColor))
+                    }
                 }
                 jsonArray[1].text = OrgUtils.formatFloatValue(order.getString("quote").toDouble(), _tradingPair._numPrecision, false)
                 jsonArray[2].text = OrgUtils.formatFloatValue(order.getString("price").toDouble(), _tradingPair._displayPrecision, false)
@@ -235,6 +262,12 @@ class ViewBidAsk : FrameLayout {
                     jsonArray[4].setTextColor(resources.getColor(R.color.theme01_callOrderColor))
                     jsonArray[5].setTextColor(resources.getColor(R.color.theme01_callOrderColor))
                 } else {
+                    if(myOrders.contains(order.getString("oid"))) {
+                        jsonArray[3].setTextColor(resources.getColor(R.color.theme01_myOrderColor))
+                    }
+                    else {
+                        jsonArray[3].setTextColor(resources.getColor(R.color.theme01_sellColor))
+                    }
                     jsonArray[3].setTextColor(resources.getColor(R.color.theme01_sellColor))
                     jsonArray[4].setTextColor(resources.getColor(R.color.theme01_textColorNormal))
                     jsonArray[5].setTextColor(resources.getColor(R.color.theme01_textColorNormal))
