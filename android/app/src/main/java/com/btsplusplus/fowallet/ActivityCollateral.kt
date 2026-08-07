@@ -141,7 +141,7 @@ class ActivityCollateral : BtsppActivity() {
      * 执行调整债仓操作
      */
     private fun _onDebtActionClicked() {
-        val bitasset_data = ChainObjectManager.sharedChainObjectManager().getChainObjectByIDSafe(_debtPair!!._baseAsset.getString("bitasset_data_id"))
+        val bitasset_data = ChainObjectManager.sharedChainObjectManager().getChainObjectByIDSafe(_debtPair?._baseAsset?.optString("bitasset_data_id", "") ?: "")
         if (bitasset_data == null) {
             showToast(resources.getString(R.string.kDebtTipNetworkErrorPleaseRefresh))
             return

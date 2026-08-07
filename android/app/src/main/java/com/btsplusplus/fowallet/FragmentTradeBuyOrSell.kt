@@ -84,9 +84,11 @@ class FragmentTradeBuyOrSell : BtsppFragment() {
 
 
     override fun onInitParams(args: Any?) {
-        val json_array = args as JSONArray
-        _isbuy = json_array.getBoolean(0)
-        _tradingPair = json_array.get(1) as TradingPair
+        val json_array = args as JSONArray?
+        if(json_array != null) {
+            _isbuy = json_array.getBoolean(0)
+            _tradingPair = json_array.get(1) as TradingPair
+        }
     }
 
     /**

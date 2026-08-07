@@ -155,13 +155,13 @@ class ActivityLogin: BtsppActivity() {
             val full_wallet_bin = WalletManager.sharedWalletManager().genFullWalletData(this, username, jsonArrayfrom(active_private_wif, owner_private_wif, memo_private_wif), password)
             assert(full_wallet_bin != null)
 
-            AppCacheManager.sharedAppCacheManager().setWalletInfo(AppCacheManager.EWalletMode.kwmPasswordWithWallet.value, full_data, username, full_wallet_bin)
+            AppCacheManager.sharedAppCacheManager().setWalletInfo(AppCacheManager.EWalletMode.kwmPasswordOnlyMode.value, full_data, username, full_wallet_bin)
             AppCacheManager.sharedAppCacheManager().autoBackupWalletToWebdir(false)
 
             val unlockInfos = WalletManager.sharedWalletManager().unLock(password, this)
             assert(unlockInfos.getBoolean("unlockSuccess") && unlockInfos.optBoolean("haveActivePermission"))
 
-            btsppLogCustom("loginEvent", jsonObjectfromKVS("mode", AppCacheManager.EWalletMode.kwmPasswordWithWallet.value, "desc", "password+wallet"))
+            btsppLogCustom("loginEvent", jsonObjectfromKVS("mode", AppCacheManager.EWalletMode.kwmPasswordOnlyMode.value, "desc", "password"))
             showToast(resources.getString(R.string.kLoginTipsLoginOK))
             setResult(RESULT_OK)
             finish()
