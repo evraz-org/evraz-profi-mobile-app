@@ -1850,4 +1850,5 @@
     <string name="all">Все</string>
     <string name="kVcVerTradeLabelChainFee">Комиссия</string>
     <string name="kLabelMyMarketTrades">Мои рыночные сделки</string>
+    <string name="network_of_digital_cash_and_decentralized_exchange">Сеть цифровых денег и децентрализованная биржа</string>
 </resources>

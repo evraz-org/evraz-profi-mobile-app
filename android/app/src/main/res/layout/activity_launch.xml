@@ -54,10 +54,18 @@
         <ImageView
             android:layout_width="313dp"
             android:layout_height="98dp"
-            android:src="@drawable/logo"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:src="@drawable/logo" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            style="@style/EvrazTitle"
+            android:text="@string/network_of_digital_cash_and_decentralized_exchange" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
 
         <Button
             android:id="@+id/btnSignIn"
