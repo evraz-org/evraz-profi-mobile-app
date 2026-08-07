@@ -548,10 +548,13 @@ fun android.app.Activity.guardWalletExistWithWalletMode(message: String, body: (
 fun android.app.Activity.get_full_account_data_and_asset_hash(account_name_or_id: String): Promise {
     //  TODO:后期移动到 ChainObjectManager里
     return ChainObjectManager.sharedChainObjectManager().queryFullAccountInfo(account_name_or_id).then {
-        val full_account_data = it as JSONObject
+        val full_account_data = it as JSONObject?
         val list = JSONArray()
-        for (balance in full_account_data.getJSONArray("balances")) {
-            list.put(balance!!.getString("asset_type"))
+        for (balance in full_account_data?.optJSONArray("balances") ?: JSONArray()) {
+            val asType = balance?.optString("asset_type")
+            if(asType != null) {
+                list.put(asType)
+            }
         }
         return@then ChainObjectManager.sharedChainObjectManager().queryAllAssetsInfo(list).then {
             //  (void)asset_hash 省ложен, 缓存到 ChainObjectManager 即可。
