@@ -268,7 +268,6 @@ class ViewBidAsk : FrameLayout {
                     else {
                         jsonArray[3].setTextColor(resources.getColor(R.color.theme01_sellColor))
                     }
-                    jsonArray[3].setTextColor(resources.getColor(R.color.theme01_sellColor))
                     jsonArray[4].setTextColor(resources.getColor(R.color.theme01_textColorNormal))
                     jsonArray[5].setTextColor(resources.getColor(R.color.theme01_textColorNormal))
                 }
